@@ -1,7 +1,6 @@
 import { NextResponse } from 'next/server'
 import {
   buildPreferredPathOptions,
-  DEFAULT_DICT_SOURCE,
   evaluateCounterOutput,
   explorePaths,
   formatPathAsChat,
@@ -16,6 +15,7 @@ import {
   summarizeResults,
 } from '@/lib/core/pathfinder'
 import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
+import { getDictionarySource, normalizeLanguage } from '@/lib/language'
 import { type DialogueNode } from '@/lib/types'
 
 function unique(values: number[]): number[] {
@@ -27,6 +27,7 @@ export async function GET(request: Request) {
     const url = new URL(request.url)
     const chatroom = String(url.searchParams.get('chatroom') ?? '')
     const startId = Number(url.searchParams.get('startId'))
+    const language = normalizeLanguage(url.searchParams.get('language'))
 
     if (!chatroom || !Number.isInteger(startId)) {
       return NextResponse.json(
@@ -42,7 +43,7 @@ export async function GET(request: Request) {
 
     const [nodes, dictionary] = await Promise.all([
       loadNodes(source),
-      loadDictionary(DEFAULT_DICT_SOURCE).catch(
+      loadDictionary(getDictionarySource(language)).catch(
         () => new Map<string, string>()
       ),
     ])

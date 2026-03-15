@@ -1,6 +1,11 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
+import {
+  DEFAULT_LANGUAGE,
+  LANGUAGE_OPTIONS,
+  normalizeLanguage,
+} from '@/lib/language'
 import { DialogueOptionsList } from './dialogue-selector-panel/dialogue-options-list'
 import { SimulationLoadingState } from './dialogue-selector-panel/loading-state'
 import { PreferredPathPanel } from './dialogue-selector-panel/preferred-path-panel'
@@ -76,6 +81,25 @@ export function DialogueSelectorPanel({
     string | null
   >(null)
   const [showConversation, setShowConversation] = useState(false)
+  const [language, setLanguage] = useState(() => {
+    try {
+      return normalizeLanguage(localStorage.getItem('wf-kim:language'))
+    } catch {
+      return DEFAULT_LANGUAGE
+    }
+  })
+
+  useEffect(() => {
+    try {
+      localStorage.setItem('wf-kim:language', language)
+    } catch {
+      // ignore storage errors
+    }
+    setPreferredPaths([])
+    setSelectedPreferredPathId(null)
+    setShowConversation(false)
+    setSimulateError(null)
+  }, [language])
 
   useEffect(() => {
     if (!requirements) {
@@ -121,6 +145,7 @@ export function DialogueSelectorPanel({
       const params = new URLSearchParams({
         chatroom,
         startId: String(selectedOption.id),
+        language,
         booleans: JSON.stringify(booleanValues),
         counters: JSON.stringify(counterValues),
       })
@@ -161,6 +186,26 @@ export function DialogueSelectorPanel({
             <p className="font-title text-xl text-[#f0bb5f]">
               {selectedOption.label}
             </p>
+            <div className="space-y-1">
+              <label
+                htmlFor="sim-language"
+                className="block text-xs uppercase tracking-wide text-[#b9ac8f]"
+              >
+                Language
+              </label>
+              <select
+                id="sim-language"
+                value={language}
+                onChange={(event) => setLanguage(event.target.value)}
+                className="w-full border border-[#6b4820] bg-[#120e08] px-2 py-1.5 text-sm text-[#ddd7c9] outline-none focus:border-[#cfad73]"
+              >
+                {LANGUAGE_OPTIONS.map((option) => (
+                  <option key={option.value} value={option.value}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+            </div>
 
             {isSimulating ? (
               <SimulationLoadingState />

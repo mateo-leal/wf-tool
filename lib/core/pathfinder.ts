@@ -6,6 +6,7 @@ import {
   TranscriptLine,
   Type,
 } from '../types'
+import { DEFAULT_LANGUAGE, getDictionarySource } from '../language'
 
 export type PathResult = {
   path: number[]
@@ -78,7 +79,7 @@ export const DEFAULT_SOURCES = [
   'https://kim.browse.wf/data/RoatheDialogue_rom.dialogue.json',
 ]
 
-export const DEFAULT_DICT_SOURCE = 'https://kim.browse.wf/dicts/es.json'
+export const DEFAULT_DICT_SOURCE = getDictionarySource(DEFAULT_LANGUAGE)
 
 export async function loadText(source: string): Promise<string> {
   return source.startsWith('http://') || source.startsWith('https://')
