@@ -2,6 +2,7 @@ export type DialogueOption = {
   option: number
   id: number
   label: string
+  codename: string
 }
 
 export type SimulationRequirements = {

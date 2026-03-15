@@ -28,6 +28,19 @@ type SimulationRequirements = {
   }>
 }
 
+const NON_DIALOGUE_PREVIEW_TYPES = new Set<Type>([
+  Type.StartDialogueNode,
+  Type.CheckBooleanDialogueNode,
+  Type.CheckBooleanScriptDialogueNode,
+  Type.CheckCounterDialogueNode,
+  Type.CheckMultiBooleanDialogueNode,
+  Type.SetBooleanDialogueNode,
+  Type.ResetBooleanDialogueNode,
+  Type.IncCounterDialogueNode,
+  Type.EndDialogueNode,
+  Type.SpecialCompletionDialogueNode,
+])
+
 export async function generateStaticParams() {
   return Object.keys(CHATROOM_SOURCE_BY_ID).map((id) => ({ chatroom: id }))
 }
@@ -111,6 +124,94 @@ function collectSimulationRequirements(
   }
 }
 
+function getNextNodeIds(node: DialogueNode): number[] {
+  const outputIds = (node.Outputs ?? []).flatMap(
+    (output) => output.Outgoing ?? []
+  )
+
+  return [
+    ...(node.Outgoing ?? []),
+    ...(node.TrueNodes ?? []),
+    ...(node.FalseNodes ?? []),
+    ...outputIds,
+  ]
+}
+
+function getPreviewText(
+  node: DialogueNode,
+  dictionary: Map<string, string>
+): string | null {
+  if (NON_DIALOGUE_PREVIEW_TYPES.has(node.type)) {
+    return null
+  }
+
+  const content = node.Content?.trim()
+  if (!content) {
+    return null
+  }
+
+  return resolveContent(content, dictionary)
+}
+
+function findFirstDialoguePreview(
+  startId: number,
+  byId: Map<number, DialogueNode>,
+  dictionary: Map<string, string>
+): string | null {
+  const visited = new Set<number>()
+  const queue: number[] = [startId]
+
+  while (queue.length > 0) {
+    const currentId = queue.shift()
+    if (typeof currentId !== 'number' || visited.has(currentId)) {
+      continue
+    }
+
+    visited.add(currentId)
+    const node = byId.get(currentId)
+    if (!node) {
+      continue
+    }
+
+    const preview = getPreviewText(node, dictionary)
+    if (preview) {
+      return preview
+    }
+
+    for (const nextId of getNextNodeIds(node)) {
+      if (!visited.has(nextId)) {
+        queue.push(nextId)
+      }
+    }
+  }
+
+  return null
+}
+
+function buildConversationLabel(
+  source: string,
+  startNode: DialogueNode,
+  byId: Map<number, DialogueNode>,
+  dictionary: Map<string, string>
+): string {
+  const branchIds = startNode.Outgoing ?? []
+  const previews =
+    branchIds.length > 0
+      ? branchIds
+          .map((branchId) =>
+            findFirstDialoguePreview(branchId, byId, dictionary)
+          )
+          .filter((value): value is string => Boolean(value))
+      : []
+
+  const uniquePreviews = [...new Set(previews)]
+  if (uniquePreviews.length > 0) {
+    return uniquePreviews.join(' / ')
+  }
+
+  return getConversationName(source, startNode)
+}
+
 export default async function Page({ params }: PageProps<'/kim/[chatroom]'>) {
   const { chatroom } = await params
   const source = CHATROOM_SOURCE_BY_ID[chatroom]
@@ -130,16 +231,14 @@ export default async function Page({ params }: PageProps<'/kim/[chatroom]'>) {
   )
 
   const dialogueOptions = startNodes.map((startNode, index) => {
-    const fallbackName = getConversationName(source, startNode)
-    const label =
-      typeof startNode.Content === 'string' && startNode.Content.length > 0
-        ? resolveContent(startNode.Content, dictionary)
-        : fallbackName
+    const codename = getConversationName(source, startNode)
+    const label = buildConversationLabel(source, startNode, byId, dictionary)
 
     return {
       option: index + 1,
       id: startNode.Id,
       label,
+      codename,
     }
   })
 
