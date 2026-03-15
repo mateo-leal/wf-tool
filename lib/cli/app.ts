@@ -69,8 +69,8 @@ export async function main(): Promise<void> {
     cacheScope: string,
     conversationLabel: string,
     node: DialogueNode,
+    booleanName: string,
   ): Promise<boolean> => {
-    const booleanName = getBooleanName(node);
     const key = `${cacheScope}:${booleanName}`;
     if (checkAnswers.has(key)) {
       return checkAnswers.get(key)!;
@@ -173,7 +173,12 @@ export async function main(): Promise<void> {
       maxPaths: args.maxPaths,
       resolveText,
       askBooleanDecision: (node) =>
-        askBooleanDecision(decisionScope, conversationName, node),
+        askBooleanDecision(
+          decisionScope,
+          conversationName,
+          node,
+          getBooleanName(node)
+        ),
       askCounterBranch: (node) =>
         askCounterBranch(decisionScope, conversationName, node),
     });

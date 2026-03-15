@@ -6,7 +6,6 @@ import {
   explorePaths,
   formatPathAsChat,
   formatPathMetrics,
-  getBooleanName,
   getConversationName,
   getCounterName,
   loadDictionary,
@@ -79,8 +78,7 @@ export async function POST(request: Request) {
       maxDepth: 100,
       maxPaths: 5000,
       resolveText,
-      askBooleanDecision: async (node) => {
-        const booleanName = getBooleanName(node)
+      askBooleanDecision: async (node, booleanName) => {
         if (Object.prototype.hasOwnProperty.call(booleans, booleanName)) {
           return Boolean(booleans[booleanName])
         }

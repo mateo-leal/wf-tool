@@ -36,7 +36,10 @@ export type ExplorePathsParams = {
   maxDepth: number
   maxPaths: number
   resolveText: (value: string) => string
-  askBooleanDecision: (node: DialogueNode) => Promise<boolean>
+  askBooleanDecision: (
+    node: DialogueNode,
+    booleanName: string
+  ) => Promise<boolean>
   askCounterBranch: (node: DialogueNode) => Promise<number[]>
 }
 
@@ -234,7 +237,8 @@ export async function explorePaths(
     state,
     params.resolveText,
     params.askBooleanDecision,
-    params.askCounterBranch
+    params.askCounterBranch,
+    new Map<string, boolean>()
   )
 }
 
@@ -246,14 +250,19 @@ async function walk(
   maxPaths: number,
   state: { pathsCollected: number },
   resolveText: (value: string) => string,
-  askBooleanDecision: (node: DialogueNode) => Promise<boolean>,
-  askCounterBranch: (node: DialogueNode) => Promise<number[]>
+  askBooleanDecision: (
+    node: DialogueNode,
+    booleanName: string
+  ) => Promise<boolean>,
+  askCounterBranch: (node: DialogueNode) => Promise<number[]>,
+  booleanState: Map<string, boolean>
 ): Promise<PathResult[]> {
   if (remainingDepth <= 0 || state.pathsCollected >= maxPaths) {
     return []
   }
 
   const nextAcc = applyNodeMetrics(acc, current, resolveText)
+  const nextBooleanState = applyBooleanMutation(current, booleanState)
 
   if (
     current.type === Type.EndDialogueNode ||
@@ -266,7 +275,8 @@ async function walk(
   const nextIds = await getOutgoingForNode(
     current,
     askBooleanDecision,
-    askCounterBranch
+    askCounterBranch,
+    nextBooleanState
   )
   if (nextIds.length === 0) {
     return [nextAcc]
@@ -296,7 +306,8 @@ async function walk(
       state,
       resolveText,
       askBooleanDecision,
-      askCounterBranch
+      askCounterBranch,
+      new Map(nextBooleanState)
     )
     all.push(...childResults)
   }
@@ -386,11 +397,23 @@ function countBooleanActivations(node: DialogueNode): number {
 
 async function getOutgoingForNode(
   node: DialogueNode,
-  askBooleanDecision: (node: DialogueNode) => Promise<boolean>,
-  askCounterBranch: (node: DialogueNode) => Promise<number[]>
+  askBooleanDecision: (
+    node: DialogueNode,
+    booleanName: string
+  ) => Promise<boolean>,
+  askCounterBranch: (node: DialogueNode) => Promise<number[]>,
+  booleanState: Map<string, boolean>
 ): Promise<number[]> {
   if (BOOLEAN_CHECK_TYPES.has(node.type)) {
-    const decision = await askBooleanDecision(node)
+    const booleanName = getBooleanName(node)
+    let decision: boolean
+    if (booleanState.has(booleanName)) {
+      decision = booleanState.get(booleanName) as boolean
+    } else {
+      decision = await askBooleanDecision(node, booleanName)
+      booleanState.set(booleanName, decision)
+    }
+
     const branch = decision ? node.TrueNodes : node.FalseNodes
     return unique(branch ?? [])
   }
@@ -403,6 +426,22 @@ async function getOutgoingForNode(
     (output) => output.Outgoing ?? []
   )
   return unique([...(node.Outgoing ?? []), ...outputOutgoing])
+}
+
+function applyBooleanMutation(
+  node: DialogueNode,
+  currentState: Map<string, boolean>
+): Map<string, boolean> {
+  const next = new Map(currentState)
+  const booleanName = getBooleanName(node)
+
+  if (node.type === Type.SetBooleanDialogueNode) {
+    next.set(booleanName, true)
+  } else if (node.type === Type.ResetBooleanDialogueNode) {
+    next.set(booleanName, false)
+  }
+
+  return next
 }
 
 export function summarizeResults(results: PathResult[]): RankedPaths {
