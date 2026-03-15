@@ -1,13 +1,8 @@
 import type { Metadata } from 'next'
-import { Cormorant_Garamond, Oxanium, JetBrains_Mono } from 'next/font/google'
-import { cn } from '@/lib/utils'
+import { Analytics } from '@vercel/analytics/next'
+import { Cormorant_Garamond, Oxanium } from 'next/font/google'
 import { Taskbar } from '@/components/taskbar'
 import './globals.css'
-
-const jetbrainsMono = JetBrains_Mono({
-  subsets: ['latin'],
-  variable: '--font-mono',
-})
 
 const oxanium = Oxanium({
   variable: '--font-ui-sans',
@@ -21,7 +16,10 @@ const cormorantGaramond = Cormorant_Garamond({
 })
 
 export const metadata: Metadata = {
-  title: 'KIM Pathfinder UI',
+  title: {
+    default: 'WF Tool',
+    template: '%s | WF Tool',
+  },
   description: 'In-game inspired dialogue interface for KIM conversations',
 }
 
@@ -31,7 +29,7 @@ export default function RootLayout({
   children: React.ReactNode
 }>) {
   return (
-    <html lang="en" className={cn('font-mono', jetbrainsMono.variable)}>
+    <html lang="en">
       <body
         className={`${oxanium.variable} ${cormorantGaramond.variable} antialiased`}
       >
@@ -42,6 +40,7 @@ export default function RootLayout({
             <Taskbar />
           </main>
         </div>
+        <Analytics />
       </body>
     </html>
   )
