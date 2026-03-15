@@ -77,15 +77,6 @@ export function PreferredPathPanel({
       <button
         type="button"
         disabled={!selectedPreferredPathId}
-        onClick={onConfirmBooleanUpdate}
-        className="w-full border border-[#7a6c2a] bg-[#1f220b] px-3 py-2 font-title text-lg text-[#e2d57c] transition hover:bg-[#2e3311] disabled:cursor-not-allowed disabled:opacity-60"
-      >
-        Actualizar estado de booleans
-      </button>
-
-      <button
-        type="button"
-        disabled={!selectedPreferredPathId}
         onClick={onShowConversation}
         className="w-full border border-[#8f5d1f] bg-[#2c1300] px-3 py-2 font-title text-lg text-[#f0bb5f] transition hover:bg-[#4a2000] disabled:cursor-not-allowed disabled:opacity-60"
       >
@@ -153,6 +144,14 @@ export function PreferredPathPanel({
               No dialogue text available on this path.
             </p>
           )}
+
+          <button
+            type="button"
+            onClick={onConfirmBooleanUpdate}
+            className="mt-3 w-full border border-[#7a6c2a] bg-[#1f220b] px-3 py-2 font-title text-lg text-[#e2d57c] transition hover:bg-[#2e3311]"
+          >
+            Actualizar estado de booleans
+          </button>
         </div>
       ) : null}
     </div>
