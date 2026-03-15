@@ -98,7 +98,9 @@ export function DialogueSelectorPanel({
       Object.fromEntries(
         requirements.booleans.map((name) => [
           name,
-          storedBooleans[name] ?? true,
+          Object.prototype.hasOwnProperty.call(storedBooleans, name)
+            ? storedBooleans[name]
+            : false,
         ])
       )
     )
