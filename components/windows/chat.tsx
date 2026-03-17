@@ -14,6 +14,7 @@ import {
   resolveStartNodes,
 } from '@/lib/core/pathfinder'
 import { Type, type DialogueNode } from '@/lib/types'
+import { CloseButton } from '../close-button'
 
 const BOOLEAN_CHECK_TYPES = new Set<Type>([
   Type.CheckBooleanDialogueNode,
@@ -248,14 +249,8 @@ export async function ChatWindow({ chatroom }: { chatroom: string }) {
   return (
     <article className="kim-window relative z-10 mt-0 flex h-[calc(100svh-5.5rem)] min-h-75 w-full max-w-none flex-col md:mt-16 md:mr-10 md:ml-auto md:h-[65svh] md:max-w-220">
       <header className="window-titlebar">
-        <p className="window-title capitalize">{chatroom}.dialogue</p>
-        <Link
-          href="/kim"
-          aria-label="Close chat window"
-          className="inline-flex h-7 min-w-7 items-center justify-center border border-[#8f5d1f] bg-[#240800] px-2 text-sm leading-none text-[#ffd38c] transition hover:bg-[#3a0f00]"
-        >
-          X
-        </Link>
+        <p className="window-title capitalize">{chatroom}</p>
+        <CloseButton href="/kim" />
       </header>
 
       <div className="window-content flex min-h-0 flex-1 flex-col border-t border-[#8f5d1f] bg-[#040404] p-2 sm:p-3">

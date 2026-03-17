@@ -5,6 +5,7 @@
   --foreground: #e8dcc0;
   --primary: #cba063;
   --accent: #300000;
+  --accent-hover: #3a0f00;
 }
 
 @theme inline {
@@ -12,6 +13,7 @@
   --color-foreground: var(--foreground);
   --color-primary: var(--primary);
   --color-accent: var(--accent);
+  --color-accent-hover: var(--accent-hover);
   --font-sans: var(--font-ui-sans);
   --font-title: var(--font-ui-title);
 }

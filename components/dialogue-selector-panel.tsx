@@ -15,8 +15,7 @@ import {
   type PreferredPathOption,
   type SimulationRequirements,
 } from './dialogue-selector-panel/types'
-
-const BOOLEANS_STORAGE_KEY = 'wf-kim:booleans'
+import { BOOLEANS_STORAGE_KEY } from '@/lib/constants'
 
 function loadBooleansFromStorage(): Record<string, boolean> {
   try {
