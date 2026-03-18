@@ -2,6 +2,8 @@ import { type PreferredPathOption } from './types'
 import { TranscriptLine } from '@/lib/types'
 import { ChatLine } from '../chat-line'
 import { SystemChatLine } from '../system-chat-line'
+import { useEffect, useState } from 'react'
+import { Button } from '../ui/button'
 
 type PreferredPathPanelProps = {
   selectedOptionId: number
@@ -32,9 +34,21 @@ export function PreferredPathPanel({
   onShowConversation,
   showConversation,
 }: PreferredPathPanelProps) {
+  const [showBooleanUpdateNotice, setShowBooleanUpdateNotice] = useState(false)
+
   const selectedPreferredPath = preferredPaths.find(
     (option) => option.id === selectedPreferredPathId
   )
+
+  useEffect(() => {
+    if (!showBooleanUpdateNotice) return
+
+    const timer = window.setTimeout(() => {
+      setShowBooleanUpdateNotice(false)
+    }, 2500)
+
+    return () => window.clearTimeout(timer)
+  }, [showBooleanUpdateNotice])
 
   return (
     <div className="space-y-3">
@@ -118,13 +132,22 @@ export function PreferredPathPanel({
             </p>
           )}
 
-          <button
-            type="button"
-            onClick={onConfirmBooleanUpdate}
-            className="mt-3 w-full border border-[#7a6c2a] bg-[#1f220b] px-3 py-2 font-title text-lg text-[#e2d57c] transition hover:bg-[#2e3311]"
+          <Button
+            variant="default"
+            size="lg"
+            className="w-full mt-3"
+            onClick={() => {
+              onConfirmBooleanUpdate()
+              setShowBooleanUpdateNotice(true)
+            }}
           >
             Update boolean values based on this conversation
-          </button>
+          </Button>
+          {showBooleanUpdateNotice ? (
+            <p className="mt-2 border border-success-border bg-success-bg px-2 py-1 text-sm text-success">
+              Boolean values updated.
+            </p>
+          ) : null}
           <p className="mt-1 text-center text-xs text-[#b9ac8f]">
             This will affect the dialogues available in future simulations
           </p>
