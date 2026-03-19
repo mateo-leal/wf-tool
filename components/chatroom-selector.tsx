@@ -7,8 +7,20 @@ import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
 import { CATHEDRALE_CHATROOMS, HEX_CHATROOMS } from '@/lib/chatrooms'
 
-export function ChatroomSelector() {
+type ChatroomSelectorProps = {
+  showSpoilers?: boolean
+}
+
+const SPOILER_CHATROOM_IDS = new Set(['flare', 'kaya', 'minerva-velimir'])
+
+export function ChatroomSelector({
+  showSpoilers = false,
+}: ChatroomSelectorProps) {
   const pathname = usePathname()
+  const hexChatrooms = showSpoilers
+    ? HEX_CHATROOMS
+    : HEX_CHATROOMS.filter((room) => !SPOILER_CHATROOM_IDS.has(room.id))
+
   const selectedTab = CATHEDRALE_CHATROOMS.some(
     (room) => pathname === `/kim/${room.id}`
   )
@@ -51,7 +63,7 @@ export function ChatroomSelector() {
         className="border-t-4 border-primary/50 -mt-1 flex min-h-0 flex-1 flex-col overflow-hidden"
       >
         <ul className="-mt-1 min-h-0 flex-1 overflow-y-auto border-4 border-primary/50 py-1">
-          {HEX_CHATROOMS.map((chatroom) => (
+          {hexChatrooms.map((chatroom) => (
             <li key={chatroom.id} className="mx-1">
               <Link
                 href={`/kim/${chatroom.id}`}

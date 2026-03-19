@@ -1,6 +1,6 @@
 import Image from 'next/image'
-import { ChatroomSelector } from '../chatroom-selector'
 import { KimBooleanSettings } from '../kim-boolean-settings'
+import { SpoilerChatroomSelector } from '../spoiler-chatroom-selector'
 import { Window } from '../ui/window'
 import { WindowTitlebar } from '../ui/window-titlebar'
 import { WindowContent } from '../ui/window-content'
@@ -29,7 +29,7 @@ export function KimWindow() {
           </div>
         </div>
         <div className="mt-3 min-h-0 flex-1 overflow-hidden">
-          <ChatroomSelector />
+          <SpoilerChatroomSelector />
         </div>
       </WindowContent>
     </Window>
