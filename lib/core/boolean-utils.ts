@@ -1,0 +1,23 @@
+export function isFlirtingBoolean(booleanName: string): boolean {
+  const keywords = ['Flirt', 'Dating', 'NoFlirt', 'NoDate']
+  return keywords.some((keyword) =>
+    booleanName.toLowerCase().includes(keyword.toLowerCase())
+  )
+}
+
+export function getFlirtingBooleanSignature(
+  booleanMutations: Record<string, boolean>
+): string {
+  // Get all flirting boolean names that appear in mutations
+  const flirtingNames = Object.keys(booleanMutations).filter((name) =>
+    isFlirtingBoolean(name)
+  )
+
+  if (flirtingNames.length === 0) {
+    return 'no-flirting'
+  }
+
+  // Return a signature of which flirting booleans are explicitly set
+  // This prevents paths with different flirting decisions from merging
+  return 'flirting:' + flirtingNames.sort().join('|')
+}

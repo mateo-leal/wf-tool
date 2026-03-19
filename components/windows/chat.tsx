@@ -1,22 +1,24 @@
 import { DialogueSelectorPanel } from '@/components/dialogue-selector-panel'
 import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
 import { notFound } from 'next/navigation'
-import {
-  DEFAULT_DICT_SOURCE,
-  getBooleanName,
-  getConversationName,
-  getCounterName,
-  getMultiBooleanNames,
-  loadDictionary,
-  loadNodes,
-  resolveContent,
-  resolveStartNodes,
-} from '@/lib/core/pathfinder'
 import { Type, type DialogueNode } from '@/lib/types'
 import { CloseButton } from '../close-button'
 import { Window } from '../ui/window'
 import { WindowTitlebar } from '../ui/window-titlebar'
 import { WindowContent } from '../ui/window-content'
+import {
+  getBooleanName,
+  getConversationName,
+  getCounterName,
+  getMultiBooleanNames,
+  resolveContent,
+  resolveStartNodes,
+} from '@/lib/core/node-utils'
+import {
+  DEFAULT_DICT_SOURCE,
+  loadDictionary,
+  loadNodes,
+} from '@/lib/core/loader'
 
 const BOOLEAN_CHECK_TYPES = new Set<Type>([
   Type.CheckBooleanDialogueNode,

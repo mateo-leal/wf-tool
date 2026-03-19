@@ -1,23 +1,20 @@
 import { NextResponse } from 'next/server'
-import {
-  buildPreferredPathOptions,
-  evaluateCounterOutput,
-  explorePaths,
-  formatPathAsChat,
-  formatPathMetrics,
-  getConversationName,
-  getCounterName,
-  getFlirtingBooleanSignature,
-  loadDictionary,
-  loadNodes,
-  resolveContent,
-  resolveStartNodes,
-  sourceLabel,
-  summarizeResults,
-} from '@/lib/core/pathfinder'
 import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
 import { getDictionarySource, normalizeLanguage } from '@/lib/language'
 import { type DialogueNode } from '@/lib/types'
+import { loadDictionary, loadNodes } from '@/lib/core/loader'
+import {
+  getConversationName,
+  getCounterName,
+  resolveContent,
+  resolveStartNodes,
+  sourceLabel,
+} from '@/lib/core/node-utils'
+import { explorePaths } from '@/lib/core/explorer'
+import { evaluateCounterOutput } from '@/lib/core/counter-utils'
+import { getFlirtingBooleanSignature } from '@/lib/core/boolean-utils'
+import { buildPreferredPathOptions, summarizeResults } from '@/lib/core/ranker'
+import { formatPathAsChat, formatPathMetrics } from '@/lib/core/formatter'
 
 function unique(values: number[]): number[] {
   return [...new Set(values)]
@@ -155,7 +152,7 @@ export async function GET(request: Request) {
         id: `${index + 1}`,
         label: option.label,
         metrics: formatPathMetrics(option.result),
-        path: option.result.path,
+        // path: option.result.path,
         chemistry: option.result.chemistry,
         thermostat: option.result.thermostat,
         activatedBooleans: option.result.activatedBooleans,

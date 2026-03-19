@@ -1,14 +1,13 @@
 import { NextResponse } from 'next/server'
-import {
-  getConversationName,
-  loadDictionary,
-  loadNodes,
-  resolveContent,
-  resolveStartNodes,
-} from '@/lib/core/pathfinder'
 import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
 import { getDictionarySource, normalizeLanguage } from '@/lib/language'
 import { type DialogueNode, Type } from '@/lib/types'
+import {
+  getConversationName,
+  resolveContent,
+  resolveStartNodes,
+} from '@/lib/core/node-utils'
+import { loadDictionary, loadNodes } from '@/lib/core/loader'
 
 const NON_DIALOGUE_PREVIEW_TYPES = new Set<Type>([
   Type.StartDialogueNode,
