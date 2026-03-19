@@ -61,6 +61,22 @@ describe('ranker', () => {
       expect(summary.byBooleans.activatedBooleans).toBe(8)
     })
 
+    it('should include all paths tied for most boolean activations', () => {
+      const results = [
+        createPathResult({ path: [1, 2], activatedBooleans: 8 }),
+        createPathResult({ path: [1, 3], activatedBooleans: 8 }),
+        createPathResult({ path: [1, 4], activatedBooleans: 5 }),
+      ]
+
+      const summary = summarizeResults(results)
+
+      expect(summary.byBooleans.activatedBooleans).toBe(8)
+      expect(summary.byBooleansTies).toHaveLength(2)
+      expect(
+        summary.byBooleansTies.map((item) => item.path.join('->'))
+      ).toEqual(expect.arrayContaining(['1->2', '1->3']))
+    })
+
     it('should calculate overall best path', () => {
       const results = [
         createPathResult({
@@ -198,8 +214,7 @@ describe('ranker', () => {
         },
       ]
       const result = buildPreferredPathOptions(options)
-      // Both have same chemistry but different paths, they should be merged by outcome
-      expect(result.length).toBeGreaterThanOrEqual(1)
+      expect(result).toHaveLength(2)
     })
 
     it('should return merged label when single path but multiple outcomes', () => {

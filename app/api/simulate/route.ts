@@ -20,6 +20,13 @@ function unique(values: number[]): number[] {
   return [...new Set(values)]
 }
 
+function booleanMutationSignature(mutations: Record<string, boolean>): string {
+  return Object.entries(mutations)
+    .sort(([left], [right]) => left.localeCompare(right))
+    .map(([name, value]) => `${name}:${value ? '1' : '0'}`)
+    .join('|')
+}
+
 export async function GET(request: Request) {
   try {
     const url = new URL(request.url)
@@ -137,9 +144,24 @@ export async function GET(request: Request) {
           result: ranked.byThermostat,
         })
       }
-      candidates.push({
-        label: `Most boolean activations${suffix}`,
-        result: ranked.byBooleans,
+
+      const distinctBooleanTieResults = [
+        ...new Map(
+          ranked.byBooleansTies.map((result) => [
+            booleanMutationSignature(result.booleanMutations),
+            result,
+          ])
+        ).values(),
+      ]
+
+      distinctBooleanTieResults.forEach((result, index) => {
+        const tieSuffix =
+          distinctBooleanTieResults.length > 1 ? ` #${index + 1}` : ''
+
+        candidates.push({
+          label: `Most boolean activations${tieSuffix}${suffix}`,
+          result,
+        })
       })
       candidates.push({
         label: `Best overall path${suffix}`,

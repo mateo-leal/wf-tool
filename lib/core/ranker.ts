@@ -16,6 +16,10 @@ export function summarizeResults(results: PathResult[]): RankedPaths {
   const byBooleans = [...results].sort(
     (a, b) => b.activatedBooleans - a.activatedBooleans
   )[0]
+  const maxActivatedBooleans = byBooleans.activatedBooleans
+  const byBooleansTies = results.filter(
+    (result) => result.activatedBooleans === maxActivatedBooleans
+  )
   const byOverall = [...results].sort((a, b) => {
     const scoreDiff =
       overallScore(b, thermostatEnabled) - overallScore(a, thermostatEnabled)
@@ -31,6 +35,7 @@ export function summarizeResults(results: PathResult[]): RankedPaths {
     byChemistry,
     byThermostat,
     byBooleans,
+    byBooleansTies,
     byOverall,
   }
 }
@@ -72,6 +77,7 @@ export function buildPreferredPathOptions(
   >()
 
   for (const option of options) {
+    const pathKey = option.result.path.join('->')
     const booleanMutationKey = Object.entries(option.result.booleanMutations)
       .sort(([left], [right]) => left.localeCompare(right))
       .map(([name, value]) => `${name}:${value ? '1' : '0'}`)
@@ -90,6 +96,7 @@ export function buildPreferredPathOptions(
         : 'none-skipped'
 
     const outcomeKey = [
+      pathKey,
       option.result.chemistry,
       option.result.thermostat,
       option.result.hasThermostatCounter ? 'thermostat' : 'no-thermostat',

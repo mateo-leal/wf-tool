@@ -1,5 +1,5 @@
 export function isFlirtingBoolean(booleanName: string): boolean {
-  const keywords = ['Flirt', 'Dating', 'NoFlirt', 'NoDate']
+  const keywords = ['Flirt', 'Dating', 'NoFlirt', 'NoDate', 'QuincyFlirtNo']
   return keywords.some((keyword) =>
     booleanName.toLowerCase().includes(keyword.toLowerCase())
   )

@@ -23,6 +23,7 @@ export type RankedPaths = {
   byChemistry: PathResult
   byThermostat?: PathResult
   byBooleans: PathResult
+  byBooleansTies: PathResult[]
   byOverall: PathResult
 }
 
