@@ -1,5 +1,6 @@
 import Image from 'next/image'
 import Link from 'next/link'
+import { GithubLogoIcon } from '@phosphor-icons/react/ssr'
 
 export function Taskbar() {
   return (
@@ -13,7 +14,19 @@ export function Taskbar() {
             height={45}
           />
         </Link>
-        <Link href="/test">Test</Link>
+        {/* <Link href="/test">Test</Link> */}
+        <Link
+          href="https://github.com/mateo-leal/wf-tool"
+          target="_blank"
+          rel="noopener noreferrer"
+          title="GitHub Repository"
+        >
+          <GithubLogoIcon
+            size={24}
+            weight="fill"
+            className="hover:opacity-75"
+          />
+        </Link>
       </div>
 
       <div className="ml-auto text-sm tracking-wider">
