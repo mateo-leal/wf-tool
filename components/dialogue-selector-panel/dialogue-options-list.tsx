@@ -70,7 +70,7 @@ export function DialogueOptionsList({
                   {item.option}.
                 </span>
                 <span className="min-w-0 flex-1">
-                  <span className="block">{item.label}</span>
+                  <span className="block overflow-hidden">{item.label}</span>
                   <span
                     className={`mt-1 block text-xs ${
                       active ? 'text-[#d7b785]' : 'text-[#9f8a67]'
