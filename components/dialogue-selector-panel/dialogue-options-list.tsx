@@ -1,11 +1,75 @@
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useSyncExternalStore } from 'react'
 import { type DialogueOption } from './types'
+import {
+  COMPLETED_DIALOGUES_CHANGE_EVENT,
+  COMPLETED_DIALOGUES_STORAGE_KEY,
+} from '@/lib/constants'
+import { CheckIcon } from '@phosphor-icons/react'
 
 type DialogueOptionsListProps = {
   dialogueOptions: DialogueOption[]
   selectedStartId: number | null
   onSelect: (startId: number) => void
   isLoading?: boolean
+}
+
+const EMPTY_COMPLETED_DIALOGUES: Readonly<Record<string, boolean>> =
+  Object.freeze({})
+let cachedRawCompletedDialogues: string | null = null
+let cachedParsedCompletedDialogues: Readonly<Record<string, boolean>> =
+  EMPTY_COMPLETED_DIALOGUES
+
+function subscribeCompletedDialogues(onStoreChange: () => void): () => void {
+  if (typeof window === 'undefined') {
+    return () => {}
+  }
+
+  const handleChange = () => onStoreChange()
+  window.addEventListener('storage', handleChange)
+  window.addEventListener(COMPLETED_DIALOGUES_CHANGE_EVENT, handleChange)
+
+  return () => {
+    window.removeEventListener('storage', handleChange)
+    window.removeEventListener(COMPLETED_DIALOGUES_CHANGE_EVENT, handleChange)
+  }
+}
+
+function getCompletedDialoguesSnapshot(): Record<string, boolean> {
+  if (typeof window === 'undefined') {
+    return EMPTY_COMPLETED_DIALOGUES
+  }
+
+  try {
+    const raw = localStorage.getItem(COMPLETED_DIALOGUES_STORAGE_KEY)
+    if (!raw) {
+      cachedRawCompletedDialogues = null
+      cachedParsedCompletedDialogues = EMPTY_COMPLETED_DIALOGUES
+      return EMPTY_COMPLETED_DIALOGUES
+    }
+
+    if (raw === cachedRawCompletedDialogues) {
+      return cachedParsedCompletedDialogues
+    }
+
+    const parsed = JSON.parse(raw) as unknown
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      cachedRawCompletedDialogues = raw
+      cachedParsedCompletedDialogues = EMPTY_COMPLETED_DIALOGUES
+      return EMPTY_COMPLETED_DIALOGUES
+    }
+
+    cachedRawCompletedDialogues = raw
+    cachedParsedCompletedDialogues = parsed as Record<string, boolean>
+    return cachedParsedCompletedDialogues
+  } catch {
+    cachedRawCompletedDialogues = null
+    cachedParsedCompletedDialogues = EMPTY_COMPLETED_DIALOGUES
+    return EMPTY_COMPLETED_DIALOGUES
+  }
+}
+
+function getCompletedDialoguesServerSnapshot(): Record<string, boolean> {
+  return EMPTY_COMPLETED_DIALOGUES
 }
 
 export function DialogueOptionsList({
@@ -15,6 +79,11 @@ export function DialogueOptionsList({
   isLoading = false,
 }: DialogueOptionsListProps) {
   const [query, setQuery] = useState('')
+  const completedDialogues = useSyncExternalStore(
+    subscribeCompletedDialogues,
+    getCompletedDialoguesSnapshot,
+    getCompletedDialoguesServerSnapshot
+  )
 
   const filteredOptions = useMemo(() => {
     const normalizedQuery = query.trim().toLowerCase()
@@ -54,6 +123,7 @@ export function DialogueOptionsList({
       <ul className="space-y-1 pr-1">
         {filteredOptions.map((item) => {
           const active = item.id === selectedStartId
+          const isCompleted = Boolean(completedDialogues[item.codename])
 
           return (
             <li key={item.id}>
@@ -71,13 +141,20 @@ export function DialogueOptionsList({
                 </span>
                 <span className="min-w-0 flex-1">
                   <span className="block overflow-hidden">{item.label}</span>
-                  <span
-                    className={`mt-1 block text-xs ${
-                      active ? 'text-[#d7b785]' : 'text-[#9f8a67]'
-                    }`}
-                  >
-                    {item.codename}
-                  </span>
+                  <div className="flex justify-between gap-2">
+                    <span
+                      className={`mt-1 block text-xs ${
+                        active ? 'text-[#d7b785]' : 'text-[#9f8a67]'
+                      }`}
+                    >
+                      {item.codename}
+                    </span>
+                    {isCompleted ? (
+                      <CheckIcon className="inline-block text-success size-4" />
+                    ) : (
+                      ''
+                    )}
+                  </div>
                 </span>
               </button>
             </li>

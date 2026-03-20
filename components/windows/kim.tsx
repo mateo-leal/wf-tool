@@ -1,5 +1,5 @@
 import Image from 'next/image'
-import { KimBooleanSettings } from '../kim-boolean-settings'
+import { KimBooleanSettings } from './kim-boolean-settings'
 import { SpoilerChatroomSelector } from '../spoiler-chatroom-selector'
 import { Window } from '../ui/window'
 import { WindowTitlebar } from '../ui/window-titlebar'

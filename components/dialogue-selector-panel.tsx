@@ -15,7 +15,13 @@ import {
   type PreferredPathOption,
   type SimulationRequirements,
 } from './dialogue-selector-panel/types'
-import { BOOLEANS_STORAGE_KEY } from '@/lib/constants'
+import {
+  BOOLEANS_STORAGE_KEY,
+  COMPLETED_DIALOGUES_CHANGE_EVENT,
+  COMPLETED_DIALOGUES_STORAGE_KEY,
+  COUNTERS_STORAGE_KEY,
+  THERMOSTAT_STORAGE_KEY,
+} from '@/lib/constants'
 
 function loadBooleansFromStorage(): Record<string, boolean> {
   try {
@@ -37,6 +43,82 @@ function saveBooleansToStorage(mutations: Record<string, boolean>): void {
       BOOLEANS_STORAGE_KEY,
       JSON.stringify({ ...current, ...mutations })
     )
+  } catch {
+    // ignore storage errors
+  }
+}
+
+function loadCountersFromStorage(): Record<string, number> {
+  try {
+    const raw = localStorage.getItem(COUNTERS_STORAGE_KEY)
+    if (!raw) return {}
+    const parsed = JSON.parse(raw) as unknown
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      return {}
+    }
+
+    const result: Record<string, number> = {}
+    for (const [key, value] of Object.entries(parsed)) {
+      const numeric = Number(value)
+      if (Number.isFinite(numeric)) {
+        result[key] = numeric
+      }
+    }
+
+    return result
+  } catch {
+    return {}
+  }
+}
+
+function saveCountersToStorage(counters: Record<string, number>): void {
+  try {
+    const current = loadCountersFromStorage()
+    localStorage.setItem(
+      COUNTERS_STORAGE_KEY,
+      JSON.stringify({ ...current, ...counters })
+    )
+  } catch {
+    // ignore storage errors
+  }
+}
+
+function loadThermostatFromStorage(): number | null {
+  try {
+    const raw = localStorage.getItem(THERMOSTAT_STORAGE_KEY)
+    if (!raw) return null
+    const value = Number(raw)
+    return Number.isFinite(value) ? value : null
+  } catch {
+    return null
+  }
+}
+
+function saveThermostatToStorage(value: number): void {
+  try {
+    localStorage.setItem(THERMOSTAT_STORAGE_KEY, String(value))
+  } catch {
+    // ignore storage errors
+  }
+}
+
+function markDialogueAsCompleted(codename: string): void {
+  try {
+    const raw = localStorage.getItem(COMPLETED_DIALOGUES_STORAGE_KEY)
+    const parsed = raw ? (JSON.parse(raw) as unknown) : {}
+    const current =
+      parsed && typeof parsed === 'object' && !Array.isArray(parsed)
+        ? (parsed as Record<string, boolean>)
+        : {}
+
+    localStorage.setItem(
+      COMPLETED_DIALOGUES_STORAGE_KEY,
+      JSON.stringify({
+        ...current,
+        [codename]: true,
+      })
+    )
+    window.dispatchEvent(new Event(COMPLETED_DIALOGUES_CHANGE_EVENT))
   } catch {
     // ignore storage errors
   }
@@ -149,6 +231,9 @@ export function DialogueSelectorPanel({
     }
 
     const storedBooleans = loadBooleansFromStorage()
+    const storedCounters = loadCountersFromStorage()
+    const storedThermostat = loadThermostatFromStorage()
+
     setBooleanValues(
       Object.fromEntries(
         requirements.booleans.map((name) => [
@@ -161,7 +246,21 @@ export function DialogueSelectorPanel({
     )
     setCounterValues(
       Object.fromEntries(
-        requirements.counters.map((counter) => [counter.name, 0])
+        requirements.counters.map((counter) => {
+          const fromCounters = storedCounters[counter.name]
+          if (Number.isFinite(fromCounters)) {
+            return [counter.name, fromCounters]
+          }
+
+          if (
+            counter.name.toLowerCase() === 'thermostat' &&
+            storedThermostat !== null
+          ) {
+            return [counter.name, storedThermostat]
+          }
+
+          return [counter.name, 0]
+        })
       )
     )
     setPreferredPaths([])
@@ -262,6 +361,10 @@ export function DialogueSelectorPanel({
                   )
                   if (selected) {
                     saveBooleansToStorage(selected.booleanMutations)
+                    saveCountersToStorage(counterValues)
+                    saveThermostatToStorage(selected.thermostat)
+                    markDialogueAsCompleted(selectedOption.codename)
+
                     setBooleanValues((current) => ({
                       ...current,
                       ...selected.booleanMutations,
@@ -287,10 +390,17 @@ export function DialogueSelectorPanel({
                   }))
                 }
                 onCounterChange={(name, value) =>
-                  setCounterValues((current) => ({
-                    ...current,
-                    [name]: value,
-                  }))
+                  setCounterValues((current) => {
+                    const next = {
+                      ...current,
+                      [name]: value,
+                    }
+                    saveCountersToStorage({ [name]: value })
+                    if (name.toLowerCase() === 'thermostat') {
+                      saveThermostatToStorage(value)
+                    }
+                    return next
+                  })
                 }
                 onSubmit={() => {
                   void handleSimulate()
