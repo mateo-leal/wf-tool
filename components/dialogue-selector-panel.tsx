@@ -187,6 +187,7 @@ export function DialogueSelectorPanel({
 
   useEffect(() => {
     let cancelled = false
+    const controller = new AbortController()
     setIsLoadingOptions(true)
     const storedBooleans = loadBooleansFromStorage()
     const params = new URLSearchParams({
@@ -195,7 +196,9 @@ export function DialogueSelectorPanel({
       booleans: JSON.stringify(storedBooleans),
     })
 
-    fetch(`/api/dialogues?${params.toString()}`)
+    fetch(`/api/dialogues?${params.toString()}`, {
+      signal: controller.signal,
+    })
       .then((res) => res.json())
       .then((data: { options?: DialogueOption[] }) => {
         if (cancelled) return
@@ -206,22 +209,21 @@ export function DialogueSelectorPanel({
           return stillExists ? current : (newOptions[0]?.id ?? null)
         })
       })
-      .catch(() => {
+      .catch((error) => {
         if (cancelled) return
+        if (error instanceof DOMException && error.name === 'AbortError') {
+          return
+        }
         // Keep existing options on error.
-        setOptions(dialogueOptions)
-        setSelectedStartId((current) => {
-          const stillExists = dialogueOptions.some((o) => o.id === current)
-          return stillExists ? current : (dialogueOptions[0]?.id ?? null)
-        })
       })
       .finally(() => {
         if (!cancelled) setIsLoadingOptions(false)
       })
     return () => {
       cancelled = true
+      controller.abort()
     }
-  }, [language, chatroom, dialogueOptions, optionsRefreshToken])
+  }, [language, chatroom, optionsRefreshToken])
 
   useEffect(() => {
     if (!requirements) {
