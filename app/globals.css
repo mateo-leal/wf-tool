@@ -20,6 +20,7 @@
   --success-hover: #2e3311;
   --secondary-bg: #2c1300;
   --secondary-bg-hover: #4a2000;
+  --taskbar-bg: #799787;
 }
 
 @theme {
@@ -47,6 +48,7 @@
   --color-success-hover: var(--success-hover);
   --color-secondary-bg: var(--secondary-bg);
   --color-secondary-bg-hover: var(--secondary-bg-hover);
+  --color-taskbar-bg: var(--taskbar-bg);
   --font-sans: var(--font-ui-sans);
   --font-title: var(--font-ui-title);
 }
@@ -92,13 +94,6 @@ body {
     transparent 1px,
     transparent 3px
   );
-}
-
-.taskbar {
-  background: linear-gradient(180deg, #8bad78 0, #6f8f5f 55%, #5f7853 100%);
-  box-shadow:
-    0 -1px 0 #aec49d,
-    inset 0 1px 0 rgba(232, 247, 223, 0.5);
 }
 
 .font-title {
