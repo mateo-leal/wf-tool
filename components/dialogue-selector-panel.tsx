@@ -82,6 +82,7 @@ export function DialogueSelectorPanel({
     string | null
   >(null)
   const [showConversation, setShowConversation] = useState(false)
+  const [optionsRefreshToken, setOptionsRefreshToken] = useState(0)
   const [language, setLanguage] = useState(() => {
     try {
       return normalizeLanguage(localStorage.getItem('wf-kim:language'))
@@ -103,20 +104,15 @@ export function DialogueSelectorPanel({
   }, [language])
 
   useEffect(() => {
-    // Keep static/server-rendered labels for default language.
-    if (language === DEFAULT_LANGUAGE) {
-      setOptions(dialogueOptions)
-      setSelectedStartId((current) => {
-        const stillExists = dialogueOptions.some((o) => o.id === current)
-        return stillExists ? current : (dialogueOptions[0]?.id ?? null)
-      })
-      setIsLoadingOptions(false)
-      return
-    }
-
     let cancelled = false
     setIsLoadingOptions(true)
-    const params = new URLSearchParams({ chatroom, language })
+    const storedBooleans = loadBooleansFromStorage()
+    const params = new URLSearchParams({
+      chatroom,
+      language,
+      booleans: JSON.stringify(storedBooleans),
+    })
+
     fetch(`/api/dialogues?${params.toString()}`)
       .then((res) => res.json())
       .then((data: { options?: DialogueOption[] }) => {
@@ -129,7 +125,13 @@ export function DialogueSelectorPanel({
         })
       })
       .catch(() => {
-        // keep existing options on error
+        if (cancelled) return
+        // Keep existing options on error.
+        setOptions(dialogueOptions)
+        setSelectedStartId((current) => {
+          const stillExists = dialogueOptions.some((o) => o.id === current)
+          return stillExists ? current : (dialogueOptions[0]?.id ?? null)
+        })
       })
       .finally(() => {
         if (!cancelled) setIsLoadingOptions(false)
@@ -137,7 +139,7 @@ export function DialogueSelectorPanel({
     return () => {
       cancelled = true
     }
-  }, [language, chatroom, dialogueOptions])
+  }, [language, chatroom, dialogueOptions, optionsRefreshToken])
 
   useEffect(() => {
     if (!requirements) {
@@ -264,6 +266,7 @@ export function DialogueSelectorPanel({
                       ...current,
                       ...selected.booleanMutations,
                     }))
+                    setOptionsRefreshToken((current) => current + 1)
                   }
                 }}
                 onShowConversation={() => {
