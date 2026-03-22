@@ -26,7 +26,7 @@ export function ChatLine({ line }: { line: TranscriptLine }) {
       />
       <div className="flex flex-col">
         <span className="text-primary text-xl capitalize">{line.user}:</span>
-        <span>{line.content}</span>
+        <span className="whitespace-pre-wrap">{line.content}</span>
       </div>
     </div>
   )

@@ -38,7 +38,13 @@ export function formatPathAsChat(
       continue
     }
 
-    const text = resolveText(node.Content).replace(/\s+/g, ' ').trim()
+    const text = resolveText(node.Content)
+      .replace(/\\r\\n|\\n/g, '\n') // literal \r\n or \n escape sequences → real newlines
+      .replace(/\r\n|\r/g, '\n') // real Windows/old-Mac line endings → LF
+      .split('\n')
+      .map((line) => line.replace(/\s+/g, ' ').trim())
+      .join('\n')
+      .trim()
     if (!text) {
       continue
     }
