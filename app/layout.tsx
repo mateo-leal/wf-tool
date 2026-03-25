@@ -18,10 +18,10 @@ const cormorantGaramond = Cormorant_Garamond({
 
 export const metadata: Metadata = {
   metadataBase: getSiteOrigin(),
-  applicationName: 'WF Tool',
+  applicationName: 'Warframe Tool',
   title: {
-    default: 'WF Tool',
-    template: '%s | WF Tool',
+    default: 'Warframe Tool',
+    template: '%s | Warframe Tool',
   },
   description:
     'Explore and simulate Warframe KIM dialogue paths with chemistry, thermostat, and boolean state tracking.',
@@ -30,20 +30,22 @@ export const metadata: Metadata = {
     'KIM',
     'dialogue pathfinder',
     'dialogue simulator',
-    'WF Tool',
+    'kim pathfinder',
+    'Warframe Tool',
     'Hex',
     'chatroom',
+    'WF',
   ],
   alternates: {
     canonical: '/',
   },
   openGraph: {
     type: 'website',
-    title: 'WF Tool',
+    title: 'Warframe Tool',
     description:
       'Explore and simulate Warframe KIM dialogue paths with chemistry, thermostat, and boolean state tracking.',
     url: '/',
-    siteName: 'WF Tool',
+    siteName: 'Warframe Tool',
     locale: 'en_US',
     images: [
       {
@@ -55,7 +57,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary',
-    title: 'WF Tool',
+    title: 'Warframe Tool',
     description:
       'Explore and simulate Warframe KIM dialogue paths with chemistry, thermostat, and boolean state tracking.',
     images: ['/favicon.ico'],
