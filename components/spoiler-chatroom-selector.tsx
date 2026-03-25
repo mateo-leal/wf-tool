@@ -3,8 +3,8 @@
 import { useSyncExternalStore } from 'react'
 import { ChatroomSelector } from './chatroom-selector'
 import { Switch } from './ui/switch'
+import { SHOW_SPOILERS_STORAGE_KEY } from '@/lib/constants'
 
-const SHOW_SPOILERS_KEY = 'wf-kim:show-spoilers'
 const SHOW_SPOILERS_CHANGE_EVENT = 'wf-kim:show-spoilers-change'
 
 function subscribe(onStoreChange: () => void): () => void {
@@ -25,7 +25,7 @@ function subscribe(onStoreChange: () => void): () => void {
 
 function getClientSnapshot(): boolean {
   try {
-    return localStorage.getItem(SHOW_SPOILERS_KEY) === '1'
+    return localStorage.getItem(SHOW_SPOILERS_STORAGE_KEY) === '1'
   } catch {
     return false
   }
@@ -44,7 +44,7 @@ export function SpoilerChatroomSelector() {
 
   const setShowSpoilers = (checked: boolean) => {
     try {
-      localStorage.setItem(SHOW_SPOILERS_KEY, checked ? '1' : '0')
+      localStorage.setItem(SHOW_SPOILERS_STORAGE_KEY, checked ? '1' : '0')
       window.dispatchEvent(new Event(SHOW_SPOILERS_CHANGE_EVENT))
     } catch {
       // Ignore localStorage failures in restricted environments.

@@ -2,6 +2,7 @@ import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
 import { Cormorant_Garamond, Oxanium } from 'next/font/google'
 import { Taskbar } from '@/components/taskbar'
+import { MigrationBridge } from '@/components/migration-bridge'
 import { getSiteOrigin } from '@/lib/seo'
 import './globals.css'
 
@@ -94,6 +95,7 @@ export default function RootLayout({
           </main>
         </div>
         <Analytics />
+        <MigrationBridge />
       </body>
     </html>
   )

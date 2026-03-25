@@ -20,6 +20,7 @@ import {
   COMPLETED_DIALOGUES_CHANGE_EVENT,
   COMPLETED_DIALOGUES_STORAGE_KEY,
   COUNTERS_STORAGE_KEY,
+  LANGUAGE_STORAGE_KEY,
   THERMOSTAT_STORAGE_KEY,
 } from '@/lib/constants'
 
@@ -167,7 +168,7 @@ export function DialogueSelectorPanel({
   const [optionsRefreshToken, setOptionsRefreshToken] = useState(0)
   const [language, setLanguage] = useState(() => {
     try {
-      return normalizeLanguage(localStorage.getItem('wf-kim:language'))
+      return normalizeLanguage(localStorage.getItem(LANGUAGE_STORAGE_KEY))
     } catch {
       return DEFAULT_LANGUAGE
     }
@@ -175,7 +176,7 @@ export function DialogueSelectorPanel({
 
   useEffect(() => {
     try {
-      localStorage.setItem('wf-kim:language', language)
+      localStorage.setItem(LANGUAGE_STORAGE_KEY, language)
     } catch {
       // ignore storage errors
     }
