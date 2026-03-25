@@ -76,7 +76,7 @@ export function ChatroomSelector({
               >
                 <Image
                   src={chatroom.icon}
-                  alt={chatroom.name}
+                  alt={`${chatroom.name} icon`}
                   width={65}
                   height={65}
                   className={cn('border-2 border-primary/50', {
