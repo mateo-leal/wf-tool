@@ -1,5 +1,5 @@
 import { readFile } from 'node:fs/promises'
-import { DialoguePayload, DialogueNode } from '../types'
+import { DialogueNode } from '../types'
 import { DEFAULT_LANGUAGE, getDictionarySource } from '../language'
 
 export const DEFAULT_DICT_SOURCE = getDictionarySource(DEFAULT_LANGUAGE)
@@ -12,23 +12,14 @@ export async function loadText(source: string): Promise<string> {
 
 export async function loadNodes(source: string): Promise<DialogueNode[]> {
   const raw = await loadText(source)
-  const parsed = JSON.parse(raw) as DialoguePayload
+  const parsed = JSON.parse(raw) as DialogueNode[]
 
-  if (Array.isArray(parsed)) {
-    return parsed
-  }
+  const localized = parsed.map((node) => ({
+    ...node,
+    Content: node.LocTag ?? node.Content ?? undefined,
+  }))
 
-  if (Array.isArray(parsed.Nodes)) {
-    return parsed.Nodes
-  }
-
-  if (Array.isArray(parsed.nodes)) {
-    return parsed.nodes
-  }
-
-  throw new Error(
-    'Unsupported payload shape. Expected an array or object with Nodes/nodes array.'
-  )
+  return localized
 }
 
 export async function loadDictionary(

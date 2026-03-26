@@ -3,6 +3,7 @@ export interface DialogueNode {
   Id: number
   Incoming?: number[]
   GraphPos?: number[]
+  LocTag?: string
   Content?: string
   Outgoing?: number[]
   ChemistryDelta?: number
@@ -58,10 +59,6 @@ export enum Type {
   SpecialCompletionDialogueNode = '/EE/Types/Engine/SpecialCompletionDialogueNode',
   StartDialogueNode = '/EE/Types/Engine/StartDialogueNode',
 }
-
-export type DialoguePayload =
-  | DialogueNode[]
-  | { Nodes?: DialogueNode[]; nodes?: DialogueNode[] }
 
 export type TranscriptLine = {
   user: string
