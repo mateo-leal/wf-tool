@@ -1,7 +1,14 @@
 const AVOIDABLE_BOOLEAN_NAMES = new Set(['LyonSuspicious', 'DrifterLiar'])
 
 export function isFlirtingBoolean(booleanName: string): boolean {
-  const keywords = ['Flirt', 'Dating', 'NoFlirt', 'NoDate', 'QuincyFlirtNo']
+  const keywords = [
+    'Flirt',
+    'Dating',
+    'NoFlirt',
+    'NoDate',
+    'QuincyFlirtNo',
+    'ArthurConfessedFeels',
+  ]
   return keywords.some((keyword) =>
     booleanName.toLowerCase().includes(keyword.toLowerCase())
   )
