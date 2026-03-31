@@ -231,7 +231,7 @@ describe('ranker', () => {
       expect(result[0].label).toContain('Path 2')
     })
 
-    it('should keep distinct paths separate', () => {
+    it('should merge distinct paths when outcomes are equivalent', () => {
       const options = [
         {
           label: 'Path 1',
@@ -248,6 +248,34 @@ describe('ranker', () => {
           }),
         },
       ]
+      const result = buildPreferredPathOptions(options)
+      expect(result).toHaveLength(1)
+      expect(result[0].label).toContain('Path 1')
+      expect(result[0].label).toContain('Path 2')
+    })
+
+    it('should keep paths separate when boolean outcomes differ', () => {
+      const options = [
+        {
+          label: 'With confession',
+          result: createPathResult({
+            path: [1, 2, 3],
+            chemistry: 20,
+            activatedBooleans: 1,
+            booleanMutations: { ArthurConfessedFeels: true },
+          }),
+        },
+        {
+          label: 'Without confession',
+          result: createPathResult({
+            path: [1, 4, 5],
+            chemistry: 20,
+            activatedBooleans: 1,
+            booleanMutations: {},
+          }),
+        },
+      ]
+
       const result = buildPreferredPathOptions(options)
       expect(result).toHaveLength(2)
     })

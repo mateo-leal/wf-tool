@@ -132,13 +132,21 @@ async function walk(
         current,
         resolveText
       )
-      if (isFlirtingBoolSetNode) {
-        // Track that we skipped this flirting node
-        nextAcc.skippedFlirtingNodeIds = new Set(acc.skippedFlirtingNodeIds)
-        nextAcc.skippedFlirtingNodeIds.add(current.Id)
-      }
+      nextAcc.skippedFlirtingNodeIds = new Set([
+        ...(acc.skippedFlirtingNodeIds ?? []),
+        current.Id,
+      ])
 
-      const nextBooleanState = new Map(booleanState) // Don't apply mutation
+      // Explicitly mark the skipped boolean as false so downstream
+      // CheckBoolean nodes route through the "not set" branch.
+      const nextBooleanState = new Map(booleanState)
+      nextBooleanState.set(booleanName, false)
+      const nextIds = await getOutgoingForNode(
+        current,
+        askBooleanDecision,
+        askCounterBranch,
+        nextBooleanState
+      )
 
       if (
         current.type === Type.EndDialogueNode ||
@@ -147,38 +155,34 @@ async function walk(
         state.pathsCollected += 1
         all.push(nextAcc)
       } else {
-        const nextIds = await getOutgoingForNode(
-          current,
-          askBooleanDecision,
-          askCounterBranch,
-          nextBooleanState
-        )
         if (nextIds.length === 0) {
           state.pathsCollected += 1
           all.push(nextAcc)
-        } else {
-          for (const id of nextIds) {
-            if (state.pathsCollected >= maxPaths) {
-              break
-            }
-            const nextNode = byId.get(id)
-            if (!nextNode || nextAcc.path.includes(id)) {
-              continue
-            }
-            const childResults = await walk(
-              byId,
-              nextNode,
-              nextAcc,
-              remainingDepth - 1,
-              maxPaths,
-              state,
-              resolveText,
-              askBooleanDecision,
-              askCounterBranch,
-              new Map(nextBooleanState)
-            )
-            all.push(...childResults)
+          return all
+        }
+
+        for (const id of nextIds) {
+          if (state.pathsCollected >= maxPaths) {
+            break
           }
+
+          const nextNode = byId.get(id)
+          if (!nextNode || nextAcc.path.includes(id)) {
+            continue
+          }
+          const childResults = await walk(
+            byId,
+            nextNode,
+            nextAcc,
+            remainingDepth - 1,
+            maxPaths,
+            state,
+            resolveText,
+            askBooleanDecision,
+            askCounterBranch,
+            new Map(nextBooleanState)
+          )
+          all.push(...childResults)
         }
       }
     }
@@ -299,15 +303,23 @@ export function applyNodeMetricsWithoutBooleanMutation(
     .reduce((sum, info) => sum + info.Value, 0)
 
   const resolvedContent = node.Content ? resolveText(node.Content) : undefined
+  const avoidedBooleanActivationDelta =
+    node.type === Type.SetBooleanDialogueNode &&
+    isAvoidableBoolean(getBooleanName(node))
+      ? 1
+      : 0
 
   return {
     path: [...acc.path, node.Id],
     chemistry: acc.chemistry + (node.ChemistryDelta ?? 0),
     thermostat: acc.thermostat + thermoFromTags + thermostatFromCounterNode,
     hasThermostatCounter: acc.hasThermostatCounter || hasThermostatCounter,
-    activatedBooleans: acc.activatedBooleans,
-    avoidedBooleanActivations: acc.avoidedBooleanActivations,
-    booleanMutations: acc.booleanMutations,
+    // Keep counting actual set/reset node visits, even on hypothetical
+    // skip branches, so metrics match the shown path.
+    activatedBooleans: acc.activatedBooleans + countBooleanActivations(node),
+    avoidedBooleanActivations:
+      acc.avoidedBooleanActivations + avoidedBooleanActivationDelta,
+    booleanMutations: { ...acc.booleanMutations },
     skippedFlirtingNodeIds: new Set(acc.skippedFlirtingNodeIds),
     textLines: resolvedContent
       ? [...acc.textLines, resolvedContent]

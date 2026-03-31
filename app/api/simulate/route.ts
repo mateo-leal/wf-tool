@@ -1,10 +1,11 @@
 import { NextResponse } from 'next/server'
 import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
 import { getDictionarySource, normalizeLanguage } from '@/lib/language'
-import { type DialogueNode } from '@/lib/types'
+import { Type, type DialogueNode } from '@/lib/types'
 import { loadDictionary, loadNodes } from '@/lib/core/loader'
 import {
   getConversationName,
+  getBooleanName,
   getCounterName,
   resolveContent,
   resolveStartNodes,
@@ -12,7 +13,7 @@ import {
 } from '@/lib/core/node-utils'
 import { explorePaths } from '@/lib/core/explorer'
 import { evaluateCounterOutput } from '@/lib/core/counter-utils'
-import { getFlirtingBooleanSignature } from '@/lib/core/boolean-utils'
+import { isFlirtingBoolean } from '@/lib/core/boolean-utils'
 import { buildPreferredPathOptions, summarizeResults } from '@/lib/core/ranker'
 import { formatPathAsChat, formatPathMetrics } from '@/lib/core/formatter'
 
@@ -25,6 +26,60 @@ function booleanMutationSignature(mutations: Record<string, boolean>): string {
     .sort(([left], [right]) => left.localeCompare(right))
     .map(([name, value]) => `${name}:${value ? '1' : '0'}`)
     .join('|')
+}
+
+function getFlirtingPathSignature(
+  result: Awaited<ReturnType<typeof explorePaths>>[number],
+  byId: Map<number, DialogueNode>
+): string {
+  const names = new Set<string>()
+
+  for (const nodeId of result.path) {
+    const node = byId.get(nodeId)
+    if (!node) {
+      continue
+    }
+
+    const isBooleanMutationNode =
+      node.type === Type.SetBooleanDialogueNode ||
+      node.type === Type.ResetBooleanDialogueNode
+    if (!isBooleanMutationNode) {
+      continue
+    }
+
+    const name = getBooleanName(node)
+    if (isFlirtingBoolean(name)) {
+      names.add(name)
+    }
+  }
+
+  if (names.size === 0) {
+    return 'no-flirting'
+  }
+
+  return 'flirting:' + [...names].sort().join('|')
+}
+
+function getBooleanMutationsFromPath(
+  result: Awaited<ReturnType<typeof explorePaths>>[number],
+  byId: Map<number, DialogueNode>
+): Record<string, boolean> {
+  const mutations: Record<string, boolean> = {}
+
+  for (const nodeId of result.path) {
+    const node = byId.get(nodeId)
+    if (!node) {
+      continue
+    }
+
+    if (node.type === Type.SetBooleanDialogueNode) {
+      mutations[getBooleanName(node)] = true
+    } else if (node.type === Type.ResetBooleanDialogueNode) {
+      mutations[getBooleanName(node)] = false
+    }
+  }
+
+  return mutations
 }
 
 export async function GET(request: Request) {
@@ -113,7 +168,7 @@ export async function GET(request: Request) {
     // (dating vs. no dating) gets its own ranked options
     const flirtingGroups = new Map<string, typeof results>()
     for (const result of results) {
-      const sig = getFlirtingBooleanSignature(result.booleanMutations)
+      const sig = getFlirtingPathSignature(result, byId)
       const group = flirtingGroups.get(sig) ?? []
       group.push(result)
       flirtingGroups.set(sig, group)
@@ -148,7 +203,7 @@ export async function GET(request: Request) {
       const distinctBooleanTieResults = [
         ...new Map(
           ranked.byBooleansTies.map((result) => [
-            booleanMutationSignature(result.booleanMutations),
+            booleanMutationSignature(getBooleanMutationsFromPath(result, byId)),
             result,
           ])
         ).values(),
@@ -169,7 +224,15 @@ export async function GET(request: Request) {
       })
     }
 
-    const options = buildPreferredPathOptions(candidates).map(
+    const normalizedCandidates = candidates.map((candidate) => ({
+      ...candidate,
+      result: {
+        ...candidate.result,
+        booleanMutations: getBooleanMutationsFromPath(candidate.result, byId),
+      },
+    }))
+
+    const options = buildPreferredPathOptions(normalizedCandidates).map(
       (option, index) => ({
         id: `${index + 1}`,
         label: option.label,

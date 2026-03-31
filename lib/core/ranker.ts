@@ -115,7 +115,6 @@ export function buildPreferredPathOptions(
   >()
 
   for (const option of options) {
-    const pathKey = option.result.path.join('->')
     const booleanMutationKey = Object.entries(option.result.booleanMutations)
       .sort(([left], [right]) => left.localeCompare(right))
       .map(([name, value]) => `${name}:${value ? '1' : '0'}`)
@@ -125,23 +124,13 @@ export function buildPreferredPathOptions(
       option.result.booleanMutations
     )
 
-    // Include skipped flirting node IDs to distinguish between "set" and "don't set" paths
-    const skippedNodesKey =
-      option.result.skippedFlirtingNodeIds &&
-      option.result.skippedFlirtingNodeIds.size > 0
-        ? 'skipped:' +
-          Array.from(option.result.skippedFlirtingNodeIds).sort().join(',')
-        : 'none-skipped'
-
     const outcomeKey = [
-      pathKey,
       option.result.chemistry,
       option.result.thermostat,
       option.result.hasThermostatCounter ? 'thermostat' : 'no-thermostat',
       option.result.activatedBooleans,
       option.result.avoidedBooleanActivations,
       flirtingSignature,
-      skippedNodesKey,
       booleanMutationKey,
     ].join('::')
 
