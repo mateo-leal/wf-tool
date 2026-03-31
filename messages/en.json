@@ -4,38 +4,56 @@
     "expand": "Expand",
     "clear": "Clear"
   },
+  "locations": {
+    "title": "Location",
+    "baseOfOperations": "Base of Operations",
+    "anyRelay": "Any Relay",
+    "cetus": "Cetus, Earth",
+    "fortuna": "Fortuna, Venus",
+    "necralisk": "Necralisk, Deimos",
+    "chrysalith": "Chrysalith, Zariman",
+    "sanctumAnatomica": "Sanctum Anatomica, Deimos",
+    "hollvaniaCentralMall": "Höllvania Central Mall",
+    "laCathedrale": "La Cathédrale, Sanctum Anatomica, Deimos",
+    "dormizone": "Dormizone, Zariman",
+    "marooBazaar": "Maroo's Bazaar, Mars"
+  },
+  "terminal": {
+    "title": "Terminal",
+    "foundry": "Foundry",
+    "syndicates": "Syndicates",
+    "navigation": "Navigation",
+    "nightwave": "Nightwave"
+  },
+  "quests": {
+    "sayasVigil": "Saya's Vigil",
+    "theWarWithin": "The War Within",
+    "voxSolaris": "Vox Solaris",
+    "heartOfDeimos": "Heart of Deimos",
+    "angelsOfTheZariman": "Angels of the Zariman",
+    "whispersInTheWalls": "Whispers in the Walls",
+    "theHex": "The Hex",
+    "theSecondDream": "The Second Dream",
+    "risingTide": "Rising Tide",
+    "theOldPeace": "The Old Peace",
+    "aManOfFewWords": "A Man of Few Words",
+    "theNewWar": "The New War",
+    "theDuviriParadox": "The Duviri Paradox",
+    "steelPath": "Steel Path Unlocked",
+    "erisJunction": "Eris Junction"
+  },
+  "npcs": {
+    "title": "NPC",
+    "acrithis": "Acrithis",
+    "ticker": "Ticker",
+    "marie": "Marie",
+    "maroo": "Maroo",
+    "darvo": "Darvo"
+  },
   "checklist": {
     "title": "Checklist",
     "doneCount": "{count}/{total} done",
-    "locations": {
-      "title": "Location",
-      "baseOfOperations": "Base of Operations",
-      "anyRelay": "Any Relay",
-      "cetus": "Cetus, Earth",
-      "fortuna": "Fortuna, Venus",
-      "necralisk": "Necralisk, Deimos",
-      "chrysalith": "Chrysalith, Zariman",
-      "sanctumAnatomica": "Sanctum Anatomica, Deimos",
-      "hollvaniaCentralMall": "Höllvania Central Mall"
-    },
-    "terminal": {
-      "title": "Terminal",
-      "foundry": "Foundry",
-      "syndicates": "Syndicates",
-      "navigation": "Navigation"
-    },
-    "prerequisites": {
-      "title": "Prerequisite",
-      "sayasVigil": "Saya's Vigil",
-      "theWarWithin": "The War Within",
-      "voxSolaris": "Vox Solaris",
-      "heartOfDeimos": "Heart of Deimos",
-      "angelsOfTheZariman": "Angels of the Zariman",
-      "whispersInTheWalls": "Whispers in the Walls",
-      "theHex": "The Hex",
-      "theSecondDream": "The Second Dream",
-      "steelPath": "Steel Path Unlocked"
-    },
+    "prerequisite": "Prerequisite",
     "daily": {
       "title": "Daily",
       "description": "Resets in {time}",
@@ -45,6 +63,9 @@
         "craftOther": "Craft other foundry resources",
         "factionSyndicates": "Faction Syndicates Standing",
         "factionSyndicatesInfo": "Complete any mission",
+        "arbitration": "Arbitration",
+        "nightwave": "Nightwave",
+        "nightwaveInfo": "Complete daily Nightwave missions.",
         "worldSyndicates": "World Syndicates Standing",
         "cephalonSimaris": "Cephalon Simaris",
         "ostron": "Ostron",
@@ -56,12 +77,34 @@
         "necraloid": "Necraloid",
         "theHoldfasts": "The Holdfasts",
         "cavia": "Cavia",
-        "theHex": "The Hex"
+        "theHex": "The Hex",
+        "sortie": "Sortie",
+        "sortieInfo": "Complete the 3 daily Sortie missions.",
+        "focus": "Focus",
+        "focusInfo": "Max out daily Focus gain.",
+        "vendors": "Vendors",
+        "acrithisInfo": "Check daily Arcane and Captura offering.",
+        "tickerInfo": "Check available railjack crew to hire.",
+        "marieInfo": "Purchase Operator and amp mods."
       }
     },
     "weekly": {
       "title": "Weekly",
-      "description": "Resets in {time}"
+      "description": "Resets in {time}",
+      "tasks": {
+        "nightwave": "Nightwave",
+        "nightwaveInfo": "Complete weekly Nightwave missions.",
+        "ayatanTreasureHunt": "Ayatan Treasure Hunt",
+        "ayatanTreasureHuntInfo": "Complete Maroo's weekly Ayatan Treasure Hunt.",
+        "helpClem": "Help Clem",
+        "helpClemInfo": "Complete Clem's weekly bounty.",
+        "archonHunt": "Archon Hunt",
+        "archonHuntInfo": "Complete the Archon Hunt mission for an Archon Shard.",
+        "circuit": "Duviri Circuit",
+        "circuitInfo": "Complete the Duviri Circuit mission on Normal difficulty.",
+        "circuitSP": "Duviri Circuit (Steel Path)",
+        "circuitSPInfo": "Complete the Duviri Circuit mission on Steel Path difficulty."
+      }
     },
     "other": {
       "title": "Other"

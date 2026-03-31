@@ -205,7 +205,7 @@ export function ChecklistPanel() {
         completed={state.daily.completed}
         onToggle={(taskId) => toggleTask('daily', taskId)}
         onClear={() => clearSection('daily')}
-        defaultExpandedGroupIds={['daily-world-syndicates']}
+        defaultExpandedGroupIds={['daily-world-syndicates', 'daily-vendors']}
       />
       <ChecklistSectionCard
         title={t('checklist.weekly.title')}

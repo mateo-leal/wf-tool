@@ -17,3 +17,5 @@ export const ALL_MIGRATION_KEYS = [
   LANGUAGE_STORAGE_KEY,
   SHOW_SPOILERS_STORAGE_KEY,
 ] as const
+
+export const CHECKLIST_STORAGE_KEY = 'wf-checklist:v1'

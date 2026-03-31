@@ -3,6 +3,7 @@ import {
   AppWindowIcon,
   CheckCircleIcon,
   MapPinIcon,
+  UserIcon,
   XIcon,
 } from '@phosphor-icons/react'
 import { useTranslations } from 'next-intl'
@@ -26,6 +27,9 @@ export function TaskRow({
   onToggle: () => void
 }) {
   const t = useTranslations()
+  const hasMetaItems = Boolean(
+    task.location || task.terminal || task.prerequisite || task.npc
+  )
 
   if (!checkable) {
     const [whereLine, unlockLine] = getTaskMetaLines(task)
@@ -79,38 +83,50 @@ export function TaskRow({
             {t(task.info)}
           </p>
         )}
-        <ul className="mt-1 text-xs leading-snug text-muted-foreground">
-          {task.location && (
-            <li>
-              <MapPinIcon
-                size={14}
-                className="inline-block mr-1"
-                alt={t('checklist.locations.title')}
-              />
-              {t(task.location)}
-            </li>
-          )}
-          {task.terminal && (
-            <li>
-              <AppWindowIcon
-                size={14}
-                className="inline-block mr-1"
-                alt={t('checklist.terminal.title')}
-              />
-              {t(task.terminal)}
-            </li>
-          )}
-          {task.prerequisite && (
-            <li>
-              <CheckCircleIcon
-                size={14}
-                className="inline-block mr-1"
-                alt={t('checklist.prerequisites.title')}
-              />
-              {t(task.prerequisite)}
-            </li>
-          )}
-        </ul>
+        {hasMetaItems ? (
+          <ul className="mt-1 text-xs leading-snug text-muted-foreground">
+            {task.location && (
+              <li>
+                <MapPinIcon
+                  size={14}
+                  className="inline-block mr-1"
+                  alt={t('locations.title')}
+                />
+                {t(task.location)}
+              </li>
+            )}
+            {task.terminal && (
+              <li>
+                <AppWindowIcon
+                  size={14}
+                  className="inline-block mr-1"
+                  alt={t('terminal.title')}
+                />
+                {t(task.terminal)}
+              </li>
+            )}
+            {task.npc && (
+              <li>
+                <UserIcon
+                  size={14}
+                  className="inline-block mr-1"
+                  alt={t('npcs.title')}
+                />
+                {t(task.npc)}
+              </li>
+            )}
+            {task.prerequisite && (
+              <li>
+                <CheckCircleIcon
+                  size={14}
+                  className="inline-block mr-1"
+                  alt={t('checklist.prerequisite')}
+                />
+                {t(task.prerequisite)}
+              </li>
+            )}
+          </ul>
+        ) : null}
       </span>
     </button>
   )
