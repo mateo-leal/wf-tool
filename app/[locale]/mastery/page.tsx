@@ -2,6 +2,8 @@ import { Metadata } from 'next'
 import { setRequestLocale } from 'next-intl/server'
 import { MasteryChecklistWindow } from '@/components/windows/mastery-checklist'
 
+export const revalidate = 3600 // Revalidate every hour
+
 export const metadata: Metadata = {
   title: 'Mastery Checklist',
   description:
