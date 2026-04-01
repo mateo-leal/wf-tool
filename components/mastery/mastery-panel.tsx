@@ -9,7 +9,8 @@ import {
 } from '@/lib/mastery'
 import { useMemo, useState } from 'react'
 import { useTranslations } from 'next-intl'
-import { ListIcon } from '@phosphor-icons/react'
+import { ListIcon, CaretDownIcon } from '@phosphor-icons/react'
+import { isDevelopment } from '@/lib/utils'
 
 type MasteryProgress = Record<string, boolean>
 
@@ -64,7 +65,11 @@ export function MasteryPanel({
 }: MasteryPanelProps) {
   const t = useTranslations('masteryChecklist')
   const [activeCategory, setActiveCategory] =
-    useState<MasteryCategory>('warframe')
+    useState<MasteryCategory>('itemCompletion')
+  const [activeSubcategory, setActiveSubcategory] = useState<string>('warframe')
+  const [expandedCategories, setExpandedCategories] = useState<
+    Set<MasteryCategory>
+  >(new Set(['itemCompletion']))
   const [query, setQuery] = useState('')
   const [progress, setProgress] = useState<MasteryProgress>(() =>
     loadProgress()
@@ -72,8 +77,84 @@ export function MasteryPanel({
   const [error] = useState<string | null>(initialError)
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
+  const resolveSubcategoryLabel = (
+    category: MasteryCategory,
+    subcategory: string
+  ) => {
+    const serverLabel =
+      masteryData?.subcategoryLabels?.[category]?.[subcategory]
+    if (serverLabel) {
+      return serverLabel
+    }
+
+    const key = `subcategories.${subcategory}`
+    return t.has(key) ? t(key) : subcategory
+  }
+
+  const resolveItemLabel = (item: { name: string; rankNumber?: number }) => {
+    if (typeof item.rankNumber === 'number') {
+      return t('rankPrefix', { rank: item.rankNumber, item: item.name })
+    }
+
+    return item.name
+  }
+
+  const categorySubcategories = useMemo(() => {
+    if (!masteryData) {
+      return CATEGORY_ORDER.reduce(
+        (accumulator, category) => {
+          accumulator[category] = []
+          return accumulator
+        },
+        {
+          itemCompletion: [],
+          railjackIntrinsic: [],
+          drifterIntrinsic: [],
+          starchartCompletion: [],
+        } as Record<MasteryCategory, string[]>
+      )
+    }
+
+    return CATEGORY_ORDER.reduce(
+      (accumulator, category) => {
+        accumulator[category] = Object.keys(masteryData[category] ?? {})
+        return accumulator
+      },
+      {
+        itemCompletion: [],
+        railjackIntrinsic: [],
+        drifterIntrinsic: [],
+        starchartCompletion: [],
+      } as Record<MasteryCategory, string[]>
+    )
+  }, [masteryData])
+
+  const resolvedActiveSubcategory = useMemo(() => {
+    const subcategories = categorySubcategories[activeCategory] ?? []
+    if (subcategories.includes(activeSubcategory)) {
+      return activeSubcategory
+    }
+
+    return subcategories[0] ?? null
+  }, [activeCategory, activeSubcategory, categorySubcategories])
+
+  const toggleCategoryExpanded = (category: MasteryCategory) => {
+    const newExpanded = new Set(expandedCategories)
+    if (newExpanded.has(category)) {
+      newExpanded.delete(category)
+    } else {
+      newExpanded.add(category)
+    }
+    setExpandedCategories(newExpanded)
+  }
+
   const filteredItems = useMemo(() => {
-    const categoryItems = masteryData?.[activeCategory] ?? []
+    if (!resolvedActiveSubcategory) {
+      return []
+    }
+
+    const categoryItems =
+      masteryData?.[activeCategory]?.[resolvedActiveSubcategory] ?? []
     const normalizedQuery = query.trim().toLowerCase()
     if (!normalizedQuery) {
       return categoryItems
@@ -82,27 +163,27 @@ export function MasteryPanel({
     return categoryItems.filter((item) =>
       item.name.toLowerCase().includes(normalizedQuery)
     )
-  }, [activeCategory, masteryData, query])
+  }, [activeCategory, masteryData, query, resolvedActiveSubcategory])
 
   const categoryStats = useMemo(() => {
     if (!masteryData) {
-      return Object.fromEntries(
-        CATEGORY_ORDER.map((category) => [category, { done: 0, total: 0 }])
-      ) as Record<MasteryCategory, { done: number; total: number }>
+      return {} as Record<string, { done: number; total: number }>
     }
 
     return Object.fromEntries(
-      CATEGORY_ORDER.map((category) => {
-        const items = masteryData[category]
-        const done = items.reduce(
-          (count, item) => count + (progress[item.id] ? 1 : 0),
-          0
-        )
+      CATEGORY_ORDER.flatMap((category) =>
+        (categorySubcategories[category] ?? []).map((subcategory) => {
+          const items = masteryData[category]?.[subcategory] ?? []
+          const done = items.reduce(
+            (count, item) => count + (progress[item.id] ? 1 : 0),
+            0
+          )
 
-        return [category, { done, total: items.length }]
-      })
-    ) as Record<MasteryCategory, { done: number; total: number }>
-  }, [masteryData, progress])
+          return [`${category}:${subcategory}`, { done, total: items.length }]
+        })
+      )
+    ) as Record<string, { done: number; total: number }>
+  }, [categorySubcategories, masteryData, progress])
 
   function toggleItem(itemId: string) {
     setProgress((previous) => {
@@ -117,11 +198,13 @@ export function MasteryPanel({
   }
 
   function clearCategory() {
-    if (!masteryData) {
+    if (!masteryData || !resolvedActiveSubcategory) {
       return
     }
 
-    const ids = masteryData[activeCategory].map((item) => item.id)
+    const ids = (
+      masteryData[activeCategory]?.[resolvedActiveSubcategory] ?? []
+    ).map((item) => item.id)
 
     setProgress((previous) => {
       const next = { ...previous }
@@ -142,34 +225,80 @@ export function MasteryPanel({
           sidebarOpen ? 'block' : 'hidden md:flex',
         ].join(' ')}
       >
-        {CATEGORY_ORDER.map((category) => {
-          const stats = categoryStats[category]
-          const isActive = activeCategory === category
+        <div className="flex flex-col divide-y divide-muted-primary/40">
+          {CATEGORY_ORDER.map((category) => {
+            const isExpanded = expandedCategories.has(category)
 
-          return (
-            <button
-              key={category}
-              type="button"
-              onClick={() => {
-                setActiveCategory(category)
-                setSidebarOpen(false)
-              }}
-              className={[
-                'border-b border-muted-primary/40 px-2 py-2 text-left transition last:border-b-0',
-                isActive
-                  ? 'bg-success-bg text-success'
-                  : 'text-foreground hover:bg-muted-primary/15',
-              ].join(' ')}
-            >
-              <p className="text-sm leading-tight">
-                {t(`categories.${category}`)}
-              </p>
-              <p className="text-xs opacity-60">
-                {t('doneCount', { count: stats.done, total: stats.total })}
-              </p>
-            </button>
-          )
-        })}
+            return (
+              <div key={category}>
+                <button
+                  type="button"
+                  onClick={() => toggleCategoryExpanded(category)}
+                  className="w-full flex items-center justify-between gap-2 px-2 py-2 text-left transition hover:bg-muted-primary/15"
+                >
+                  <p className="text-sm leading-tight font-semibold">
+                    {t(`categories.${category}`)}
+                  </p>
+                  <CaretDownIcon
+                    size={16}
+                    weight="bold"
+                    className={[
+                      'shrink-0 transition-transform',
+                      isExpanded ? 'rotate-0' : '-rotate-90',
+                    ].join(' ')}
+                  />
+                </button>
+
+                {isExpanded && (
+                  <div className="flex flex-col divide-y divide-muted-primary/20">
+                    {(categorySubcategories[category] ?? []).map(
+                      (subcategory) => {
+                        const statKey = `${category}:${subcategory}`
+                        const stats = (
+                          categoryStats as Record<
+                            string,
+                            { done: number; total: number }
+                          >
+                        )[statKey] ?? { done: 0, total: 0 }
+                        const isActive =
+                          activeCategory === category &&
+                          activeSubcategory === subcategory
+
+                        return (
+                          <button
+                            key={subcategory}
+                            type="button"
+                            onClick={() => {
+                              setActiveCategory(category)
+                              setActiveSubcategory(subcategory)
+                              setSidebarOpen(false)
+                            }}
+                            className={[
+                              'w-full px-4 py-2 text-left transition',
+                              isActive
+                                ? 'bg-success-bg text-success'
+                                : 'text-foreground hover:bg-muted-primary/10',
+                            ].join(' ')}
+                          >
+                            <p className="text-xs leading-tight">
+                              {resolveSubcategoryLabel(category, subcategory)}
+                            </p>
+                            <p className="text-[10px] opacity-60">
+                              {t('doneCount', {
+                                count: stats.done,
+                                total: stats.total,
+                              })}
+                            </p>
+                          </button>
+                        )
+                      }
+                    )}
+                  </div>
+                )}
+              </div>
+            )
+          })}
+        </div>
       </aside>
 
       {sidebarOpen && (
@@ -195,18 +324,25 @@ export function MasteryPanel({
             placeholder={t('searchPlaceholder')}
             className="min-w-0 flex-1 border border-muted-primary bg-background px-2 py-1 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
           />
-          <button
-            type="button"
-            onClick={clearCategory}
-            className="shrink-0 border border-muted-primary bg-background px-2 py-1 text-sm text-foreground transition hover:bg-muted-primary/15"
-          >
-            {t('clearCategory')}
-          </button>
+          {isDevelopment() && (
+            <button
+              type="button"
+              onClick={clearCategory}
+              className="shrink-0 border border-muted-primary bg-background px-2 py-1 text-sm text-foreground transition hover:bg-muted-primary/15"
+            >
+              {t('clearCategory')}
+            </button>
+          )}
         </div>
 
         <div className="border border-muted-primary bg-background/40 px-2 py-1 text-xs text-muted-foreground">
           {t('activeCategoryCount', {
-            category: t(`categories.${activeCategory}`),
+            category: resolvedActiveSubcategory
+              ? resolveSubcategoryLabel(
+                  activeCategory,
+                  resolvedActiveSubcategory
+                )
+              : '-',
             count: filteredItems.length,
           })}
         </div>
@@ -230,7 +366,7 @@ export function MasteryPanel({
                   >
                     <span
                       className={[
-                        'inline-flex h-4 w-4 shrink-0 items-center justify-center border text-[11px] leading-none',
+                        'inline-flex size-4 shrink-0 items-center justify-center border text-[11px] leading-none',
                         checked
                           ? 'border-success-border bg-success-bg text-success'
                           : 'border-muted-primary text-muted-foreground',
@@ -244,7 +380,7 @@ export function MasteryPanel({
                         alt={item.name}
                         width={36}
                         height={36}
-                        className="h-9 w-9 shrink-0 border border-muted-primary/60 bg-background/70 object-contain p-0.5"
+                        className="size-9 shrink-0 border border-muted-primary/60 bg-background/70 object-contain p-0.5"
                         loading="lazy"
                         unoptimized
                       />
@@ -258,7 +394,7 @@ export function MasteryPanel({
                             : 'text-foreground',
                         ].join(' ')}
                       >
-                        {item.name}
+                        {resolveItemLabel(item)}
                       </span>
                       {typeof item.masteryReq === 'number' ? (
                         <span className="text-xs text-muted-foreground">

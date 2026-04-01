@@ -1,6 +1,7 @@
 import { buildMasteryData, type MasteryData } from '@/lib/mastery'
 import {
   fetchPublicExportDictionary,
+  fetchPublicExportIntrinsics,
   fetchPublicExportSentinels,
   fetchPublicExportWarframes,
   fetchPublicExportWeapons,
@@ -19,14 +20,22 @@ export async function MasteryChecklistWindow() {
   let initialError: string | null = null
 
   try {
-    const [dict, weaponsMap, warframesMap, sentinelsMap] = await Promise.all([
-      fetchPublicExportDictionary(locale),
-      fetchPublicExportWeapons(),
-      fetchPublicExportWarframes(),
-      fetchPublicExportSentinels(),
-    ])
+    const [dict, weaponsMap, warframesMap, sentinelsMap, intrinsicsMap] =
+      await Promise.all([
+        fetchPublicExportDictionary(locale),
+        fetchPublicExportWeapons(),
+        fetchPublicExportWarframes(),
+        fetchPublicExportSentinels(),
+        fetchPublicExportIntrinsics(),
+      ])
 
-    masteryData = buildMasteryData(dict, weaponsMap, warframesMap, sentinelsMap)
+    masteryData = buildMasteryData(
+      dict,
+      weaponsMap,
+      warframesMap,
+      sentinelsMap,
+      intrinsicsMap
+    )
   } catch {
     initialError = t('loadFailed')
   }

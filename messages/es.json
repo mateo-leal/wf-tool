@@ -171,6 +171,12 @@
   "masteryChecklist": {
     "title": "Mastery Checklist",
     "categories": {
+      "itemCompletion": "Completación de ítems",
+      "railjackIntrinsic": "Intrínsecos del Railjack",
+      "drifterIntrinsic": "Intrínsecos del viajero",
+      "starchartCompletion": "Completación del Mapa Estelar"
+    },
+    "subcategories": {
       "warframe": "Warframe",
       "primary": "Primaria",
       "secondary": "Secundaria",
@@ -194,6 +200,7 @@
     "searchPlaceholder": "Buscar por nombre...",
     "clearCategory": "Borrar categoría",
     "activeCategoryCount": "{count} elementos en {category}",
+    "rankPrefix": "Rango {rank}: {item}",
     "masteryRequirement": "Rango de Maestría {mr}",
     "loading": "Cargando elementos...",
     "loadFailed": "No se pudo cargar los datos de maestría en este momento.",

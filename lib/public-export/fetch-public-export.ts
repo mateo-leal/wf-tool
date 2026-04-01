@@ -20,6 +20,18 @@ export type PublicExportSentinel = {
   masteryReq?: number
 }
 
+export type PublicExportIntrinsicRank = {
+  name?: string
+  description?: string
+}
+
+export type PublicExportIntrinsic = {
+  name?: string
+  description?: string
+  icon?: string
+  ranks?: PublicExportIntrinsicRank[]
+}
+
 export type PublicExportDictionary = Record<string, string>
 
 export type PublicExportMap<T> = Record<string, T>
@@ -30,6 +42,8 @@ const EXPORT_WARFRAMES_URL =
   'https://browse.wf/warframe-public-export-plus/ExportWarframes.json'
 const EXPORT_SENTINELS_URL =
   'https://browse.wf/warframe-public-export-plus/ExportSentinels.json'
+const EXPORT_INTRINSICS_URL =
+  'https://browse.wf/warframe-public-export-plus/ExportIntrinsics.json'
 const EXPORT_DICT_BASE_URL =
   'https://browse.wf/warframe-public-export-plus/dict'
 const DEFAULT_DICT_LOCALE = 'en'
@@ -56,6 +70,12 @@ export function fetchPublicExportWarframes() {
 
 export function fetchPublicExportSentinels() {
   return fetchJson<PublicExportMap<PublicExportSentinel>>(EXPORT_SENTINELS_URL)
+}
+
+export function fetchPublicExportIntrinsics() {
+  return fetchJson<PublicExportMap<PublicExportIntrinsic>>(
+    EXPORT_INTRINSICS_URL
+  )
 }
 
 function normalizeDictionaryLocale(locale: string | null | undefined): string {

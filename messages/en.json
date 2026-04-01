@@ -171,6 +171,12 @@
   "masteryChecklist": {
     "title": "Mastery Checklist",
     "categories": {
+      "itemCompletion": "Item Completion",
+      "railjackIntrinsic": "Railjack Intrinsic",
+      "drifterIntrinsic": "Drifter Intrinsic",
+      "starchartCompletion": "Starchart Completion"
+    },
+    "subcategories": {
       "warframe": "Warframe",
       "primary": "Primary",
       "secondary": "Secondary",
@@ -194,6 +200,7 @@
     "searchPlaceholder": "Search by name...",
     "clearCategory": "Clear category",
     "activeCategoryCount": "{count} items in {category}",
+    "rankPrefix": "Rank {rank}: {item}",
     "masteryRequirement": "Mastery Rank {mr}",
     "loading": "Loading items...",
     "loadFailed": "Could not load mastery data right now.",

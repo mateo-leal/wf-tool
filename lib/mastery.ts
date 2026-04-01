@@ -1,56 +1,41 @@
 import {
   resolveDictName,
+  type PublicExportIntrinsic,
   type PublicExportDictionary,
 } from '@/lib/public-export/fetch-public-export'
 
 export type MasteryCategory =
-  | 'warframe'
-  | 'primary'
-  | 'secondary'
-  | 'melee'
-  | 'kitgun'
-  | 'zaw'
-  | 'amp'
-  | 'sentinel'
-  | 'moa'
-  | 'hound'
-  | 'beast'
-  | 'robotic'
-  | 'archwing'
-  | 'archgun'
-  | 'archmelee'
-  | 'necramech'
-  | 'railjack'
-  | 'kDrive'
+  | 'itemCompletion'
+  | 'railjackIntrinsic'
+  | 'drifterIntrinsic'
+  | 'starchartCompletion'
 
 export type MasteryItem = {
   id: string
   name: string
   iconUrl?: string
   masteryReq?: number
+  rankNumber?: number
 }
 
-export type MasteryData = Record<MasteryCategory, MasteryItem[]>
+type MasteryByCategory = {
+  itemCompletion: Record<string, MasteryItem[]>
+  railjackIntrinsic: Record<string, MasteryItem[]>
+  drifterIntrinsic: Record<string, MasteryItem[]>
+  starchartCompletion: Record<string, MasteryItem[]>
+}
+
+type MasterySubcategoryLabels = Record<MasteryCategory, Record<string, string>>
+
+export type MasteryData = MasteryByCategory & {
+  subcategoryLabels: MasterySubcategoryLabels
+}
 
 export const CATEGORY_ORDER: MasteryCategory[] = [
-  'warframe',
-  'primary',
-  'secondary',
-  'melee',
-  'kitgun',
-  'zaw',
-  'amp',
-  'sentinel',
-  'moa',
-  'hound',
-  'beast',
-  'robotic',
-  'archwing',
-  'archgun',
-  'archmelee',
-  'necramech',
-  'railjack',
-  'kDrive',
+  'itemCompletion',
+  'railjackIntrinsic',
+  'drifterIntrinsic',
+  'starchartCompletion',
 ]
 
 function toSortedItems(entries: MasteryItem[]): MasteryItem[] {
@@ -96,47 +81,95 @@ export function buildMasteryData(
       productCategory?: string
       masteryReq?: number
     }
-  >
+  >,
+  intrinsicsMap: Record<string, PublicExportIntrinsic>
 ): MasteryData {
-  const data: MasteryData = {
-    warframe: [],
-    primary: [],
-    secondary: [],
-    melee: [],
-    kitgun: [],
-    zaw: [],
-    amp: [],
-    sentinel: [],
-    moa: [],
-    hound: [],
-    beast: [],
-    robotic: [],
-    archwing: [],
-    archgun: [],
-    archmelee: [],
-    necramech: [],
-    railjack: [],
-    kDrive: [],
+  const data: MasteryByCategory = {
+    itemCompletion: {
+      warframe: [],
+      primary: [],
+      secondary: [],
+      melee: [],
+      kitgun: [],
+      zaw: [],
+      amp: [],
+      sentinel: [],
+      moa: [],
+      hound: [],
+      beast: [],
+      robotic: [],
+      archwing: [],
+      archgun: [],
+      archmelee: [],
+      necramech: [],
+      railjack: [],
+      kDrive: [],
+    },
+    railjackIntrinsic: {
+      // Intrinsic schools are keyed dynamically by API values (e.g. LPS_COMMAND)
+    },
+    drifterIntrinsic: {},
+    starchartCompletion: {},
+  }
+
+  const subcategoryLabels: MasterySubcategoryLabels = {
+    itemCompletion: {},
+    railjackIntrinsic: {},
+    drifterIntrinsic: {},
+    starchartCompletion: {},
+  }
+
+  for (const [intrinsicKey, intrinsic] of Object.entries(intrinsicsMap)) {
+    if (!data.railjackIntrinsic[intrinsicKey]) {
+      data.railjackIntrinsic[intrinsicKey] = []
+    }
+
+    const schoolFallback = intrinsicKey.replace('LPS_', '').toLowerCase()
+    const schoolName = resolveDictName(dict, intrinsic.name, schoolFallback)
+    subcategoryLabels.railjackIntrinsic[intrinsicKey] = schoolName
+    const ranks = intrinsic.ranks ?? []
+
+    if (ranks.length === 0) {
+      data.railjackIntrinsic[intrinsicKey].push({
+        id: `intrinsic:${intrinsicKey}`,
+        name: schoolName,
+        iconUrl: buildIconUrl(intrinsic.icon),
+      })
+      continue
+    }
+
+    for (const [index, rank] of ranks.entries()) {
+      const rankNumber = index + 1
+      const rankFallback = `${schoolName} ${rankNumber}`
+      const rankName = resolveDictName(dict, rank.name, rankFallback)
+
+      data.railjackIntrinsic[intrinsicKey].push({
+        id: `intrinsic:${intrinsicKey}:${rankNumber}`,
+        name: rankName,
+        iconUrl: buildIconUrl(intrinsic.icon),
+        rankNumber,
+      })
+    }
   }
 
   for (const [path, frame] of Object.entries(warframesMap)) {
     const category = frame.productCategory
-    let targetCategory: MasteryCategory | null = null
+    let targetSubcategory: string | null = null
 
     if (category === 'Suits') {
-      targetCategory = 'warframe'
+      targetSubcategory = 'warframe'
     } else if (category === 'SpaceSuits') {
-      targetCategory = 'archwing'
+      targetSubcategory = 'archwing'
     } else if (category === 'MechSuits') {
-      targetCategory = 'necramech'
+      targetSubcategory = 'necramech'
     }
 
-    if (!targetCategory) {
+    if (!targetSubcategory) {
       continue
     }
 
     const fallback = path.split('/').pop() ?? path
-    data[targetCategory].push({
+    data.itemCompletion[targetSubcategory].push({
       id: `warframe:${path}`,
       name: resolveDictName(dict, frame.name, fallback),
       iconUrl: buildIconUrl(frame.icon),
@@ -184,42 +217,42 @@ export function buildMasteryData(
 
     const category = weapon.productCategory
     const partType = weapon.partType
-    let targetCategory: MasteryCategory | null = null
+    let targetSubcategory: string | null = null
 
     if (partType === 'LWPT_AMP_OCULUS') {
-      targetCategory = 'amp'
+      targetSubcategory = 'amp'
     } else if (partType === 'LWPT_HB_DECK') {
-      targetCategory = 'kDrive'
+      targetSubcategory = 'kDrive'
     } else if (partType === 'LWPT_BLADE') {
-      targetCategory = 'zaw'
+      targetSubcategory = 'zaw'
     } else if (partType === 'LWPT_GUN_BARREL') {
-      targetCategory = 'kitgun'
+      targetSubcategory = 'kitgun'
     } else if (partType === 'LWPT_MOA_HEAD') {
-      targetCategory = 'moa'
+      targetSubcategory = 'moa'
     } else if (partType === 'LWPT_ZANUKA_HEAD') {
-      targetCategory = 'hound'
+      targetSubcategory = 'hound'
     } else if (category === 'LongGuns') {
-      targetCategory = 'primary'
+      targetSubcategory = 'primary'
     } else if (category === 'Pistols') {
-      targetCategory = 'secondary'
+      targetSubcategory = 'secondary'
     } else if (category === 'Melee') {
-      targetCategory = 'melee'
+      targetSubcategory = 'melee'
     } else if (category === 'SpaceMelee') {
-      targetCategory = 'archmelee'
+      targetSubcategory = 'archmelee'
     } else if (category === 'SpaceGuns') {
-      targetCategory = 'archgun'
+      targetSubcategory = 'archgun'
     } else if (category === 'OperatorAmps') {
-      targetCategory = 'amp'
+      targetSubcategory = 'amp'
     } else if (category === 'SentinelWeapons') {
-      targetCategory = 'robotic'
+      targetSubcategory = 'robotic'
     }
 
-    if (!targetCategory) {
+    if (!targetSubcategory) {
       continue
     }
 
     const fallback = path.split('/').pop() ?? path
-    data[targetCategory].push({
+    data.itemCompletion[targetSubcategory].push({
       id: `weapon:${path}`,
       name: resolveDictName(dict, weapon.name, fallback),
       iconUrl: buildIconUrl(weapon.icon),
@@ -229,20 +262,20 @@ export function buildMasteryData(
 
   for (const [path, sentinel] of Object.entries(sentinelsMap)) {
     const category = sentinel.productCategory
-    let targetCategory: MasteryCategory | null = null
+    let targetSubcategory: string | null = null
 
     if (category === 'Sentinels') {
-      targetCategory = 'sentinel'
+      targetSubcategory = 'sentinel'
     } else if (category === 'KubrowPets' || category === 'SpecialItems') {
-      targetCategory = 'beast'
+      targetSubcategory = 'beast'
     }
 
-    if (!targetCategory) {
+    if (!targetSubcategory) {
       continue
     }
 
     const fallback = path.split('/').pop() ?? path
-    data[targetCategory].push({
+    data.itemCompletion[targetSubcategory].push({
       id: `sentinel:${path}`,
       name: resolveDictName(dict, sentinel.name, fallback),
       iconUrl: buildIconUrl(sentinel.icon),
@@ -250,24 +283,24 @@ export function buildMasteryData(
     })
   }
 
+  // Filter empty subcategories per category to avoid showing irrelevant items
+  const filterEmptySubcategories = <T extends Record<string, MasteryItem[]>>(
+    categoryData: T
+  ): T => {
+    const result: Record<string, MasteryItem[]> = {}
+    for (const [key, items] of Object.entries(categoryData)) {
+      if (items.length > 0) {
+        result[key] = toSortedItems(items)
+      }
+    }
+    return result as T
+  }
+
   return {
-    warframe: toSortedItems(data.warframe),
-    primary: toSortedItems(data.primary),
-    secondary: toSortedItems(data.secondary),
-    melee: toSortedItems(data.melee),
-    kitgun: toSortedItems(data.kitgun),
-    zaw: toSortedItems(data.zaw),
-    amp: toSortedItems(data.amp),
-    sentinel: toSortedItems(data.sentinel),
-    moa: toSortedItems(data.moa),
-    hound: toSortedItems(data.hound),
-    beast: toSortedItems(data.beast),
-    robotic: toSortedItems(data.robotic),
-    archwing: toSortedItems(data.archwing),
-    archgun: toSortedItems(data.archgun),
-    archmelee: toSortedItems(data.archmelee),
-    necramech: toSortedItems(data.necramech),
-    railjack: toSortedItems(data.railjack),
-    kDrive: toSortedItems(data.kDrive),
+    itemCompletion: filterEmptySubcategories(data.itemCompletion),
+    railjackIntrinsic: data.railjackIntrinsic,
+    drifterIntrinsic: filterEmptySubcategories(data.drifterIntrinsic),
+    starchartCompletion: filterEmptySubcategories(data.starchartCompletion),
+    subcategoryLabels,
   }
 }
