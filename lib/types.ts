@@ -65,3 +65,33 @@ export type TranscriptLine = {
   content: string
   type: Type
 }
+
+// Checklist related types
+export type ChecklistCategory = 'daily' | 'weekly' | 'other'
+
+export type ChecklistTask = {
+  id: string
+  title: string
+  location?: string
+  terminal?: string
+  info?: string
+  prerequisite?: string
+  npc?: string
+  checkable?: boolean
+  resets?: 'daily' | 'weekly' | 'baro'
+  subitems?: ChecklistTask[]
+}
+
+export type ChecklistState = {
+  daily: {
+    periodKey: string
+    completed: Record<string, boolean>
+  }
+  weekly: {
+    periodKey: string
+    completed: Record<string, boolean>
+  }
+  other: {
+    completed: Record<string, boolean>
+  }
+}

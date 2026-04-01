@@ -3,7 +3,7 @@
 import { KimWindow } from '@/components/windows/kim'
 import { usePathname } from 'next/navigation'
 
-export default function Layout({ children }: LayoutProps<'/kim'>) {
+export default function Layout({ children }: LayoutProps<'/[locale]/kim'>) {
   const pathname = usePathname()
   const isKimHome = pathname === '/kim'
 

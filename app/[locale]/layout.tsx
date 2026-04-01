@@ -5,6 +5,10 @@ import { Taskbar } from '@/components/taskbar'
 import { MigrationBridge } from '@/components/migration-bridge'
 import { getSiteOrigin } from '@/lib/seo'
 import './globals.css'
+import { hasLocale, NextIntlClientProvider } from 'next-intl'
+import { routing } from '@/i18n/routing'
+import { notFound } from 'next/navigation'
+import { setRequestLocale } from 'next-intl/server'
 
 const oxanium = Oxanium({
   variable: '--font-ui-sans',
@@ -77,22 +81,36 @@ export const metadata: Metadata = {
   category: 'games',
 }
 
-export default function RootLayout({
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }))
+}
+
+export default async function RootLayout({
   children,
-}: Readonly<{
-  children: React.ReactNode
-}>) {
+  params,
+}: LayoutProps<'/[locale]'>) {
+  const { locale } = await params
+
+  if (!hasLocale(routing.locales, locale)) {
+    notFound()
+  }
+
+  // Enable static rendering
+  setRequestLocale(locale)
+
   return (
-    <html lang="en">
+    <html lang={locale}>
       <body
         className={`${oxanium.variable} ${cormorantGaramond.variable} antialiased`}
       >
         <div className="kim-background min-h-screen overflow-y-auto text-foreground md:h-screen md:overflow-hidden">
-          <main className="mx-auto flex min-h-screen w-full max-w-325 flex-col overflow-y-auto p-2 sm:p-4 md:h-screen md:overflow-hidden">
-            {children}
+          <NextIntlClientProvider>
+            <main className="mx-auto flex min-h-screen w-full max-w-325 flex-col overflow-y-auto p-2 sm:p-4 md:h-screen md:overflow-hidden">
+              {children}
 
-            <Taskbar />
-          </main>
+              <Taskbar />
+            </main>
+          </NextIntlClientProvider>
         </div>
         <Analytics />
         <MigrationBridge />
