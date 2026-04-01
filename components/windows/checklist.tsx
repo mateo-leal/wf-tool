@@ -8,7 +8,7 @@ export async function ChecklistWindow() {
   const t = await getTranslations('checklist')
 
   return (
-    <Window className="relative mt-0 h-[calc(100svh-5.5rem)] min-h-75 max-w-none md:mt-10 md:h-[75svh]">
+    <Window className="relative mt-0 h-[calc(100svh-5.5rem)] min-h-75 max-w-none md:mt-10 md:h-[85svh]">
       <WindowTitlebar>
         <p className="window-title">{t('title')}</p>
       </WindowTitlebar>
