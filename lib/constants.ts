@@ -19,3 +19,4 @@ export const ALL_MIGRATION_KEYS = [
 ] as const
 
 export const CHECKLIST_STORAGE_KEY = 'wf-checklist:v1'
+export const MASTERY_CHECKLIST_STORAGE_KEY = 'wf-mastery-checklist:v1'

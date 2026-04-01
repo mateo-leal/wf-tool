@@ -1,5 +1,9 @@
-import Link from 'next/link'
-import { ChatCircleTextIcon, ListChecksIcon } from '@phosphor-icons/react/ssr'
+import { Link } from '@/i18n/navigation'
+import {
+  ChatCircleTextIcon,
+  ListChecksIcon,
+  MedalMilitaryIcon,
+} from '@phosphor-icons/react/ssr'
 
 const DESKTOP_SHORTCUTS = [
   {
@@ -11,6 +15,11 @@ const DESKTOP_SHORTCUTS = [
     href: 'kim',
     label: 'KIM',
     Icon: ChatCircleTextIcon,
+  },
+  {
+    href: 'mastery',
+    label: 'Mastery Checklist',
+    Icon: MedalMilitaryIcon,
   },
 ]
 

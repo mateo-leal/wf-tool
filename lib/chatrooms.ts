@@ -21,43 +21,43 @@ export const CHATROOM_SOURCE_BY_ID: Record<string, string> = {
 export const SPEAKERS = [
   {
     alias: ['Arthur', 'Broadsword'],
-    icon: 'https://wiki.warframe.com/images/ArthurPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/ArthurPixelGlyph.png',
   },
   {
     alias: ['Eleanor', 'Salem'],
-    icon: 'https://wiki.warframe.com/images/EleanorPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/EleanorPixelGlyph.png',
   },
   {
     alias: ['Lettie', 'Belladonna ~{@'],
-    icon: 'https://wiki.warframe.com/images/LettiePixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/LettiePixelGlyph.png',
   },
   {
     alias: ['Amir', 'H16h V0l7463', 'Jabir'],
-    icon: 'https://wiki.warframe.com/images/AmirPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/AmirPixelGlyph.png',
   },
   {
     alias: ['Aoi', 'xX GLIMMER Xx'],
-    icon: 'https://wiki.warframe.com/images/AoiPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/AoiPixelGlyph.png',
   },
   {
     alias: ['Quincy', 'Soldja1Shot1kil'],
-    icon: 'https://wiki.warframe.com/images/QuincyPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/QuincyPixelGlyph.png',
   },
   {
     alias: ['Flare', 'Liminus_Star'],
-    icon: 'https://wiki.warframe.com/images/FlarePixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/FlarePixelGlyph.png',
   },
   {
     alias: ['Kaya', 'KOLTrial_5115'],
-    icon: 'https://wiki.warframe.com/images/KayaPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/KayaPixelGlyph.png',
   },
   {
     alias: ['Minerva', 'MomToxicated'],
-    icon: 'https://wiki.warframe.com/images/MinervaPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/MinervaPixelGlyph.png',
   },
   {
     alias: ['Velimir', 'PapaPolar'],
-    icon: 'https://wiki.warframe.com/images/VelimirPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/VelimirPixelGlyph.png',
   },
   {
     alias: ['Loid', 'POM2_LAB1'],
@@ -86,47 +86,47 @@ export const HEX_CHATROOMS = [
   {
     id: 'arthur',
     name: 'Broadsword (Arthur)',
-    icon: 'https://wiki.warframe.com/images/ArthurPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/ArthurPixelGlyph.png',
   },
   {
     id: 'eleanor',
     name: 'Salem (Eleanor)',
-    icon: 'https://wiki.warframe.com/images/EleanorPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/EleanorPixelGlyph.png',
   },
   {
     id: 'lettie',
     name: 'Belladona ~{@ (Lettie)',
-    icon: 'https://wiki.warframe.com/images/LettiePixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/LettiePixelGlyph.png',
   },
   {
     id: 'amir',
     name: 'H16h V0l7463 (Amir)',
-    icon: 'https://wiki.warframe.com/images/AmirPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/AmirPixelGlyph.png',
   },
   {
     id: 'aoi',
     name: 'xX GLIMMER Xx (Aoi)',
-    icon: 'https://wiki.warframe.com/images/AoiPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/AoiPixelGlyph.png',
   },
   {
     id: 'quincy',
     name: 'Soldja1Shot1kil (Quincy)',
-    icon: 'https://wiki.warframe.com/images/QuincyPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/QuincyPixelGlyph.png',
   },
   {
     id: 'flare',
     name: 'Liminus_Star (Flare)',
-    icon: 'https://wiki.warframe.com/images/FlarePixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/FlarePixelGlyph.png',
   },
   {
     id: 'kaya',
     name: 'KOLTrial_5115 (Kaya)',
-    icon: 'https://wiki.warframe.com/images/KayaPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/KayaPixelGlyph.png',
   },
   {
     id: 'minerva-velimir',
     name: 'Minerva & Velimir',
-    icon: 'https://wiki.warframe.com/images/MinervaPixelGlyph.png',
+    icon: 'https://browse.wf/Lotus/Interface/Icons/Player/MinervaPixelGlyph.png',
   },
 ]
 

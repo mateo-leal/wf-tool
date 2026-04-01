@@ -1,17 +1,19 @@
 'use client'
 
-import Link from 'next/link'
 import {
   ChatCircleTextIcon,
-  GithubLogoIcon,
+  GearSixIcon,
   ListChecksIcon,
+  MedalMilitaryIcon,
 } from '@phosphor-icons/react'
-import { usePathname } from 'next/navigation'
+import { SettingsPortal } from './windows/settings'
 import { useEffect, useMemo, useState } from 'react'
+import { Link, usePathname } from '@/i18n/navigation'
 
 export function Taskbar() {
   const pathname = usePathname()
   const [now, setNow] = useState(() => new Date())
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -22,6 +24,23 @@ export function Taskbar() {
       window.clearInterval(interval)
     }
   }, [])
+
+  useEffect(() => {
+    if (!isSettingsOpen) {
+      return
+    }
+
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        setIsSettingsOpen(false)
+      }
+    }
+
+    window.addEventListener('keydown', handleEscape)
+    return () => {
+      window.removeEventListener('keydown', handleEscape)
+    }
+  }, [isSettingsOpen])
 
   const timeLabel = useMemo(
     () =>
@@ -87,21 +106,46 @@ export function Taskbar() {
               ].join(' ')}
             />
           </Link>
-
           <Link
-            href="https://github.com/mateo-leal/wf-tool"
-            target="_blank"
-            rel="noopener noreferrer"
-            title="GitHub Repository"
-            aria-label="Open GitHub repository"
+            href="/mastery"
+            aria-label="Open Mastery Checklist"
+            title="Mastery Checklist"
             className="group relative flex size-11 items-center justify-center rounded-2xl transition hover:bg-black/10"
           >
-            <GithubLogoIcon
+            <MedalMilitaryIcon
               size={28}
+              weight={pathname === '/mastery' ? 'fill' : 'regular'}
               className="transition group-hover:scale-105"
             />
-            <span className="absolute bottom-1 h-1 w-1.5 rounded-full bg-neutral-900/60 opacity-60 transition-all group-hover:w-3" />
+            <span
+              className={[
+                'absolute bottom-1 h-1 rounded-full bg-neutral-900 transition-all',
+                pathname === '/mastery'
+                  ? 'w-5'
+                  : 'w-1.5 opacity-60 group-hover:w-3',
+              ].join(' ')}
+            />
           </Link>
+
+          <button
+            type="button"
+            aria-label="Open settings"
+            title="Settings"
+            onClick={() => setIsSettingsOpen(true)}
+            className="group relative flex size-11 items-center justify-center rounded-2xl transition hover:bg-black/10"
+          >
+            <GearSixIcon
+              size={28}
+              weight={isSettingsOpen ? 'fill' : 'regular'}
+              className="transition group-hover:scale-105"
+            />
+            <span
+              className={[
+                'absolute bottom-1 h-1 rounded-full bg-neutral-900 transition-all',
+                isSettingsOpen ? 'w-5' : 'w-1.5 opacity-60 group-hover:w-3',
+              ].join(' ')}
+            />
+          </button>
           {/* <Link href="/test">Test</Link> */}
         </div>
       </div>
@@ -110,6 +154,11 @@ export function Taskbar() {
         <div className="font-medium tracking-widest">{timeLabel}</div>
         <div className="-tracking-tighter opacity-80">{dateLabel}</div>
       </div>
+
+      <SettingsPortal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
     </footer>
   )
 }

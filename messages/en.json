@@ -31,20 +31,20 @@
     "helminth": "Helminth"
   },
   "quests": {
-    "sayasVigil": "Saya's Vigil",
-    "theWarWithin": "The War Within",
     "voxSolaris": "Vox Solaris",
     "heartOfDeimos": "Heart of Deimos",
+    "theSecondDream": "The Second Dream",
+    "theWarWithin": "The War Within",
+    "risingTide": "Rising Tide",
+    "theChainsOfHarrow": "The Chains of Harrow",
+    "theNewWar": "The New War",
+    "theDuviriParadox": "The Duviri Paradox",
     "angelsOfTheZariman": "Angels of the Zariman",
     "whispersInTheWalls": "Whispers in the Walls",
     "theHex": "The Hex",
-    "theSecondDream": "The Second Dream",
-    "risingTide": "Rising Tide",
     "theOldPeace": "The Old Peace",
-    "aManOfFewWords": "A Man of Few Words",
-    "theNewWar": "The New War",
-    "theDuviriParadox": "The Duviri Paradox",
-    "theChainsOfHarrow": "The Chains of Harrow"
+    "sayasVigil": "Saya's Vigil",
+    "aManOfFewWords": "A Man of Few Words"
   },
   "prerequisites": {
     "steelPath": "Steel Path Unlocked",
@@ -166,6 +166,57 @@
         "voidplumeTrade": "Trade for Voidplumes",
         "vocaTrade": "Trade for Voca"
       }
+    }
+  },
+  "masteryChecklist": {
+    "title": "Mastery Checklist",
+    "categories": {
+      "itemCompletion": "Item Completion",
+      "railjackIntrinsic": "Railjack Intrinsic",
+      "drifterIntrinsic": "Drifter Intrinsic",
+      "starchartCompletion": "Starchart Completion"
+    },
+    "subcategories": {
+      "warframe": "Warframe",
+      "primary": "Primary",
+      "secondary": "Secondary",
+      "melee": "Melee",
+      "kitgun": "Kitgun",
+      "zaw": "Zaw",
+      "amp": "Amp",
+      "sentinel": "Sentinel",
+      "moa": "MOA",
+      "hound": "Hound",
+      "beast": "Beast",
+      "robotic": "Robotic",
+      "archwing": "Archwing",
+      "archgun": "Archgun",
+      "archmelee": "Archmelee",
+      "necramech": "Necramech",
+      "railjack": "Railjack",
+      "kDrive": "K-Drive"
+    },
+    "doneCount": "{count}/{total} done",
+    "masteryPointsProgress": "{gained, number}/{total, number} MP",
+    "masteryPoints": "{points, number} MP",
+    "searchPlaceholder": "Search by name...",
+    "clearCategory": "Clear category",
+    "activeCategoryCount": "{count} items in {category}",
+    "rankPrefix": "Rank {rank}: {item}",
+    "masteryRequirement": "Mastery Rank",
+    "loading": "Loading items...",
+    "loadFailed": "Could not load mastery data right now.",
+    "emptyState": "No items match your current filter."
+  },
+  "settings": {
+    "title": "Settings",
+    "language": "Language",
+    "githubRepository": "GitHub Repository",
+    "about": {
+      "title": "About",
+      "description": "Tenno Companion is a fan-made tool designed to help players track their progress and manage their in-game tasks.",
+      "legalDisclaimer": "This site is not affiliated with Digital Extremes. Warframe and the Warframe logo are trademarks of Digital Extremes Ltd.",
+      "browseWfCredits": "Data and media resources are provided by <link>browse.wf</link>, a community-driven Warframe database and resource site."
     }
   }
 }

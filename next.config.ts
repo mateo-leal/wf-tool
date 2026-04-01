@@ -3,7 +3,13 @@ import createNextIntlPlugin from 'next-intl/plugin'
 
 const nextConfig: NextConfig = {
   images: {
-    remotePatterns: [new URL('https://wiki.warframe.com/images/**')],
+    remotePatterns: [
+      new URL('https://wiki.warframe.com/images/**'),
+      {
+        protocol: 'https',
+        hostname: 'browse.wf',
+      },
+    ],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
   },
 }
