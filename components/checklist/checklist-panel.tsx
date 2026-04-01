@@ -14,6 +14,10 @@ import {
 import { useEffect, useRef, useState } from 'react'
 import { CHECKLIST_STORAGE_KEY } from '@/lib/constants'
 import { ChecklistState, ChecklistTask } from '@/lib/types'
+import {
+  fetchOracleWorldState,
+  getVoidTraderNode,
+} from '@/lib/world-state/fetch-world-state'
 import { useTranslations } from 'next-intl'
 import { ChecklistSectionCard } from './checklist-section-card'
 
@@ -52,6 +56,7 @@ export function ChecklistPanel() {
     return loadChecklistState(current)
   })
   const [now, setNow] = useState(() => new Date())
+  const [baroNode, setBaroNode] = useState<string | null>(null)
   const skipFirstPersistRef = useRef(true)
 
   useEffect(() => {
@@ -99,6 +104,34 @@ export function ChecklistPanel() {
     }, 30_000)
 
     return () => {
+      window.clearInterval(interval)
+    }
+  }, [])
+
+  useEffect(() => {
+    let isCancelled = false
+
+    async function loadWorldState() {
+      try {
+        const worldState = await fetchOracleWorldState()
+        if (!isCancelled) {
+          setBaroNode(getVoidTraderNode(worldState))
+        }
+      } catch {
+        if (!isCancelled) {
+          setBaroNode(null)
+        }
+      }
+    }
+
+    void loadWorldState()
+
+    const interval = window.setInterval(() => {
+      void loadWorldState()
+    }, 15 * 60_000) // every 15 minutes
+
+    return () => {
+      isCancelled = true
       window.clearInterval(interval)
     }
   }, [])
@@ -167,6 +200,12 @@ export function ChecklistPanel() {
     const baroTask = CHECKLIST_TASKS.other.find(
       (task) => task.id === 'other-baro'
     ) as ChecklistTask
+
+    const resolvedBaroLocation = baroNode
+      ? `locations.${baroNode}`
+      : 'checklist.other.relayLocationPending'
+
+    baroTask.location = resolvedBaroLocation
 
     if (isBaroAvailable) {
       return baroTask ? [baroTask, ...base] : base

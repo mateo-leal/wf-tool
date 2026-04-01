@@ -18,7 +18,8 @@
     "dormizone": "Dormizone, Zariman",
     "marooBazaar": "Maroo's Bazaar, Mars",
     "darkRefactory": "Dark Refactory, Base of Operations",
-    "ironWake": "Iron Wake, Earth"
+    "ironWake": "Iron Wake, Earth",
+    "EarthHUB": "Strata Relay, Earth"
   },
   "terminal": {
     "title": "Terminal",
@@ -157,6 +158,7 @@
     "other": {
       "title": "Other",
       "description": "Manual checklist for event/goal-based tasks",
+      "relayLocationPending": "Fetching relay location...",
       "tasks": {
         "baroInfo": "Check Baro Ki'Teer's inventory and purchase desired items with Ducats (trade Prime parts for Ducats).",
         "entratiTokens": "Trade Entrati Tokens",
