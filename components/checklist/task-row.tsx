@@ -127,63 +127,70 @@ export function TaskRow({
         >
           {t(task.title)}
         </p>
-        {task.info && (
-          <p className="mt-1 text-xs leading-snug text-muted-foreground">
-            {t(task.info)}
-          </p>
+        {!checked && (
+          <>
+            {task.info && (
+              <p className="mt-1 text-xs leading-snug text-muted-foreground">
+                {t(task.info)}
+              </p>
+            )}
+            {hasMetaItems && (
+              <ul className="mt-1 text-xs leading-snug text-muted-foreground">
+                {counter && (
+                  <li className="text-primary">
+                    <ClockCountdownIcon
+                      size={14}
+                      className="inline-block mr-1"
+                    />
+                    {t(`checklist.counters.${counter.label}`, {
+                      time: counter.time,
+                    })}
+                  </li>
+                )}
+                {task.location && (
+                  <li>
+                    <MapPinIcon
+                      size={14}
+                      className="inline-block mr-1"
+                      alt={t('locations.title')}
+                    />
+                    {t(task.location)}
+                  </li>
+                )}
+                {task.terminal && (
+                  <li>
+                    <AppWindowIcon
+                      size={14}
+                      className="inline-block mr-1"
+                      alt={t('terminal.title')}
+                    />
+                    {t(task.terminal)}
+                  </li>
+                )}
+                {task.npc && (
+                  <li>
+                    <UserIcon
+                      size={14}
+                      className="inline-block mr-1"
+                      alt={t('npcs.title')}
+                    />
+                    {t(task.npc)}
+                  </li>
+                )}
+                {task.prerequisite && (
+                  <li>
+                    <CheckCircleIcon
+                      size={14}
+                      className="inline-block mr-1"
+                      alt={t('checklist.prerequisite')}
+                    />
+                    {t(task.prerequisite)}
+                  </li>
+                )}
+              </ul>
+            )}
+          </>
         )}
-        {hasMetaItems ? (
-          <ul className="mt-1 text-xs leading-snug text-muted-foreground">
-            {counter && (
-              <li className="text-primary">
-                <ClockCountdownIcon size={14} className="inline-block mr-1" />
-                {t(`checklist.counters.${counter.label}`, {
-                  time: counter.time,
-                })}
-              </li>
-            )}
-            {task.location && (
-              <li>
-                <MapPinIcon
-                  size={14}
-                  className="inline-block mr-1"
-                  alt={t('locations.title')}
-                />
-                {t(task.location)}
-              </li>
-            )}
-            {task.terminal && (
-              <li>
-                <AppWindowIcon
-                  size={14}
-                  className="inline-block mr-1"
-                  alt={t('terminal.title')}
-                />
-                {t(task.terminal)}
-              </li>
-            )}
-            {task.npc && (
-              <li>
-                <UserIcon
-                  size={14}
-                  className="inline-block mr-1"
-                  alt={t('npcs.title')}
-                />
-                {t(task.npc)}
-              </li>
-            )}
-            {task.prerequisite && (
-              <li>
-                <CheckCircleIcon
-                  size={14}
-                  className="inline-block mr-1"
-                  alt={t('checklist.prerequisite')}
-                />
-                {t(task.prerequisite)}
-              </li>
-            )}
-          </ul>
-        ) : null}
       </span>
     </button>
   )
