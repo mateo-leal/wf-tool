@@ -94,3 +94,8 @@ export type ChecklistState = {
   weekly: ChecklistGroup
   other: Omit<ChecklistGroup, 'periodKey'>
 }
+
+export type ChecklistCounter = {
+  label: 'resetsIn' | 'arrivesIn' | 'leavesIn'
+  time: string
+}

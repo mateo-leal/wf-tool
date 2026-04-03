@@ -1,5 +1,10 @@
 import { DAILY_TASKS, OTHER_TASKS, WEEKLY_TASKS } from './tasks'
-import type { ChecklistCategory, ChecklistState, ChecklistTask } from './types'
+import type {
+  ChecklistCategory,
+  ChecklistCounter,
+  ChecklistState,
+  ChecklistTask,
+} from './types'
 
 // Known Baro weekend anchor in UTC. Availability repeats every 14 days.
 // Baro arrives Friday 13:00 UTC and leaves Sunday 13:00 UTC.
@@ -245,7 +250,7 @@ export function getTimeUntilNextBaroChange(now: Date): number {
 export function getChecklistTaskCounter(
   task: Pick<ChecklistTask, 'resets'>,
   now: Date
-): { label: 'resetsIn' | 'arrivesIn' | 'leavesIn'; time: string } | undefined {
+): ChecklistCounter | undefined {
   switch (task.resets) {
     case 'daily':
       return {

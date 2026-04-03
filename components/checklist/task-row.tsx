@@ -1,4 +1,4 @@
-import { ChecklistTask } from '@/lib/types'
+import { ChecklistCounter, ChecklistTask } from '@/lib/types'
 import { Button } from '../ui/button'
 import { getChecklistTaskCounter } from '@/lib/checklist'
 import {
@@ -11,6 +11,16 @@ import {
   XIcon,
 } from '@phosphor-icons/react'
 import { useTranslations } from 'next-intl'
+import { cn } from '@/lib/utils' // Standard utility for tailwind classes
+
+interface TaskRowProps {
+  task: ChecklistTask
+  now: Date
+  checked: boolean
+  checkable?: boolean
+  onToggle: () => void
+  onToggleHidden: () => void
+}
 
 export function TaskRow({
   task,
@@ -19,202 +29,74 @@ export function TaskRow({
   checkable = true,
   onToggle,
   onToggleHidden,
-}: {
-  task: ChecklistTask
-  now: Date
-  checked: boolean
-  checkable?: boolean
-  onToggle: () => void
-  onToggleHidden: () => void
-}) {
+}: TaskRowProps) {
   const t = useTranslations()
   const counter = getChecklistTaskCounter(task, now)
-  const hasMetaItems = Boolean(
-    task.location || task.terminal || task.prerequisite || task.npc || counter
-  )
 
-  if (!checkable) {
-    return (
-      <div className="flex w-full items-start justify-between gap-3 border border-muted-primary/70 bg-cathedrale/45 p-2 text-left">
-        <div className="flex min-w-0 items-start gap-2">
-          <span className="mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center border border-muted-primary text-[11px] leading-none text-primary">
-            i
-          </span>
-          <span className="min-w-0">
-            <p className="text-sm leading-tight text-foreground">
-              {t(task.title)}
-            </p>
+  // Logic for showing details: always show if not checkable, or show if not checked
+  const showDetails = !checkable || !checked
+
+  const Content = (
+    <>
+      <div
+        className={cn(
+          'mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center border text-[11px] leading-none',
+          !checkable && 'border-muted-primary text-primary',
+          checkable &&
+            checked &&
+            'border-success-border bg-success-bg text-success',
+          checkable && !checked && 'border-muted-primary text-muted-foreground'
+        )}
+      >
+        {!checkable ? 'i' : checked ? <XIcon weight="bold" /> : null}
+      </div>
+      <div className="min-w-0">
+        <p
+          className={cn(
+            'text-sm leading-tight',
+            checkable && checked
+              ? 'text-muted-foreground line-through'
+              : 'text-foreground'
+          )}
+        >
+          {t(task.title)}
+        </p>
+        {showDetails && (
+          <>
             {task.info && (
               <p className="mt-1 text-xs leading-snug text-muted-foreground">
                 {t(task.info)}
               </p>
             )}
-            {hasMetaItems ? (
-              <ul className="mt-1 text-xs leading-snug text-muted-foreground">
-                {counter && (
-                  <li className="text-primary">
-                    <ClockCountdownIcon
-                      size={14}
-                      className="inline-block mr-1"
-                    />
-                    {t(`checklist.counters.${counter.label}`, {
-                      time: counter.time,
-                    })}
-                  </li>
-                )}
-                {task.location && (
-                  <li>
-                    <MapPinIcon
-                      size={14}
-                      className="inline-block mr-1"
-                      alt={t('locations.title')}
-                    />
-                    {t(task.location)}
-                  </li>
-                )}
-                {task.terminal && (
-                  <li>
-                    <AppWindowIcon
-                      size={14}
-                      className="inline-block mr-1"
-                      alt={t('terminal.title')}
-                    />
-                    {t(task.terminal)}
-                  </li>
-                )}
-                {task.npc && (
-                  <li>
-                    <UserIcon
-                      size={14}
-                      className="inline-block mr-1"
-                      alt={t('npcs.title')}
-                    />
-                    {t(task.npc)}
-                  </li>
-                )}
-                {task.prerequisite && (
-                  <li>
-                    <CheckCircleIcon
-                      size={14}
-                      className="inline-block mr-1"
-                      alt={t('checklist.prerequisite')}
-                    />
-                    {t(task.prerequisite)}
-                  </li>
-                )}
-              </ul>
-            ) : null}
-          </span>
-        </div>
-        <Button
-          size="sm"
-          variant="ghost"
-          onClick={onToggleHidden}
-          aria-label={t('ui.hide')}
-          title={t('ui.hide')}
-          className="size-6 px-0"
-        >
-          <EyeSlashIcon size={14} weight="bold" />
-        </Button>
+            <TaskMeta task={task} counter={counter} />
+          </>
+        )}
       </div>
-    )
-  }
+    </>
+  )
 
   return (
-    <div className="flex w-full items-start justify-between gap-3 border border-muted-primary/70 bg-background/50 p-2 text-left transition hover:bg-muted-primary/10">
-      <button
-        type="button"
-        onClick={onToggle}
-        className="flex min-w-0 flex-1 items-start gap-2 text-left"
-        aria-pressed={checked}
-      >
-        <span
-          className={[
-            'mt-0.5 inline-flex h-4 w-4 shrink-0 items-center justify-center border text-[11px] leading-none',
-            checked
-              ? 'border-success-border bg-success-bg text-success'
-              : 'border-muted-primary text-muted-foreground',
-          ].join(' ')}
+    <div
+      className={cn(
+        'flex w-full items-start justify-between gap-3 border border-muted-primary/70 p-2 text-left transition',
+        !checkable
+          ? 'bg-cathedrale/45'
+          : 'bg-background/50 hover:bg-muted-primary/10'
+      )}
+    >
+      {checkable ? (
+        <button
+          type="button"
+          onClick={onToggle}
+          className="flex min-w-0 flex-1 items-start gap-2 text-left"
+          aria-pressed={checked}
         >
-          {checked ? <XIcon weight="bold" /> : ''}
-        </span>
-        <span className="min-w-0">
-          <p
-            className={[
-              'text-sm leading-tight',
-              checked
-                ? 'text-muted-foreground line-through'
-                : 'text-foreground',
-            ].join(' ')}
-          >
-            {t(task.title)}
-          </p>
-          {!checked && (
-            <>
-              {task.info && (
-                <p className="mt-1 text-xs leading-snug text-muted-foreground">
-                  {t(task.info)}
-                </p>
-              )}
-              {hasMetaItems && (
-                <ul className="mt-1 text-xs leading-snug text-muted-foreground">
-                  {counter && (
-                    <li className="text-primary">
-                      <ClockCountdownIcon
-                        size={14}
-                        className="inline-block mr-1"
-                      />
-                      {t(`checklist.counters.${counter.label}`, {
-                        time: counter.time,
-                      })}
-                    </li>
-                  )}
-                  {task.location && (
-                    <li>
-                      <MapPinIcon
-                        size={14}
-                        className="inline-block mr-1"
-                        alt={t('locations.title')}
-                      />
-                      {t(task.location)}
-                    </li>
-                  )}
-                  {task.terminal && (
-                    <li>
-                      <AppWindowIcon
-                        size={14}
-                        className="inline-block mr-1"
-                        alt={t('terminal.title')}
-                      />
-                      {t(task.terminal)}
-                    </li>
-                  )}
-                  {task.npc && (
-                    <li>
-                      <UserIcon
-                        size={14}
-                        className="inline-block mr-1"
-                        alt={t('npcs.title')}
-                      />
-                      {t(task.npc)}
-                    </li>
-                  )}
-                  {task.prerequisite && (
-                    <li>
-                      <CheckCircleIcon
-                        size={14}
-                        className="inline-block mr-1"
-                        alt={t('checklist.prerequisite')}
-                      />
-                      {t(task.prerequisite)}
-                    </li>
-                  )}
-                </ul>
-              )}
-            </>
-          )}
-        </span>
-      </button>
+          {Content}
+        </button>
+      ) : (
+        <div className="flex min-w-0 items-start gap-2">{Content}</div>
+      )}
+
       <Button
         size="sm"
         variant="ghost"
@@ -226,5 +108,70 @@ export function TaskRow({
         <EyeSlashIcon size={14} weight="bold" />
       </Button>
     </div>
+  )
+}
+
+function TaskMeta({
+  task,
+  counter,
+}: {
+  task: ChecklistTask
+  counter: ChecklistCounter | undefined
+}) {
+  const t = useTranslations()
+
+  const items = [
+    {
+      condition: !!counter,
+      icon: ClockCountdownIcon,
+      label:
+        counter &&
+        t(`checklist.counters.${counter.label}`, { time: counter.time }),
+      className: 'text-primary',
+    },
+    {
+      condition: !!task.location,
+      icon: MapPinIcon,
+      label: task.location && t(task.location),
+      alt: t('locations.title'),
+    },
+    {
+      condition: !!task.terminal,
+      icon: AppWindowIcon,
+      label: task.terminal && t(task.terminal),
+      alt: t('terminal.title'),
+    },
+    {
+      condition: !!task.npc,
+      icon: UserIcon,
+      label: task.npc && t(task.npc),
+      alt: t('npcs.title'),
+    },
+    {
+      condition: !!task.prerequisite,
+      icon: CheckCircleIcon,
+      label: task.prerequisite && t(task.prerequisite),
+      alt: t('checklist.prerequisite'),
+    },
+  ]
+
+  if (!items.some((i) => i.condition)) return null
+
+  return (
+    <ul className="mt-1 text-xs leading-snug text-muted-foreground">
+      {items.map(
+        (item, idx) =>
+          item.condition && (
+            <li key={idx} className={item.className}>
+              <item.icon
+                size={14}
+                className="mr-1 inline-block"
+                alt={item.alt}
+              />
+              {item.label}
+            </li>
+          )
+      )}
+    </ul>
   )
 }
