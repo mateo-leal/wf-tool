@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react'
+import { useMemo } from 'react'
 import { Button } from '../ui/button'
 import { ChecklistTask } from '@/lib/types'
 import { TaskRow } from './task-row'
@@ -28,7 +28,8 @@ export function ChecklistSectionCard({
   completed,
   onToggle,
   onClear,
-  defaultExpandedGroupIds = [],
+  expandedGroups,
+  onExpandedGroupsChange,
 }: {
   title: string
   subtitle: string
@@ -37,12 +38,10 @@ export function ChecklistSectionCard({
   completed: Record<string, boolean>
   onToggle: (taskId: string) => void
   onClear: () => void
-  defaultExpandedGroupIds?: string[]
+  expandedGroups: Record<string, boolean>
+  onExpandedGroupsChange: (next: Record<string, boolean>) => void
 }) {
   const t = useTranslations()
-  const [expandedGroups, setExpandedGroups] = useState<Record<string, boolean>>(
-    () => Object.fromEntries(defaultExpandedGroupIds.map((id) => [id, true]))
-  )
 
   const checkableTasks = useMemo(() => collectCheckableTasks(tasks), [tasks])
 
@@ -102,10 +101,10 @@ export function ChecklistSectionCard({
                 className="flex w-full items-start justify-between gap-3 px-2 py-2 text-left transition hover:bg-muted-primary/10"
                 aria-expanded={isExpanded}
                 onClick={() =>
-                  setExpandedGroups((previous) => ({
-                    ...previous,
+                  onExpandedGroupsChange({
+                    ...expandedGroups,
                     [task.id]: !isExpanded,
-                  }))
+                  })
                 }
               >
                 <span>

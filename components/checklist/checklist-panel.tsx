@@ -22,6 +22,25 @@ import { useTranslations } from 'next-intl'
 import { ChecklistSectionCard } from './checklist-section-card'
 
 type ChecklistSection = 'daily' | 'weekly' | 'other'
+type ExpandedGroupsState = Record<ChecklistSection, Record<string, boolean>>
+
+const DEFAULT_EXPANDED_GROUP_IDS: Record<ChecklistSection, string[]> = {
+  daily: ['daily-world-syndicates', 'daily-vendors'],
+  weekly: ['weekly-search-pulses', 'weekly-vendors'],
+  other: [],
+}
+
+function createDefaultExpandedGroupsState(): ExpandedGroupsState {
+  return {
+    daily: Object.fromEntries(
+      DEFAULT_EXPANDED_GROUP_IDS.daily.map((id) => [id, true])
+    ),
+    weekly: Object.fromEntries(
+      DEFAULT_EXPANDED_GROUP_IDS.weekly.map((id) => [id, true])
+    ),
+    other: {},
+  }
+}
 
 function loadChecklistState(now: Date): ChecklistState {
   try {
@@ -36,9 +55,58 @@ function loadChecklistState(now: Date): ChecklistState {
   }
 }
 
-function saveChecklistState(state: ChecklistState): void {
+function loadExpandedGroupsState(): ExpandedGroupsState {
+  const defaults = createDefaultExpandedGroupsState()
+
   try {
-    localStorage.setItem(CHECKLIST_STORAGE_KEY, JSON.stringify(state))
+    const raw = localStorage.getItem(CHECKLIST_STORAGE_KEY)
+    if (!raw) {
+      return defaults
+    }
+
+    const parsed = JSON.parse(raw)
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      return defaults
+    }
+
+    return {
+      daily: {
+        ...defaults.daily,
+        ...(parsed.expandedGroups?.daily &&
+        typeof parsed.expandedGroups.daily === 'object'
+          ? (parsed.expandedGroups.daily as Record<string, boolean>)
+          : {}),
+      },
+      weekly: {
+        ...defaults.weekly,
+        ...(parsed.expandedGroups?.weekly &&
+        typeof parsed.expandedGroups.weekly === 'object'
+          ? (parsed.expandedGroups.weekly as Record<string, boolean>)
+          : {}),
+      },
+      other:
+        parsed.expandedGroups?.other &&
+        typeof parsed.expandedGroups.other === 'object'
+          ? (parsed.expandedGroups.other as Record<string, boolean>)
+          : {},
+    }
+  } catch {
+    return defaults
+  }
+}
+
+function saveChecklistPanelState(
+  checklistState: ChecklistState,
+  expandedGroups: ExpandedGroupsState
+): void {
+  try {
+    localStorage.setItem(
+      CHECKLIST_STORAGE_KEY,
+      JSON.stringify({
+        ...checklistState,
+        expandedGroups,
+      })
+    )
   } catch {
     // ignore storage errors
   }
@@ -55,6 +123,15 @@ export function ChecklistPanel() {
 
     return loadChecklistState(current)
   })
+  const [expandedGroups, setExpandedGroups] = useState<ExpandedGroupsState>(
+    () => {
+      if (typeof window === 'undefined') {
+        return createDefaultExpandedGroupsState()
+      }
+
+      return loadExpandedGroupsState()
+    }
+  )
   const [now, setNow] = useState(() => new Date())
   const [baroNode, setBaroNode] = useState<string | null>(null)
   const skipFirstPersistRef = useRef(true)
@@ -65,8 +142,8 @@ export function ChecklistPanel() {
       return
     }
 
-    saveChecklistState(state)
-  }, [state])
+    saveChecklistPanelState(state, expandedGroups)
+  }, [state, expandedGroups])
 
   useEffect(() => {
     const interval = window.setInterval(() => {
@@ -232,7 +309,13 @@ export function ChecklistPanel() {
         completed={state.daily.completed}
         onToggle={(taskId) => toggleTask('daily', taskId)}
         onClear={() => clearSection('daily')}
-        defaultExpandedGroupIds={['daily-world-syndicates', 'daily-vendors']}
+        expandedGroups={expandedGroups.daily}
+        onExpandedGroupsChange={(next) =>
+          setExpandedGroups((previous) => ({
+            ...previous,
+            daily: next,
+          }))
+        }
       />
       <ChecklistSectionCard
         title={t('checklist.weekly.title')}
@@ -244,7 +327,13 @@ export function ChecklistPanel() {
         completed={state.weekly.completed}
         onToggle={(taskId) => toggleTask('weekly', taskId)}
         onClear={() => clearSection('weekly')}
-        defaultExpandedGroupIds={['weekly-search-pulses', 'weekly-vendors']}
+        expandedGroups={expandedGroups.weekly}
+        onExpandedGroupsChange={(next) =>
+          setExpandedGroups((previous) => ({
+            ...previous,
+            weekly: next,
+          }))
+        }
       />
       <ChecklistSectionCard
         title={t('checklist.other.title')}
@@ -254,6 +343,13 @@ export function ChecklistPanel() {
         completed={state.other.completed}
         onToggle={(taskId) => toggleTask('other', taskId)}
         onClear={() => clearSection('other')}
+        expandedGroups={expandedGroups.other}
+        onExpandedGroupsChange={(next) =>
+          setExpandedGroups((previous) => ({
+            ...previous,
+            other: next,
+          }))
+        }
       />
     </div>
   )
