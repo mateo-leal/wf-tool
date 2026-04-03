@@ -5,7 +5,6 @@ import {
   COMPLETED_DIALOGUES_CHANGE_EVENT,
   COMPLETED_DIALOGUES_STORAGE_KEY,
   COUNTERS_STORAGE_KEY,
-  THERMOSTAT_STORAGE_KEY,
 } from '@/lib/constants'
 import { GearSixIcon, PlusIcon, TrashIcon } from '@phosphor-icons/react'
 import { useMemo, useState } from 'react'
@@ -71,14 +70,6 @@ function loadCounterState(): CounterState {
 function saveCounterState(state: CounterState): void {
   try {
     localStorage.setItem(COUNTERS_STORAGE_KEY, JSON.stringify(state))
-
-    const thermostatEntry = Object.entries(state).find(
-      ([name, value]) =>
-        name.toLowerCase() === 'thermostat' && Number.isFinite(value)
-    )
-    if (thermostatEntry) {
-      localStorage.setItem(THERMOSTAT_STORAGE_KEY, String(thermostatEntry[1]))
-    }
   } catch {
     // ignore storage errors
   }

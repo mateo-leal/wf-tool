@@ -17,12 +17,13 @@ import {
 } from './dialogue-selector-panel/types'
 import {
   BOOLEANS_STORAGE_KEY,
+  CHEMISTRY_STORAGE_KEY,
   COMPLETED_DIALOGUES_CHANGE_EVENT,
   COMPLETED_DIALOGUES_STORAGE_KEY,
   COUNTERS_STORAGE_KEY,
   LANGUAGE_STORAGE_KEY,
-  THERMOSTAT_STORAGE_KEY,
 } from '@/lib/constants'
+import { Type } from '@/lib/types'
 
 function loadBooleansFromStorage(): Record<string, boolean> {
   try {
@@ -84,23 +85,120 @@ function saveCountersToStorage(counters: Record<string, number>): void {
   }
 }
 
-function loadThermostatFromStorage(): number | null {
+function loadChemistryByChatroomFromStorage(): Record<string, number> {
   try {
-    const raw = localStorage.getItem(THERMOSTAT_STORAGE_KEY)
-    if (!raw) return null
-    const value = Number(raw)
-    return Number.isFinite(value) ? value : null
+    const raw = localStorage.getItem(CHEMISTRY_STORAGE_KEY)
+    if (!raw) return {}
+
+    const parsed = JSON.parse(raw) as unknown
+    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
+      return {}
+    }
+
+    const result: Record<string, number> = {}
+    for (const [key, value] of Object.entries(parsed)) {
+      const numeric = Number(value)
+      if (key.trim().length > 0 && Number.isFinite(numeric)) {
+        result[key] = numeric
+      }
+    }
+
+    return result
   } catch {
-    return null
+    return {}
   }
 }
 
-function saveThermostatToStorage(value: number): void {
+function loadChemistryFromStorage(chatroom: string): number {
+  const byChatroom = loadChemistryByChatroomFromStorage()
+  const value = byChatroom[chatroom]
+  return Number.isFinite(value) ? value : 0
+}
+
+function saveChemistryByChatroomToStorage(
+  chemistryByChatroom: Record<string, number>
+): void {
   try {
-    localStorage.setItem(THERMOSTAT_STORAGE_KEY, String(value))
+    localStorage.setItem(
+      CHEMISTRY_STORAGE_KEY,
+      JSON.stringify(chemistryByChatroom)
+    )
   } catch {
     // ignore storage errors
   }
+}
+
+function saveChemistryToStorage(chatroom: string, value: number): void {
+  try {
+    const current = loadChemistryByChatroomFromStorage()
+    saveChemistryByChatroomToStorage({
+      ...current,
+      [chatroom]: value,
+    })
+  } catch {
+    // ignore storage errors
+  }
+}
+
+function setCounterValueByName(
+  counters: Record<string, number>,
+  name: string,
+  value: number
+): Record<string, number> {
+  const existingKey = Object.keys(counters).find(
+    (key) => key.toLowerCase() === name.toLowerCase()
+  )
+
+  if (existingKey) {
+    return {
+      ...counters,
+      [existingKey]: value,
+    }
+  }
+
+  return {
+    ...counters,
+    [name]: value,
+  }
+}
+
+function applyCounterDeltasFromConversation(
+  counters: Record<string, number>,
+  chatLines: PreferredPathOption['chatLines']
+): Record<string, number> {
+  const next = { ...counters }
+
+  for (const line of chatLines) {
+    if (line.type !== Type.IncCounterDialogueNode) {
+      continue
+    }
+
+    const content = String(line.content ?? '').trim()
+    const match = content.match(/^(.+?)\s+([+-]?\d+)$/)
+    if (!match) {
+      continue
+    }
+
+    const rawName = match[1]?.trim()
+    const delta = Number(match[2])
+    if (!rawName || !Number.isFinite(delta)) {
+      continue
+    }
+
+    // Thermostat is applied separately from the summarized path metric.
+    if (rawName.toLowerCase() === 'thermostat') {
+      continue
+    }
+
+    const existingKey = Object.keys(next).find(
+      (key) => key.toLowerCase() === rawName.toLowerCase()
+    )
+    const targetKey = existingKey ?? rawName
+    const previousValue = Number(next[targetKey] ?? 0)
+    next[targetKey] = previousValue + delta
+  }
+
+  return next
 }
 
 function markDialogueAsCompleted(codename: string): void {
@@ -235,8 +333,6 @@ export function DialogueSelectorPanel({
 
     const storedBooleans = loadBooleansFromStorage()
     const storedCounters = loadCountersFromStorage()
-    const storedThermostat = loadThermostatFromStorage()
-
     setBooleanValues(
       Object.fromEntries(
         requirements.booleans.map((name) => [
@@ -250,16 +346,12 @@ export function DialogueSelectorPanel({
     setCounterValues(
       Object.fromEntries(
         requirements.counters.map((counter) => {
-          const fromCounters = storedCounters[counter.name]
-          if (Number.isFinite(fromCounters)) {
-            return [counter.name, fromCounters]
-          }
-
-          if (
-            counter.name.toLowerCase() === 'thermostat' &&
-            storedThermostat !== null
-          ) {
-            return [counter.name, storedThermostat]
+          const fromCounters = Object.entries(storedCounters).find(
+            ([name]) => name.toLowerCase() === counter.name.toLowerCase()
+          )?.[1]
+          const counterValue = Number(fromCounters)
+          if (Number.isFinite(counterValue)) {
+            return [counter.name, counterValue]
           }
 
           return [counter.name, 0]
@@ -364,14 +456,39 @@ export function DialogueSelectorPanel({
                   )
                   if (selected) {
                     saveBooleansToStorage(selected.booleanMutations)
-                    saveCountersToStorage(counterValues)
-                    saveThermostatToStorage(selected.thermostat)
+
+                    const counterUpdates = applyCounterDeltasFromConversation(
+                      counterValues,
+                      selected.chatLines
+                    )
+
+                    const thermostatInputKey = Object.keys(counterValues).find(
+                      (name) => name.toLowerCase() === 'thermostat'
+                    )
+                    const thermostatStart = Number(
+                      thermostatInputKey ? counterValues[thermostatInputKey] : 0
+                    )
+                    const nextThermostat = thermostatStart + selected.thermostat
+
+                    const withThermostat = setCounterValueByName(
+                      counterUpdates,
+                      'Thermostat',
+                      nextThermostat
+                    )
+
+                    saveCountersToStorage(withThermostat)
+
+                    const currentChemistry = loadChemistryFromStorage(chatroom)
+                    const nextChemistry = currentChemistry + selected.chemistry
+                    saveChemistryToStorage(chatroom, nextChemistry)
+
                     markDialogueAsCompleted(selectedOption.codename)
 
                     setBooleanValues((current) => ({
                       ...current,
                       ...selected.booleanMutations,
                     }))
+                    setCounterValues(withThermostat)
                     setOptionsRefreshToken((current) => current + 1)
                   }
                 }}
@@ -399,9 +516,6 @@ export function DialogueSelectorPanel({
                       [name]: value,
                     }
                     saveCountersToStorage({ [name]: value })
-                    if (name.toLowerCase() === 'thermostat') {
-                      saveThermostatToStorage(value)
-                    }
                     return next
                   })
                 }

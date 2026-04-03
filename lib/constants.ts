@@ -1,6 +1,6 @@
 export const BOOLEANS_STORAGE_KEY = 'wf-kim:booleans'
 export const COUNTERS_STORAGE_KEY = 'wf-kim:counters'
-export const THERMOSTAT_STORAGE_KEY = 'wf-kim:thermostat'
+export const CHEMISTRY_STORAGE_KEY = 'wf-kim:chemistry'
 export const COMPLETED_DIALOGUES_STORAGE_KEY = 'wf-kim:completed-dialogues'
 export const COMPLETED_DIALOGUES_CHANGE_EVENT =
   'wf-kim:completed-dialogues-change'
@@ -12,7 +12,7 @@ export const MIGRATION_DONE_KEY = 'wf-kim:migrated'
 export const ALL_MIGRATION_KEYS = [
   BOOLEANS_STORAGE_KEY,
   COUNTERS_STORAGE_KEY,
-  THERMOSTAT_STORAGE_KEY,
+  CHEMISTRY_STORAGE_KEY,
   COMPLETED_DIALOGUES_STORAGE_KEY,
   LANGUAGE_STORAGE_KEY,
   SHOW_SPOILERS_STORAGE_KEY,
