@@ -5,6 +5,7 @@ import {
   AppWindowIcon,
   CheckCircleIcon,
   ClockCountdownIcon,
+  EyeIcon,
   EyeSlashIcon,
   MapPinIcon,
   UserIcon,
@@ -18,6 +19,7 @@ interface TaskRowProps {
   now: Date
   checked: boolean
   checkable?: boolean
+  isHidden?: boolean
   onToggle: () => void
   onToggleHidden: () => void
 }
@@ -27,6 +29,7 @@ export function TaskRow({
   now,
   checked,
   checkable = true,
+  isHidden = false,
   onToggle,
   onToggleHidden,
 }: TaskRowProps) {
@@ -101,11 +104,15 @@ export function TaskRow({
         size="sm"
         variant="ghost"
         onClick={onToggleHidden}
-        aria-label={t('ui.hide')}
-        title={t('ui.hide')}
+        aria-label={isHidden ? t('ui.show') : t('ui.hide')}
+        title={isHidden ? t('ui.show') : t('ui.hide')}
         className="size-6 px-0"
       >
-        <EyeSlashIcon size={14} weight="bold" />
+        {isHidden ? (
+          <EyeIcon size={14} weight="bold" />
+        ) : (
+          <EyeSlashIcon size={14} weight="bold" />
+        )}
       </Button>
     </div>
   )

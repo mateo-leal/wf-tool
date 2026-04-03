@@ -79,7 +79,6 @@
     "doneCount": "{count}/{total} hecho",
     "showHiddenItems": "Ocultos ({count})",
     "hideHiddenItems": "Ocultar ocultos",
-    "hiddenItemsTitle": "Elementos ocultos ({count})",
     "prerequisite": "Prerrequisito",
     "counters": {
       "resetsIn": "Se reinicia en {time}",

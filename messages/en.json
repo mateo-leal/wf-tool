@@ -79,7 +79,6 @@
     "doneCount": "{count}/{total} done",
     "showHiddenItems": "Hidden ({count})",
     "hideHiddenItems": "Hide hidden",
-    "hiddenItemsTitle": "Hidden items ({count})",
     "prerequisite": "Prerequisite",
     "counters": {
       "resetsIn": "Resets in {time}",

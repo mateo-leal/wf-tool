@@ -3,8 +3,10 @@ import { Button } from '../ui/button'
 import { ChecklistTask } from '@/lib/types'
 import { TaskRow } from './task-row'
 import {
+  BroomIcon,
   CaretDownIcon,
   CaretRightIcon,
+  EyeIcon,
   EyeSlashIcon,
 } from '@phosphor-icons/react'
 import { useTranslations } from 'next-intl'
@@ -78,7 +80,7 @@ export function ChecklistSectionCard({
   const visibleTasks = useMemo(
     () =>
       tasks.flatMap((task) => {
-        if (hidden[task.id]) {
+        if (hidden[task.id] && !showHiddenItems) {
           return []
         }
 
@@ -86,22 +88,22 @@ export function ChecklistSectionCard({
           return [task]
         }
 
-        const visibleSubitems = task.subitems.filter(
-          (subitem) => !hidden[subitem.id]
-        )
+        const displaySubitems = showHiddenItems
+          ? task.subitems
+          : task.subitems.filter((subitem) => !hidden[subitem.id])
 
-        if (visibleSubitems.length === 0) {
+        if (displaySubitems.length === 0 && !hidden[task.id]) {
           return []
         }
 
         return [
           {
             ...task,
-            subitems: visibleSubitems,
+            subitems: displaySubitems,
           },
         ]
       }),
-    [hidden, tasks]
+    [hidden, showHiddenItems, tasks]
   )
 
   const checkableTasks = useMemo(
@@ -140,18 +142,40 @@ export function ChecklistSectionCard({
               {hiddenTasks.length > 0 ? (
                 <Button
                   size="sm"
-                  variant="outline"
+                  variant={showHiddenItems ? 'default' : 'outline'}
                   onClick={() => setShowHiddenItems((previous) => !previous)}
+                  aria-label={
+                    showHiddenItems
+                      ? t('checklist.hideHiddenItems')
+                      : t('checklist.showHiddenItems', {
+                          count: hiddenTasks.length,
+                        })
+                  }
+                  title={
+                    showHiddenItems
+                      ? t('checklist.hideHiddenItems')
+                      : t('checklist.showHiddenItems', {
+                          count: hiddenTasks.length,
+                        })
+                  }
+                  className="size-6 px-0"
                 >
-                  {showHiddenItems
-                    ? t('checklist.hideHiddenItems')
-                    : t('checklist.showHiddenItems', {
-                        count: hiddenTasks.length,
-                      })}
+                  {showHiddenItems ? (
+                    <EyeIcon size={14} weight="bold" />
+                  ) : (
+                    <EyeSlashIcon size={14} weight="bold" />
+                  )}
                 </Button>
               ) : null}
-              <Button size="sm" variant="outline" onClick={onClear}>
-                {t('ui.clear')}
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={onClear}
+                aria-label={t('ui.clear')}
+                title={t('ui.clear')}
+                className="size-6 px-0"
+              >
+                <BroomIcon size={14} weight="bold" />
               </Button>
             </div>
           </div>
@@ -168,6 +192,7 @@ export function ChecklistSectionCard({
                 now={now}
                 checked={Boolean(completed[task.id])}
                 checkable={task.checkable}
+                isHidden={Boolean(hidden[task.id])}
                 onToggle={() => onToggle(task.id)}
                 onToggleHidden={() => onToggleHidden(task.id)}
               />
@@ -207,11 +232,15 @@ export function ChecklistSectionCard({
                     size="sm"
                     variant="ghost"
                     onClick={() => onToggleHidden(task.id)}
-                    aria-label={t('ui.hide')}
-                    title={t('ui.hide')}
+                    aria-label={hidden[task.id] ? t('ui.show') : t('ui.hide')}
+                    title={hidden[task.id] ? t('ui.show') : t('ui.hide')}
                     className="size-6 px-0"
                   >
-                    <EyeSlashIcon size={14} weight="bold" />
+                    {hidden[task.id] ? (
+                      <EyeIcon size={14} weight="bold" />
+                    ) : (
+                      <EyeSlashIcon size={14} weight="bold" />
+                    )}
                   </Button>
                   <Button
                     aria-expanded={isExpanded}
@@ -245,6 +274,7 @@ export function ChecklistSectionCard({
                       now={now}
                       checked={Boolean(completed[subitem.id])}
                       checkable={subitem.checkable}
+                      isHidden={Boolean(hidden[subitem.id])}
                       onToggle={() => onToggle(subitem.id)}
                       onToggleHidden={() => onToggleHidden(subitem.id)}
                     />
@@ -254,44 +284,6 @@ export function ChecklistSectionCard({
             </section>
           )
         })}
-
-        {showHiddenItems ? (
-          <section className="border border-muted-primary/70 bg-cathedrale/35 p-2">
-            <div className="mb-2 flex items-center justify-between gap-2">
-              <p className="text-xs uppercase tracking-wide text-primary">
-                {t('checklist.hiddenItemsTitle', {
-                  count: hiddenTasks.length,
-                })}
-              </p>
-            </div>
-            <div className="space-y-2">
-              {hiddenTasks.map((task) => (
-                <div
-                  key={task.id}
-                  className="flex items-start justify-between gap-3 border border-muted-primary/70 bg-background/30 p-2"
-                >
-                  <span className="min-w-0">
-                    <p className="text-sm leading-tight text-muted-foreground">
-                      {t(task.title)}
-                    </p>
-                    {task.info ? (
-                      <p className="mt-1 text-xs leading-snug text-muted-foreground">
-                        {t(task.info)}
-                      </p>
-                    ) : null}
-                  </span>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    onClick={() => onToggleHidden(task.id)}
-                  >
-                    {t('ui.show')}
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </section>
-        ) : null}
       </div>
     </section>
   )
