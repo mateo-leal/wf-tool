@@ -1,16 +1,32 @@
+'use client'
+
 import Image from 'next/image'
+import { cn } from '@/lib/utils'
+import { usePathname } from '@/i18n/navigation'
+import { Window } from '../ui/window'
+import { CloseButton } from '../close-button'
+import { WindowContent } from '../ui/window-content'
+import { WindowTitlebar } from '../ui/window-titlebar'
 import { KimBooleanSettings } from './kim-boolean-settings'
 import { SpoilerChatroomSelector } from '../spoiler-chatroom-selector'
-import { Window } from '../ui/window'
-import { WindowTitlebar } from '../ui/window-titlebar'
-import { WindowContent } from '../ui/window-content'
 
 export function KimWindow() {
+  const pathname = usePathname()
+  const isKimHome = pathname === '/kim'
+
   return (
-    <Window className="relative h-[calc(100svh-5.5rem)] min-h-75 max-w-none overflow-hidden md:absolute md:top-3 md:bottom-3 md:left-3 md:h-auto md:w-[320px] md:max-w-[calc(100%-1.5rem)] md:max-h-none">
+    <Window
+      className={cn(
+        'relative h-[calc(100svh-5.5rem)] min-h-75 max-w-none overflow-hidden md:absolute md:top-3 md:bottom-3 md:left-3 md:h-auto md:w-[320px] md:max-w-[calc(100%-1.5rem)] md:max-h-none',
+        { 'hidden md:block': !isKimHome }
+      )}
+    >
       <WindowTitlebar>
         <p>Welcome to KIM!</p>
-        <KimBooleanSettings />
+        <div className="flex gap-1">
+          <KimBooleanSettings />
+          <CloseButton href="/" disabled={!isKimHome} />
+        </div>
       </WindowTitlebar>
       <WindowContent>
         <div className="flex gap-3 text-primary">
