@@ -1,5 +1,5 @@
 import { type PreferredPathOption } from './types'
-import { isAvoidableBoolean, isFlirtingBoolean } from '@/lib/core/boolean-utils'
+import { isAvoidableBoolean, isFlirtingBoolean } from '@/lib/kim/boolean-utils'
 import { TranscriptLine } from '@/lib/types'
 import { ChatLine } from '../chat-line'
 import { SystemChatLine } from '../system-chat-line'

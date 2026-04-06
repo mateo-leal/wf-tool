@@ -14,7 +14,7 @@ jest.mock('@/lib/core/loader', () => ({
   loadDictionary: jest.fn(),
 }))
 
-import { loadDictionary, loadNodes } from '@/lib/core/loader'
+import { loadDictionary, loadNodes } from '@/lib/kim/loader'
 
 const mockedLoadNodes = jest.mocked(loadNodes)
 const mockedLoadDictionary = jest.mocked(loadDictionary)

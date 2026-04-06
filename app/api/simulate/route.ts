@@ -1,10 +1,10 @@
 import { NextResponse } from 'next/server'
 import { getTranslations } from 'next-intl/server'
-import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
+import { CHATROOM_SOURCE_BY_ID } from '@/lib/kim/chatrooms'
 import { routing } from '@/i18n/routing'
 import { getKIMDictionarySource, normalizeLanguage } from '@/lib/language'
 import { Type, type DialogueNode } from '@/lib/types'
-import { loadDictionary, loadNodes } from '@/lib/core/loader'
+import { loadDictionary, loadNodes } from '@/lib/kim/loader'
 import {
   getConversationName,
   getBooleanName,
@@ -12,12 +12,12 @@ import {
   resolveContent,
   resolveStartNodes,
   sourceLabel,
-} from '@/lib/core/node-utils'
-import { explorePaths } from '@/lib/core/explorer'
-import { evaluateCounterOutput } from '@/lib/core/counter-utils'
-import { isFlirtingBoolean } from '@/lib/core/boolean-utils'
-import { buildPreferredPathOptions, summarizeResults } from '@/lib/core/ranker'
-import { formatPathAsChat, formatPathMetrics } from '@/lib/core/formatter'
+} from '@/lib/kim/node-utils'
+import { explorePaths } from '@/lib/kim/explorer'
+import { evaluateCounterOutput } from '@/lib/kim/counter-utils'
+import { isFlirtingBoolean } from '@/lib/kim/boolean-utils'
+import { buildPreferredPathOptions, summarizeResults } from '@/lib/kim/ranker'
+import { formatPathAsChat, formatPathMetrics } from '@/lib/kim/formatter'
 
 function unique(values: number[]): number[] {
   return [...new Set(values)]

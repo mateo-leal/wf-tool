@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server'
-import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
+import { CHATROOM_SOURCE_BY_ID } from '@/lib/kim/chatrooms'
 import { getKIMDictionarySource, normalizeLanguage } from '@/lib/language'
 import { type DialogueNode, Type } from '@/lib/types'
 import {
@@ -7,8 +7,8 @@ import {
   getBooleanName,
   resolveContent,
   resolveStartNodes,
-} from '@/lib/core/node-utils'
-import { loadDictionary, loadNodes } from '@/lib/core/loader'
+} from '@/lib/kim/node-utils'
+import { loadDictionary, loadNodes } from '@/lib/kim/loader'
 
 const NON_DIALOGUE_PREVIEW_TYPES = new Set<Type>([
   Type.StartDialogueNode,

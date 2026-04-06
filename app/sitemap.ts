@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
+import { CHATROOM_SOURCE_BY_ID } from '@/lib/kim/chatrooms'
 import { getSiteUrl } from '@/lib/seo'
 import { routing } from '@/i18n/routing'
 

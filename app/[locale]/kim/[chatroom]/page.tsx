@@ -1,9 +1,9 @@
 import type { Metadata } from 'next'
-import { ChatWindow } from '@/components/windows/chat'
-import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
-import { capitalizeFirstLetter } from '@/lib/utils'
-import { routing } from '@/i18n/routing'
 import { setRequestLocale } from 'next-intl/server'
+import { routing } from '@/i18n/routing'
+import { ChatWindow } from '@/components/windows/chat'
+import { capitalizeFirstLetter } from '@/lib/utils'
+import { CHATROOM_SOURCE_BY_ID } from '@/lib/kim/chatrooms'
 
 export async function generateStaticParams() {
   const locales = routing.locales.map((locale) => ({ locale }))

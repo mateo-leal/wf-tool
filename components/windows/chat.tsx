@@ -1,5 +1,5 @@
 import { DialogueSelectorPanel } from '@/components/kim/dialogue-selector-panel'
-import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
+import { CHATROOM_SOURCE_BY_ID } from '@/lib/kim/chatrooms'
 import { notFound } from 'next/navigation'
 import { Type, type DialogueNode } from '@/lib/types'
 import { CloseButton } from '../close-button'
@@ -13,8 +13,8 @@ import {
   getMultiBooleanNames,
   resolveContent,
   resolveStartNodes,
-} from '@/lib/core/node-utils'
-import { loadDictionary, loadNodes } from '@/lib/core/loader'
+} from '@/lib/kim/node-utils'
+import { loadDictionary, loadNodes } from '@/lib/kim/loader'
 import { getLocale, getTranslations } from 'next-intl/server'
 import { getKIMDictionarySource } from '@/lib/language'
 
