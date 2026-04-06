@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { BountyCycles, WorldCycle } from '@/lib/types'
@@ -96,35 +96,43 @@ export function WorldCyclesWidget({ dict, osDict }: Props) {
   const [isError, setIsError] = useState(false)
   const [now, setNow] = useState(0)
 
+  const isFetching = useRef(false)
+
+  const fetchBounties = useCallback(async () => {
+    if (isFetching.current) return
+
+    isFetching.current = true
+    try {
+      const res = await fetch('https://oracle.browse.wf/bounty-cycle', {
+        cache: 'no-store',
+      })
+      if (!res.ok) throw new Error()
+      const data = await res.json()
+      setBountyData(data)
+      setIsError(false)
+    } catch {
+      setIsError(true)
+    } finally {
+      isFetching.current = false
+    }
+  }, [])
+
   // Hydration fix: Set mounted and initial time only on client
   useEffect(() => {
     setMounted(true)
     setNow(Date.now())
-
-    const fetchBounties = async () => {
-      try {
-        const res = await fetch('https://oracle.browse.wf/bounty-cycle', {
-          cache: 'no-store',
-        })
-        if (!res.ok) throw new Error()
-        setBountyData(await res.json())
-        setIsError(false)
-      } catch {
-        setIsError(true)
-      }
-    }
-
     fetchBounties()
+
     const interval = setInterval(() => setNow(Date.now()), 1000)
     return () => clearInterval(interval)
-  }, [])
+  }, [fetchBounties])
 
   // Auto-refresh when data expires
   useEffect(() => {
-    if (bountyData && now > bountyData.expiry) {
-      // Re-trigger fetch if desired
+    if (bountyData && now > bountyData.expiry && !isFetching.current) {
+      fetchBounties()
     }
-  }, [now, bountyData])
+  }, [now, bountyData, fetchBounties])
 
   const cycleStates = useMemo(() => {
     const results: Record<string, Partial<WorldCycle>> = {}
