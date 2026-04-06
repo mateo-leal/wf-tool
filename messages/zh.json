@@ -214,7 +214,7 @@
       "conditions": "Conditions: {conditions}",
       "simulate": "Simulate",
       "simulateLoading": "Simulating paths...",
-      "choosePreferredPath": "Choose prefered path",
+      "choosePreferredPath": "Choose preferred path",
       "bestOverallPath": "Best overall path",
       "mostBooleanActivations": "Most boolean activations",
       "bestChemistryPath": "Best chemistry path",
