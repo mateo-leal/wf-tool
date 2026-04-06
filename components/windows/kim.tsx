@@ -9,10 +9,12 @@ import { WindowContent } from '../ui/window-content'
 import { WindowTitlebar } from '../ui/window-titlebar'
 import { KimBooleanSettings } from './kim-boolean-settings'
 import { SpoilerChatroomSelector } from '../kim/spoiler-chatroom-selector'
+import { useTranslations } from 'next-intl'
 
 export function KimWindow() {
   const pathname = usePathname()
   const isKimHome = pathname === '/kim'
+  const t = useTranslations('kim')
 
   return (
     <Window
@@ -22,7 +24,7 @@ export function KimWindow() {
       )}
     >
       <WindowTitlebar>
-        <p>Welcome to KIM!</p>
+        <p>{t('windowTitle')}</p>
         <div className="flex gap-1">
           <KimBooleanSettings />
           <CloseButton href="/" disabled={!isKimHome} />
@@ -40,9 +42,9 @@ export function KimWindow() {
           />
           <div>
             <p className="font-title text-xl tracking-wide uppercase">
-              Username:
+              {t('username')}
             </p>
-            <p className="font-title text-3xl leading-none">Drifter</p>
+            <p className="font-title text-3xl leading-none">{t('drifter')}</p>
           </div>
         </div>
         <div className="mt-3 min-h-0 flex-1 overflow-hidden">

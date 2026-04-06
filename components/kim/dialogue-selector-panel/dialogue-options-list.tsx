@@ -5,6 +5,7 @@ import {
   COMPLETED_DIALOGUES_STORAGE_KEY,
 } from '@/lib/constants'
 import { CheckIcon } from '@phosphor-icons/react'
+import { useTranslations } from 'next-intl'
 
 type DialogueOptionsListProps = {
   dialogueOptions: DialogueOption[]
@@ -78,6 +79,7 @@ export function DialogueOptionsList({
   onSelect,
   isLoading = false,
 }: DialogueOptionsListProps) {
+  const t = useTranslations('kim.chatroom')
   const [query, setQuery] = useState('')
   const completedDialogues = useSyncExternalStore(
     subscribeCompletedDialogues,
@@ -104,7 +106,7 @@ export function DialogueOptionsList({
           type="search"
           value={query}
           onChange={(event) => setQuery(event.target.value)}
-          placeholder="Search by dialogue or codename"
+          placeholder={t('searchByDialogue')}
           className="w-full border border-[#6b4820] bg-[#120e08] px-2 py-1.5 text-sm text-[#ddd7c9] outline-none placeholder:text-[#8f7b5d] focus:border-[#cfad73]"
         />
         {isLoading && (
@@ -115,9 +117,7 @@ export function DialogueOptionsList({
       </div>
 
       {filteredOptions.length === 0 ? (
-        <p className="px-1 text-sm text-[#9f8a67]">
-          There are no dialogues that match your search.
-        </p>
+        <p className="px-1 text-sm text-[#9f8a67]">{t('noDialoguesMatch')}</p>
       ) : null}
 
       <ul className="space-y-1 pr-1">

@@ -172,6 +172,63 @@
       }
     }
   },
+  "kim": {
+    "title": "KIM",
+    "windowTitle": "¡Bienvenidos a KIM!",
+    "username": "Nombre de usuario:",
+    "drifter": "Viajero",
+    "showSpoilers": "Mostrar spoilers",
+    "settings": {
+      "title": "Configuración de progresión de KIM",
+      "openSettings": "Abrir Configuración de progresión de KIM",
+      "close": "Cerrar configuración",
+      "booleans": "Banderas",
+      "booleanName": "Nombre de la bandera",
+      "noBooleansSaved": "No hay banderas guardadas todavía.",
+      "counters": "Contadores",
+      "counterName": "Nombre del contador",
+      "noCountersSaved": "No hay contadores guardados todavía.",
+      "completedDialogues": "Diálogos completados",
+      "dialogueCodename": "Nombre en clave del diálogo",
+      "noCompletedDialoguesSaved": "No hay diálogos completados guardados todavía.",
+      "actions": {
+        "add": "Agregar",
+        "activate": "Activar",
+        "deactivate": "Desactivar",
+        "remove": "Eliminar",
+        "completed": "Completado",
+        "notCompleted": "No completado"
+      }
+    },
+    "chatroom": {
+      "selectTheDialogue": "Selecciona el diálogo ({count, plural, =1 {# disponible} other {# disponibles}})",
+      "searchByDialogue": "Buscar por diálogo o nombre en clave",
+      "noDialoguesMatch": "Ningún diálogo coincide con tu búsqueda.",
+      "booleanChecks": "Verificaciones de banderas",
+      "true": "Verdadero",
+      "false": "Falso",
+      "noBooleanChecksRequired": "Este diálogo no requiere verificaciones de banderas.",
+      "counterValues": "Valores de contadores",
+      "noCounterValuesRequired": "Este diálogo no requiere valores de contadores.",
+      "conditions": "Condiciones: {conditions}",
+      "simulate": "Simular",
+      "simulateLoading": "Simulando rutas...",
+      "choosePreferredPath": "Elegir ruta preferida",
+      "bestOverallPath": "Mejor ruta general",
+      "mostBooleanActivations": "Más activaciones de banderas",
+      "bestChemistryPath": "Mejor ruta de química",
+      "bestThermostatPath": "Mejor ruta de termostato",
+      "flirtingNoFlirting": "sin coqueteo",
+      "flirtingWith": "con {names}",
+      "showConversation": "Mostrar conversación",
+      "simulatedDialogue": "Diálogo simulado",
+      "noDialogueTextAvailable": "No hay texto de diálogo disponible en esta ruta.",
+      "chemistry": "Química",
+      "updateBooleanValues": "Actualizar valores de banderas basados en esta conversación",
+      "booleanUpdated": "Valores de banderas actualizados.",
+      "futureSimulationsNotice": "Esto afectará los diálogos disponibles en futuras simulaciones."
+    }
+  },
   "masteryChecklist": {
     "title": "Checklist de Maestría",
     "categories": {

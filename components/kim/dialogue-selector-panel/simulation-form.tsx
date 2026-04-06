@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl'
 import { type SimulationRequirements } from './types'
 
 type SimulationFormProps = {
@@ -19,6 +20,8 @@ export function SimulationForm({
   onCounterChange,
   onSubmit,
 }: SimulationFormProps) {
+  const t = useTranslations('kim.chatroom')
+
   return (
     <form
       className="space-y-3"
@@ -28,7 +31,9 @@ export function SimulationForm({
       }}
     >
       <div className="border border-[#6b4820] bg-[#120e08] p-2">
-        <p className="font-title text-lg text-[#f0bb5f]">Boolean checks</p>
+        <p className="font-title text-lg text-[#f0bb5f]">
+          {t('booleanChecks')}
+        </p>
         {requirements.booleans.length > 0 ? (
           <ul className="mt-2 space-y-2">
             {requirements.booleans.map((name) => (
@@ -46,7 +51,7 @@ export function SimulationForm({
                       checked={booleanValues[name] !== false}
                       onChange={() => onBooleanChange(name, true)}
                     />
-                    TRUE
+                    {t('true')}
                   </label>
                   <label className="inline-flex items-center gap-1">
                     <input
@@ -56,7 +61,7 @@ export function SimulationForm({
                       checked={booleanValues[name] === false}
                       onChange={() => onBooleanChange(name, false)}
                     />
-                    FALSE
+                    {t('false')}
                   </label>
                 </div>
               </li>
@@ -64,13 +69,15 @@ export function SimulationForm({
           </ul>
         ) : (
           <p className="mt-2 text-sm text-[#b9ac8f]">
-            This dialogue does not require boolean checks.
+            {t('noBooleanChecksRequired')}
           </p>
         )}
       </div>
 
       <div className="border border-[#6b4820] bg-[#120e08] p-2">
-        <p className="font-title text-lg text-[#f0bb5f]">Counter values</p>
+        <p className="font-title text-lg text-[#f0bb5f]">
+          {t('counterValues')}
+        </p>
         {requirements.counters.length > 0 ? (
           <ul className="mt-2 space-y-2">
             {requirements.counters.map((counter) => (
@@ -92,7 +99,9 @@ export function SimulationForm({
                 </label>
                 {counter.expressions.length > 0 ? (
                   <p className="mt-1 text-xs text-[#b9ac8f]">
-                    Conditions: {counter.expressions.join(' | ')}
+                    {t('conditions', {
+                      conditions: counter.expressions.join(' | '),
+                    })}
                   </p>
                 ) : null}
               </li>
@@ -100,7 +109,7 @@ export function SimulationForm({
           </ul>
         ) : (
           <p className="mt-2 text-sm text-[#b9ac8f]">
-            This dialogue does not require counter input.
+            {t('noCounterValuesRequired')}
           </p>
         )}
       </div>
@@ -109,7 +118,7 @@ export function SimulationForm({
         type="submit"
         className="w-full border border-[#8f5d1f] bg-[#2c1300] px-3 py-2 font-title text-lg text-[#f0bb5f] transition hover:bg-[#4a2000]"
       >
-        Simulate
+        {t('simulate')}
       </button>
     </form>
   )

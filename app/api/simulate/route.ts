@@ -1,5 +1,7 @@
 import { NextResponse } from 'next/server'
+import { getTranslations } from 'next-intl/server'
 import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
+import { routing } from '@/i18n/routing'
 import { getKIMDictionarySource, normalizeLanguage } from '@/lib/language'
 import { Type, type DialogueNode } from '@/lib/types'
 import { loadDictionary, loadNodes } from '@/lib/core/loader'
@@ -88,6 +90,13 @@ export async function GET(request: Request) {
     const chatroom = String(url.searchParams.get('chatroom') ?? '')
     const startId = Number(url.searchParams.get('startId'))
     const language = normalizeLanguage(url.searchParams.get('language'))
+    const appLocale = (routing.locales as readonly string[]).includes(language)
+      ? (language as (typeof routing.locales)[number])
+      : routing.defaultLocale
+    const t = await getTranslations({
+      locale: appLocale,
+      namespace: 'kim.chatroom',
+    })
 
     if (!chatroom || !Number.isInteger(startId)) {
       return NextResponse.json(
@@ -177,10 +186,10 @@ export async function GET(request: Request) {
     const hasMultipleFlirtingStates = flirtingGroups.size > 1
 
     function flirtingLabel(sig: string): string {
-      if (sig === 'no-flirting') return 'no flirting'
+      if (sig === 'no-flirting') return t('flirtingNoFlirting')
       // Extract the boolean name(s) from the signature (e.g. 'flirting:LettieFlirt')
       const names = sig.replace('flirting:', '').split('|').join(', ')
-      return `with ${names}`
+      return t('flirtingWith', { names })
     }
 
     const candidates: { label: string; result: (typeof results)[0] }[] = []
@@ -190,12 +199,12 @@ export async function GET(request: Request) {
       const suffix = hasMultipleFlirtingStates ? ` (${flirtingLabel(sig)})` : ''
 
       candidates.push({
-        label: `Best chemistry path${suffix}`,
+        label: `${t('bestChemistryPath')}${suffix}`,
         result: ranked.byChemistry,
       })
       if (ranked.byThermostat) {
         candidates.push({
-          label: `Best thermostat path${suffix}`,
+          label: `${t('bestThermostatPath')}${suffix}`,
           result: ranked.byThermostat,
         })
       }
@@ -216,13 +225,13 @@ export async function GET(request: Request) {
         // Only add "Most boolean activations" if there are actually activations
         if (result.activatedBooleans > 0) {
           candidates.push({
-            label: `Most boolean activations${tieSuffix}${suffix}`,
+            label: `${t('mostBooleanActivations')}${tieSuffix}${suffix}`,
             result,
           })
         }
       })
       candidates.push({
-        label: `Best overall path${suffix}`,
+        label: `${t('bestOverallPath')}${suffix}`,
         result: ranked.byOverall,
       })
     }
