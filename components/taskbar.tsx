@@ -10,7 +10,7 @@ import { SettingsPortal } from './windows/settings'
 import { useEffect, useState } from 'react'
 import { Link, usePathname } from '@/i18n/navigation'
 import { cn } from '@/lib/utils'
-import { useLocale } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 
 function Clock() {
   const locale = useLocale()
@@ -59,6 +59,7 @@ function Clock() {
 
 export function Taskbar() {
   const pathname = usePathname()
+  const t = useTranslations()
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
 
   useEffect(() => {
@@ -80,6 +81,7 @@ export function Taskbar() {
         <div className="flex items-end gap-1">
           <Link
             href="/checklist"
+            aria-label={t('checklist.title')}
             className="group relative flex size-11 items-center justify-center rounded-2xl transition hover:bg-black/10"
           >
             <ListChecksIcon
@@ -99,6 +101,7 @@ export function Taskbar() {
 
           <Link
             href="/kim"
+            aria-label={t('kim.title')}
             className="group relative flex size-11 items-center justify-center rounded-2xl transition hover:bg-black/10"
           >
             <ChatCircleTextIcon
@@ -116,6 +119,7 @@ export function Taskbar() {
 
           <Link
             href="/mastery"
+            aria-label={t('masteryChecklist.title')}
             className="group relative flex size-11 items-center justify-center rounded-2xl transition hover:bg-black/10"
           >
             <MedalMilitaryIcon
@@ -136,6 +140,7 @@ export function Taskbar() {
           <button
             type="button"
             onClick={() => setIsSettingsOpen(true)}
+            aria-label={t('settings.title')}
             className="group relative flex size-11 items-center justify-center rounded-2xl transition hover:bg-black/10"
           >
             <GearSixIcon
