@@ -1,54 +1,10 @@
 'use client'
 
-import { useEffect, useState } from 'react'
+import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { fetchEventsNode } from '@/lib/world-state/fetch-world-state'
 import Link from 'next/link'
-
-function formatNewsDate(locale: string, dateMs: number): string {
-  return new Intl.DateTimeFormat(locale, {
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  }).format(new Date(dateMs))
-}
-
-function NewsItem({ item }: { item: EventItem }) {
-  const locale = useLocale()
-  const t = useTranslations('newsWidget')
-
-  if (item.link) {
-    return (
-      <Link
-        href={item.link || '#'}
-        target="_blank"
-        rel="noopener noreferrer"
-        prefetch={false}
-        className="block border border-muted-primary/40 bg-background/35 p-2 transition hover:border-primary/60 hover:bg-background/50"
-      >
-        <p className="text-sm leading-snug text-foreground">{item.message}</p>
-        <div className="mt-2 flex items-center justify-between gap-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-          <span>{t(item.type)}</span>
-          <span className="tabular-nums">
-            {formatNewsDate(locale, item.time * 1000)}
-          </span>
-        </div>
-      </Link>
-    )
-  }
-
-  return (
-    <div className="block border border-muted-primary/40 bg-background/35 p-2">
-      <p className="text-sm leading-snug text-foreground">{item.message}</p>
-      <div className="mt-2 flex items-center justify-between gap-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
-        <span>{t(item.type)}</span>
-        <span className="tabular-nums">
-          {formatNewsDate(locale, item.time * 1000)}
-        </span>
-      </div>
-    </div>
-  )
-}
+import { cn } from '@/lib/utils'
 
 type EventItem = {
   id: string
@@ -60,95 +16,149 @@ type EventItem = {
 
 function parseLink(link?: string) {
   if (!link) return undefined
-
   try {
     const url = new URL(link)
-    const params = new URLSearchParams(url.search) as URLSearchParams
-
-    ;[
-      'utm_source',
-      'utm_medium',
-      'utm_campaign',
-      'utm_term',
-      'utm_content',
-    ].forEach((param) => {
-      params.delete(param)
-    })
-
-    params.append('utm_source', 'tennocompanion')
-    url.search = params.toString()
+    url.searchParams.set('utm_source', 'tennocompanion')
+    url.searchParams.set('utm_medium', 'news-widget')
     return url.href
   } catch {
     return undefined
   }
 }
 
+function NewsItem({ item }: { item: EventItem }) {
+  const locale = useLocale()
+  const t = useTranslations('newsWidget')
+
+  const formattedDate = useMemo(() => {
+    return new Intl.DateTimeFormat(locale, {
+      month: 'short',
+      day: 'numeric',
+      year: 'numeric',
+    }).format(new Date(item.time * 1000))
+  }, [locale, item.time])
+
+  const content = (
+    <>
+      <p className="text-sm leading-snug text-foreground">{item.message}</p>
+      <div className="mt-2 flex items-center justify-between gap-2 text-[11px] uppercase tracking-[0.14em] text-muted-foreground">
+        <span>{t(item.type)}</span>
+        <span className="tabular-nums">{formattedDate}</span>
+      </div>
+    </>
+  )
+
+  const containerClasses =
+    'block border border-muted-primary/40 bg-background/35 p-2 transition'
+
+  if (item.link) {
+    return (
+      <Link
+        href={item.link}
+        target="_blank"
+        rel="noopener noreferrer"
+        prefetch={false}
+        className={cn(
+          containerClasses,
+          'hover:border-primary/60 hover:bg-background/50'
+        )}
+      >
+        {content}
+      </Link>
+    )
+  }
+
+  return <div className={containerClasses}>{content}</div>
+}
+
 export function NewsWidget() {
   const locale = useLocale()
   const t = useTranslations('newsWidget')
+
   const [eventItems, setEventItems] = useState<EventItem[]>([])
+  const [mounted, setMounted] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
-  const fetchEvents = async () => {
-    const events = await fetchEventsNode()
-    return events
-      .filter((event) => event.Date)
-      .map((event) => {
-        const time = Math.trunc(Number(event.Date!.$date.$numberLong) / 1000)
-        const message = event.Messages.find(
-          (msg) => msg.LanguageCode === locale
-        )?.Message
-        const eventLink = event.Links?.find(
-          (link) => link.LanguageCode === locale
-        )?.Link
+  const updateEvents = useCallback(async () => {
+    try {
+      const events = await fetchEventsNode()
+      const parsed = events
+        .filter((event) => event.Date)
+        .map((event): EventItem | undefined => {
+          const time = Math.trunc(Number(event.Date!.$date.$numberLong) / 1000)
+          const message = event.Messages.find(
+            (m) => m.LanguageCode === locale
+          )?.Message
+          const eventLink = event.Links?.find(
+            (l) => l.LanguageCode === locale
+          )?.Link
+          const link = parseLink(event.Prop.length > 0 ? event.Prop : eventLink)
 
-        const link = parseLink(event.Prop.length > 0 ? event.Prop : eventLink)
-
-        if (
-          message &&
-          message !== '/Lotus/Language/CommunityMessages/JoinDiscord'
-        ) {
-          return {
-            id: event._id.$oid,
-            type: event.Community ? 'community' : 'official',
-            message,
-            time,
-            link,
+          if (
+            message &&
+            message !== '/Lotus/Language/CommunityMessages/JoinDiscord'
+          ) {
+            return {
+              id: event._id.$oid,
+              type: event.Community ? 'community' : 'official',
+              message,
+              time,
+              link,
+            }
           }
-        }
+          return undefined
+        })
+        .filter((item): item is EventItem => !!item)
+        .sort((a, b) => b.time - a.time)
 
-        return undefined
-      })
-      .filter((item) => item !== undefined)
-      .sort((a, b) => b.time - a.time)
-  }
+      setEventItems(parsed)
+    } catch (error) {
+      console.error('Failed to fetch news:', error)
+    } finally {
+      setIsLoading(false)
+    }
+  }, [locale])
 
   useEffect(() => {
-    fetchEvents().then((items) => {
-      setEventItems(items as EventItem[])
-    })
-  }, [])
+    setMounted(true)
+    updateEvents()
+
+    // Refresh every 5 minutes
+    const interval = setInterval(updateEvents, 5 * 60 * 1000)
+    return () => clearInterval(interval)
+  }, [updateEvents])
 
   return (
-    <div className="border border-muted-primary/60 bg-background/75 p-3 pr-0 pb-0">
-      <div className="border-b border-muted-primary/40 pb-2 mr-3">
+    <div className="border border-muted-primary/60 bg-background/75 p-3 pb-0 pr-0">
+      <div className="mr-3 border-b border-muted-primary/40 pb-2">
         <p className="font-title text-xl leading-none text-primary">
           {t('title')}
         </p>
       </div>
 
-      {eventItems.length > 0 ? (
-        <div className="max-h-96 overflow-y-auto pr-1 pb-3 pt-3">
+      <div className="max-h-96 overflow-y-auto pb-3 pr-1 pt-3">
+        {!mounted || isLoading ? (
+          // Skeleton
+          <div className="grid gap-2 mr-2">
+            {[...Array(3)].map((_, i) => (
+              <div
+                key={i}
+                className="h-16 w-full animate-pulse border border-muted-primary/20 bg-background/20"
+              />
+            ))}
+          </div>
+        ) : eventItems.length > 0 ? (
           <div className="grid gap-2">
             {eventItems.map((item) => (
               <NewsItem key={item.id} item={item} />
             ))}
           </div>
-        </div>
-      ) : (
-        <div className="border border-muted-primary/40 bg-background/35 px-3 py-2 m-3 ml-0 text-sm text-muted-foreground">
-          {t('empty')}
-        </div>
-      )}
+        ) : (
+          <div className="m-3 ml-0 border border-muted-primary/40 bg-background/35 px-3 py-2 text-sm text-muted-foreground">
+            {t('empty')}
+          </div>
+        )}
+      </div>
     </div>
   )
 }
