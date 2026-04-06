@@ -21,6 +21,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     alternates: {
       languages: localePrefixes.reduce(
         (acc, locale) => {
+          if (locale === 'tc') {
+            acc['zh-TW'] = `${siteUrl}/${locale}${path.url}`
+            return acc
+          }
           acc[locale] = `${siteUrl}/${locale}${path.url}`
           return acc
         },
@@ -38,6 +42,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     alternates: {
       languages: localePrefixes.reduce(
         (acc, locale) => {
+          if (locale === 'tc') {
+            acc['zh-TW'] = `${siteUrl}/${locale}/kim/${chatroomId}`
+            return acc
+          }
           acc[locale] = `${siteUrl}/${locale}/kim/${chatroomId}`
           return acc
         },
