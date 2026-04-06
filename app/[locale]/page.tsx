@@ -4,6 +4,7 @@ import {
   ListChecksIcon,
   MedalMilitaryIcon,
 } from '@phosphor-icons/react/ssr'
+import Widgets from '@/components/widgets'
 
 const DESKTOP_SHORTCUTS = [
   {
@@ -23,9 +24,9 @@ const DESKTOP_SHORTCUTS = [
   },
 ]
 
-export default function Home() {
+export default async function Home() {
   return (
-    <section className="relative flex min-h-0 flex-1 items-start">
+    <section className="relative flex min-h-0 flex-1 flex-col gap-4 md:flex-row md:items-start md:justify-between">
       <div className="flex flex-col gap-3 pt-2">
         {DESKTOP_SHORTCUTS.map(({ href, label, Icon }) => (
           <Link
@@ -43,6 +44,10 @@ export default function Home() {
             </span>
           </Link>
         ))}
+      </div>
+
+      <div className="w-full pt-2 md:max-w-sm md:pt-8">
+        <Widgets />
       </div>
     </section>
   )
