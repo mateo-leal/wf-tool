@@ -1,5 +1,5 @@
 import type { Metadata } from 'next'
-import { SystemChatLine } from '@/components/system-chat-line'
+import { SystemChatLine } from '@/components/kim/system-chat-line'
 import { Button } from '@/components/ui/button'
 import { Window } from '@/components/ui/window'
 import { WindowContent } from '@/components/ui/window-content'

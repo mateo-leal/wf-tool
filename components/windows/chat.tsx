@@ -1,4 +1,4 @@
-import { DialogueSelectorPanel } from '@/components/dialogue-selector-panel'
+import { DialogueSelectorPanel } from '@/components/kim/dialogue-selector-panel'
 import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
 import { notFound } from 'next/navigation'
 import { Type, type DialogueNode } from '@/lib/types'

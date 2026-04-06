@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from 'react'
 import { ChatroomSelector } from './chatroom-selector'
-import { Switch } from './ui/switch'
+import { Switch } from '../ui/switch'
 import { SHOW_SPOILERS_STORAGE_KEY } from '@/lib/constants'
 
 const SHOW_SPOILERS_CHANGE_EVENT = 'wf-kim:show-spoilers-change'

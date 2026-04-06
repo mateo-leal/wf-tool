@@ -4,7 +4,7 @@ import { TranscriptLine } from '@/lib/types'
 import { ChatLine } from '../chat-line'
 import { SystemChatLine } from '../system-chat-line'
 import { useEffect, useState } from 'react'
-import { Button } from '../ui/button'
+import { Button } from '../../ui/button'
 
 type PreferredPathPanelProps = {
   selectedOptionId: number

@@ -8,7 +8,7 @@ import { CloseButton } from '../close-button'
 import { WindowContent } from '../ui/window-content'
 import { WindowTitlebar } from '../ui/window-titlebar'
 import { KimBooleanSettings } from './kim-boolean-settings'
-import { SpoilerChatroomSelector } from '../spoiler-chatroom-selector'
+import { SpoilerChatroomSelector } from '../kim/spoiler-chatroom-selector'
 
 export function KimWindow() {
   const pathname = usePathname()
