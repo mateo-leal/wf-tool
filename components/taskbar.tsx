@@ -7,59 +7,70 @@ import {
   MedalMilitaryIcon,
 } from '@phosphor-icons/react'
 import { SettingsPortal } from './windows/settings'
-import { useEffect, useMemo, useState } from 'react'
+import { useEffect, useState } from 'react'
 import { Link, usePathname } from '@/i18n/navigation'
+import { cn } from '@/lib/utils'
+import { useLocale } from 'next-intl'
 
-export function Taskbar() {
-  const pathname = usePathname()
-  const [now, setNow] = useState(() => new Date())
-  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+function Clock() {
+  const locale = useLocale()
+  const [now, setNow] = useState<Date | null>(null)
 
   useEffect(() => {
     const interval = window.setInterval(() => {
       setNow(new Date())
     }, 1000)
-
-    return () => {
-      window.clearInterval(interval)
-    }
+    return () => window.clearInterval(interval)
   }, [])
 
+  // To avoid hydration mismatch
+  if (!now) {
+    return (
+      <div className="ml-auto text-right text-xs leading-tight animate-pulse">
+        <div className="h-3 w-12 bg-neutral-900/10 rounded mb-1" />
+        <div className="h-3 w-16 bg-neutral-900/10 rounded" />
+      </div>
+    )
+  }
+
+  const timeLabel = now.toLocaleTimeString(locale, {
+    hour: 'numeric',
+    minute: '2-digit',
+    hour12: true,
+  })
+
+  const dateLabel = now.toLocaleDateString(locale, {
+    month: 'numeric',
+    day: 'numeric',
+    year: 'numeric',
+  })
+
+  return (
+    <div className="ml-auto text-right text-xs leading-tight">
+      <div className="font-medium tracking-widest tabular-nums">
+        {timeLabel}
+      </div>
+      <div className="-tracking-tighter opacity-80 tabular-nums">
+        {dateLabel}
+      </div>
+    </div>
+  )
+}
+
+export function Taskbar() {
+  const pathname = usePathname()
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+
   useEffect(() => {
-    if (!isSettingsOpen) {
-      return
-    }
+    if (!isSettingsOpen) return
 
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
-        setIsSettingsOpen(false)
-      }
+      if (event.key === 'Escape') setIsSettingsOpen(false)
     }
 
     window.addEventListener('keydown', handleEscape)
-    return () => {
-      window.removeEventListener('keydown', handleEscape)
-    }
+    return () => window.removeEventListener('keydown', handleEscape)
   }, [isSettingsOpen])
-
-  const timeLabel = useMemo(
-    () =>
-      now.toLocaleTimeString('en-US', {
-        hour: 'numeric',
-        minute: '2-digit',
-      }),
-    [now]
-  )
-
-  const dateLabel = useMemo(
-    () =>
-      now.toLocaleDateString('en-US', {
-        month: 'numeric',
-        day: 'numeric',
-        year: 'numeric',
-      }),
-    [now]
-  )
 
   const kimIsActive = pathname.startsWith('/kim')
 
@@ -69,8 +80,6 @@ export function Taskbar() {
         <div className="flex items-end gap-1">
           <Link
             href="/checklist"
-            aria-label="Open Checklist"
-            title="Checklist"
             className="group relative flex size-11 items-center justify-center rounded-2xl transition hover:bg-black/10"
           >
             <ListChecksIcon
@@ -79,19 +88,17 @@ export function Taskbar() {
               className="transition group-hover:scale-105"
             />
             <span
-              className={[
+              className={cn(
                 'absolute bottom-1 h-1 rounded-full bg-neutral-900 transition-all',
                 pathname === '/checklist'
                   ? 'w-5'
-                  : 'w-1.5 opacity-60 group-hover:w-3',
-              ].join(' ')}
+                  : 'w-1.5 opacity-60 group-hover:w-3'
+              )}
             />
           </Link>
 
           <Link
             href="/kim"
-            aria-label="Open KIM"
-            title="KIM"
             className="group relative flex size-11 items-center justify-center rounded-2xl transition hover:bg-black/10"
           >
             <ChatCircleTextIcon
@@ -100,16 +107,15 @@ export function Taskbar() {
               className="transition group-hover:scale-105"
             />
             <span
-              className={[
+              className={cn(
                 'absolute bottom-1 h-1 rounded-full bg-neutral-900 transition-all',
-                kimIsActive ? 'w-5' : 'w-1.5 opacity-60 group-hover:w-3',
-              ].join(' ')}
+                kimIsActive ? 'w-5' : 'w-1.5 opacity-60 group-hover:w-3'
+              )}
             />
           </Link>
+
           <Link
             href="/mastery"
-            aria-label="Open Mastery Checklist"
-            title="Mastery Checklist"
             className="group relative flex size-11 items-center justify-center rounded-2xl transition hover:bg-black/10"
           >
             <MedalMilitaryIcon
@@ -118,19 +124,17 @@ export function Taskbar() {
               className="transition group-hover:scale-105"
             />
             <span
-              className={[
+              className={cn(
                 'absolute bottom-1 h-1 rounded-full bg-neutral-900 transition-all',
                 pathname === '/mastery'
                   ? 'w-5'
-                  : 'w-1.5 opacity-60 group-hover:w-3',
-              ].join(' ')}
+                  : 'w-1.5 opacity-60 group-hover:w-3'
+              )}
             />
           </Link>
 
           <button
             type="button"
-            aria-label="Open settings"
-            title="Settings"
             onClick={() => setIsSettingsOpen(true)}
             className="group relative flex size-11 items-center justify-center rounded-2xl transition hover:bg-black/10"
           >
@@ -140,20 +144,16 @@ export function Taskbar() {
               className="transition group-hover:scale-105"
             />
             <span
-              className={[
+              className={cn(
                 'absolute bottom-1 h-1 rounded-full bg-neutral-900 transition-all',
-                isSettingsOpen ? 'w-5' : 'w-1.5 opacity-60 group-hover:w-3',
-              ].join(' ')}
+                isSettingsOpen ? 'w-5' : 'w-1.5 opacity-60 group-hover:w-3'
+              )}
             />
           </button>
-          {/* <Link href="/test">Test</Link> */}
         </div>
       </div>
 
-      <div className="ml-auto text-right text-xs leading-tight">
-        <div className="font-medium tracking-widest">{timeLabel}</div>
-        <div className="-tracking-tighter opacity-80">{dateLabel}</div>
-      </div>
+      <Clock />
 
       <SettingsPortal
         isOpen={isSettingsOpen}
