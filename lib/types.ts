@@ -99,3 +99,23 @@ export type ChecklistCounter = {
   label: 'resetsIn' | 'arrivesIn' | 'leavesIn'
   time: string
 }
+
+export type BountyCycles = {
+  expiry: number
+  rot: string
+  vaultRot: string
+  zarimanFaction: string
+  bounties: Record<
+    string,
+    {
+      node: string
+      challenge: string
+      ally?: string
+    }[]
+  >
+}
+
+export type WorldCycle = {
+  expiry: number
+  state: string
+}

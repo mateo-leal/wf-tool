@@ -16,6 +16,7 @@ import { WindowContent } from '../ui/window-content'
 import { Window } from '../ui/window'
 import { WindowTitlebar } from '../ui/window-titlebar'
 import { Button } from '../ui/button'
+import { useTranslations } from 'next-intl'
 
 type BooleanState = Record<string, boolean>
 type CounterState = Record<string, number>
@@ -104,6 +105,7 @@ function saveCompletedDialoguesState(state: CompletedDialoguesState): void {
 }
 
 export function KimBooleanSettings() {
+  const t = useTranslations('kim')
   const [isOpen, setIsOpen] = useState(false)
   const [booleanState, setBooleanState] = useState<BooleanState>({})
   const [counterState, setCounterState] = useState<CounterState>({})
@@ -229,7 +231,7 @@ export function KimBooleanSettings() {
     <>
       <button
         type="button"
-        aria-label="Open boolean settings"
+        aria-label={t('settings.openSettings')}
         onClick={openSettings}
         className={cn(
           'inline-flex size-7 items-center justify-center px-1 text-sm leading-none',
@@ -244,10 +246,10 @@ export function KimBooleanSettings() {
             <section className="fixed inset-0 z-50 flex items-center justify-center p-3">
               <Window className="h-[min(88svh,900px)] max-w-[min(96vw,1400px)] md:h-[min(72svh,720px)] md:max-w-[min(80vw,1000px)]">
                 <WindowTitlebar>
-                  <p>KIM Progression Settings</p>
+                  <p>{t('settings.title')}</p>
                   <CloseButton
                     onClick={() => setIsOpen(false)}
-                    label="Close progression settings"
+                    label={t('settings.close')}
                   />
                 </WindowTitlebar>
 
@@ -255,7 +257,7 @@ export function KimBooleanSettings() {
                   <div className="grid min-h-0 flex-1 gap-3 md:grid-cols-3">
                     <section className="flex min-h-0 flex-col border border-muted-primary bg-background p-2">
                       <p className="mb-2 font-title text-base text-primary">
-                        Booleans
+                        {t('settings.booleans')}
                       </p>
                       <div className="flex gap-2 border border-muted-primary bg-background p-2">
                         <TextInput
@@ -270,18 +272,18 @@ export function KimBooleanSettings() {
                               addBoolean()
                             }
                           }}
-                          placeholder="Add boolean name"
+                          placeholder={t('settings.booleanName')}
                         />
                         <Button className="shrink-0" onClick={addBoolean}>
                           <PlusIcon size={14} weight="bold" />
-                          Add
+                          {t('settings.actions.add')}
                         </Button>
                       </div>
 
                       <div className="mt-2 min-h-0 flex-1 overflow-y-auto">
                         {booleanEntries.length === 0 ? (
                           <p className="text-sm text-foreground">
-                            No booleans saved yet.
+                            {t('settings.noBooleansSaved')}
                           </p>
                         ) : (
                           <ul className="space-y-2">
@@ -299,14 +301,14 @@ export function KimBooleanSettings() {
                                     size="sm"
                                     onClick={() => setBoolean(name, true)}
                                   >
-                                    Activate
+                                    {t('settings.actions.activate')}
                                   </Button>
                                   <Button
                                     variant={!value ? 'destructive' : 'outline'}
                                     size="sm"
                                     onClick={() => setBoolean(name, false)}
                                   >
-                                    Deactivate
+                                    {t('settings.actions.deactivate')}
                                   </Button>
                                   <Button
                                     variant="destructive"
@@ -314,7 +316,7 @@ export function KimBooleanSettings() {
                                     onClick={() => removeBoolean(name)}
                                   >
                                     <TrashIcon size={12} weight="bold" />
-                                    Remove
+                                    {t('settings.actions.remove')}
                                   </Button>
                                 </div>
                               </li>
@@ -326,7 +328,7 @@ export function KimBooleanSettings() {
 
                     <section className="flex min-h-0 flex-col border border-muted-primary bg-background p-2">
                       <p className="mb-2 font-title text-base text-primary">
-                        Counters
+                        {t('settings.counters')}
                       </p>
                       <div className="flex gap-2 border border-muted-primary bg-background p-2">
                         <TextInput
@@ -335,7 +337,7 @@ export function KimBooleanSettings() {
                           onChange={(event) =>
                             setNewCounterName(event.target.value)
                           }
-                          placeholder="Counter name"
+                          placeholder={t('settings.counterName')}
                         />
                         <TextInput
                           id="counter-value-input"
@@ -347,14 +349,14 @@ export function KimBooleanSettings() {
                         />
                         <Button className="shrink-0" onClick={addCounter}>
                           <PlusIcon size={14} weight="bold" />
-                          Add
+                          {t('settings.actions.add')}
                         </Button>
                       </div>
 
                       <div className="mt-2 min-h-0 flex-1 overflow-y-auto">
                         {counterEntries.length === 0 ? (
                           <p className="text-sm text-foreground">
-                            No counters saved yet.
+                            {t('settings.noCountersSaved')}
                           </p>
                         ) : (
                           <ul className="space-y-2">
@@ -384,7 +386,7 @@ export function KimBooleanSettings() {
                                     onClick={() => removeCounter(name)}
                                   >
                                     <TrashIcon size={12} weight="bold" />
-                                    Remove
+                                    {t('settings.actions.remove')}
                                   </Button>
                                 </div>
                               </li>
@@ -396,7 +398,7 @@ export function KimBooleanSettings() {
 
                     <section className="flex min-h-0 flex-col border border-muted-primary bg-background p-2">
                       <p className="mb-2 font-title text-base text-primary">
-                        Completed dialogues
+                        {t('settings.completedDialogues')}
                       </p>
                       <div className="flex gap-2 border border-muted-primary bg-background p-2">
                         <TextInput
@@ -411,21 +413,21 @@ export function KimBooleanSettings() {
                               addCompletedDialogue()
                             }
                           }}
-                          placeholder="Dialogue codename"
+                          placeholder={t('settings.dialogueCodename')}
                         />
                         <Button
                           className="shrink-0"
                           onClick={addCompletedDialogue}
                         >
                           <PlusIcon size={14} weight="bold" />
-                          Add
+                          {t('settings.actions.add')}
                         </Button>
                       </div>
 
                       <div className="mt-2 min-h-0 flex-1 overflow-y-auto">
                         {completedDialogueEntries.length === 0 ? (
                           <p className="text-sm text-foreground">
-                            No completed dialogues saved yet.
+                            {t('settings.noCompletedDialoguesSaved')}
                           </p>
                         ) : (
                           <ul className="space-y-2">
@@ -446,7 +448,7 @@ export function KimBooleanSettings() {
                                         setCompletedDialogue(codename, true)
                                       }
                                     >
-                                      Completed
+                                      {t('settings.actions.completed')}
                                     </Button>
                                     <Button
                                       variant={
@@ -457,7 +459,7 @@ export function KimBooleanSettings() {
                                         setCompletedDialogue(codename, false)
                                       }
                                     >
-                                      Not completed
+                                      {t('settings.actions.notCompleted')}
                                     </Button>
                                     <Button
                                       variant="destructive"
@@ -467,7 +469,7 @@ export function KimBooleanSettings() {
                                       }
                                     >
                                       <TrashIcon size={12} weight="bold" />
-                                      Remove
+                                      {t('settings.actions.remove')}
                                     </Button>
                                   </div>
                                 </li>

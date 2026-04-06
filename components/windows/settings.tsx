@@ -48,9 +48,7 @@ export function SettingsPortal({ isOpen, onClose }: SettingsPortalProps) {
             onChange={(event) => onLanguageChange(event.target.value)}
             className="w-full border border-muted-primary bg-background px-2 py-1.5 text-sm outline-none focus:border-primary"
           >
-            {LANGUAGE_OPTIONS.filter((option) =>
-              ['en', 'es'].includes(option.value)
-            ).map((option) => (
+            {LANGUAGE_OPTIONS.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>

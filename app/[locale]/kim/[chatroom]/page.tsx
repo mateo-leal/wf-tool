@@ -1,30 +1,24 @@
 import type { Metadata } from 'next'
-import { ChatWindow } from '@/components/windows/chat'
-import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
-import { capitalizeFirstLetter } from '@/lib/utils'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { routing } from '@/i18n/routing'
-import { setRequestLocale } from 'next-intl/server'
-
-export async function generateStaticParams() {
-  const locales = routing.locales.map((locale) => ({ locale }))
-  const chatrooms = Object.keys(CHATROOM_SOURCE_BY_ID).map((id) => ({
-    chatroom: id,
-  }))
-  return locales.flatMap((locale) =>
-    chatrooms.map((chatroom) => ({ ...locale, ...chatroom }))
-  )
-}
+import { ChatWindow } from '@/components/windows/chat'
+import { capitalizeFirstLetter } from '@/lib/utils'
+import { CHATROOM_SOURCE_BY_ID } from '@/lib/kim/chatrooms'
 
 export async function generateMetadata({
   params,
 }: PageProps<'/[locale]/kim/[chatroom]'>): Promise<Metadata> {
   const { chatroom, locale } = await params
+  const t = await getTranslations({
+    locale,
+    namespace: 'kim.metadata.chatroom',
+  })
 
   const source = CHATROOM_SOURCE_BY_ID[chatroom]
 
   if (!source) {
     return {
-      title: 'Chatroom Not Found',
+      title: t('notFound'),
       robots: {
         index: false,
         follow: false,
@@ -35,17 +29,24 @@ export async function generateMetadata({
   const chatroomName = capitalizeFirstLetter(chatroom.replace('-', ' '))
 
   return {
-    title: `${chatroomName} KIM Dialogue`,
-    description: `Simulate and analyze ${chatroomName} KIM dialogue paths with chemistry, thermostat, and boolean state outcomes.`,
-    alternates: {
-      canonical: `/kim/${chatroom}`,
-    },
+    title: t('title', { chatroomName }),
+    description: t('description', { chatroomName }),
     openGraph: {
-      title: `${chatroomName} KIM Dialogue`,
-      description: `Simulate and analyze ${chatroomName} KIM dialogue paths with chemistry, thermostat, and boolean state outcomes.`,
-      url: `/kim/${chatroom}`,
+      title: t('title', { chatroomName }),
+      description: t('description', { chatroomName }),
+      url: locale === 'en' ? `/kim/${chatroom}` : `/${locale}/kim/${chatroom}`,
     },
   }
+}
+
+export async function generateStaticParams() {
+  const locales = routing.locales.map((locale) => ({ locale }))
+  const chatrooms = Object.keys(CHATROOM_SOURCE_BY_ID).map((id) => ({
+    chatroom: id,
+  }))
+  return locales.flatMap((locale) =>
+    chatrooms.map((chatroom) => ({ ...locale, ...chatroom }))
+  )
 }
 
 export default async function Page({

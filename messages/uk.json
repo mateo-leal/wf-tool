@@ -1,4 +1,7 @@
 {
+  "metadata": {
+    "description": "Your Warframe companion for KIM dialogue simulation and daily or weekly checklist tracking with live reset counters."
+  },
   "ui": {
     "show": "Show",
     "hide": "Hide",
@@ -21,7 +24,8 @@
     "marooBazaar": "Maroo's Bazaar, Mars",
     "darkRefactory": "Dark Refactory, Base of Operations",
     "ironWake": "Iron Wake, Earth",
-    "EarthHUB": "Strata Relay, Earth"
+    "EarthHUB": "Strata Relay, Earth",
+    "MercuryHUB": "Larunda Relay, Mercury"
   },
   "terminal": {
     "title": "Terminal",
@@ -76,6 +80,10 @@
   },
   "checklist": {
     "title": "Checklist",
+    "metadata": {
+      "title": "Warframe Checklist",
+      "description": "Track your Warframe daily, weekly, and rotating tasks with live reset counters."
+    },
     "doneCount": "{count}/{total} done",
     "showHiddenItems": "Hidden ({count})",
     "hideHiddenItems": "Hide hidden",
@@ -172,8 +180,78 @@
       }
     }
   },
+  "kim": {
+    "title": "KIM",
+    "metadata": {
+      "title": "KIM Pathfinder",
+      "description": "Browse Warframe KIM chatrooms and choose a conversation to simulate preferred dialogue outcomes.",
+      "chatroom": {
+        "title": "{chatroomName} KIM Dialogue",
+        "description": "Simulate and analyze {chatroomName} KIM dialogue paths with chemistry, counters, and boolean state outcomes.",
+        "notFound": "Chatroom not found."
+      }
+    },
+    "windowTitle": "Welcome to KIM!",
+    "username": "Username:",
+    "drifter": "Drifter",
+    "showSpoilers": "Show spoilers",
+    "settings": {
+      "title": "KIM Progression Settings",
+      "openSettings": "Open KIM Progression Settings",
+      "close": "Close settings",
+      "booleans": "Booleans",
+      "booleanName": "Boolean name",
+      "noBooleansSaved": "No booleans saved yet.",
+      "counters": "Counters",
+      "counterName": "Counter name",
+      "noCountersSaved": "No counters saved yet.",
+      "completedDialogues": "Completed dialogues",
+      "dialogueCodename": "Dialogue codename",
+      "noCompletedDialoguesSaved": "No completed dialogues saved yet.",
+      "actions": {
+        "add": "Add",
+        "activate": "Activate",
+        "deactivate": "Deactivate",
+        "remove": "Remove",
+        "completed": "Completed",
+        "notCompleted": "Not completed"
+      }
+    },
+    "chatroom": {
+      "selectTheDialogue": "Select the dialogue ({count} available)",
+      "searchByDialogue": "Search by dialogue or codename",
+      "noDialoguesMatch": "There are no dialogues that match your search.",
+      "booleanChecks": "Boolean checks",
+      "true": "True",
+      "false": "False",
+      "noBooleanChecksRequired": "This dialogue does not require boolean checks.",
+      "counterValues": "Counter values",
+      "noCounterValuesRequired": "This dialogue does not require counter input.",
+      "conditions": "Conditions: {conditions}",
+      "simulate": "Simulate",
+      "simulateLoading": "Simulating paths...",
+      "choosePreferredPath": "Choose preferred path",
+      "bestOverallPath": "Best overall path",
+      "mostBooleanActivations": "Most boolean activations",
+      "bestChemistryPath": "Best chemistry path",
+      "bestThermostatPath": "Best thermostat path",
+      "flirtingNoFlirting": "no flirting",
+      "flirtingWith": "with {names}",
+      "showConversation": "Show conversation",
+      "simulatedDialogue": "Simulated dialogue",
+      "noDialogueTextAvailable": "No dialogue text available on this path.",
+      "chemistry": "Chemistry",
+      "updateBooleanValues": "Update boolean values based on this conversation",
+      "booleanUpdated": "Boolean values updated.",
+      "futureSimulationsNotice": "This will affect the dialogues available in future simulations."
+    }
+  },
   "masteryChecklist": {
     "title": "Mastery Checklist",
+    "metadata": {
+      "title": "Warframe Mastery Checklist",
+      "description": "Track your Warframe Mastery Rank progress by logging domained weapons, frames, companions, and intrinsics so you always know what to level next."
+    },
     "categories": {
       "itemCompletion": "Item Completion",
       "railjackIntrinsic": "Railjack Intrinsic",
@@ -222,5 +300,24 @@
       "legalDisclaimer": "This site is not affiliated with Digital Extremes. Warframe and the Warframe logo are trademarks of Digital Extremes Ltd.",
       "browseWfCredits": "Data and media resources are provided by <link>browse.wf</link>, a community-driven Warframe database and resource site."
     }
+  },
+  "worldCycles": {
+    "status": {
+      "unavailable": "Unavailable"
+    },
+    "states": {
+      "day": "Day",
+      "night": "Night",
+      "warm": "Warm",
+      "cold": "Cold",
+      "fass": "Fass",
+      "vome": "Vome"
+    }
+  },
+  "newsWidget": {
+    "title": "News",
+    "empty": "No news is available right now.",
+    "community": "Community",
+    "official": "Official"
   }
 }

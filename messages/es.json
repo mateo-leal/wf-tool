@@ -1,4 +1,7 @@
 {
+  "metadata": {
+    "description": "Tu compañero en Warframe para la simulación de diálogos de KIM y el seguimiento de checklist diarios o semanales con contadores de reinicio en vivo."
+  },
   "ui": {
     "show": "Mostrar",
     "hide": "Ocultar",
@@ -21,7 +24,8 @@
     "marooBazaar": "Bazar de Maroo, Marte",
     "darkRefactory": "Oscuridad Refractaria, Base de Operaciones",
     "ironWake": "Estela de Hierro, Tierra",
-    "EarthHUB": "Repetidor Strata, Tierra"
+    "EarthHUB": "Repetidor Strata, Tierra",
+    "MercuryHUB": "Repetidor Larunda, Mercurio"
   },
   "terminal": {
     "title": "Terminal",
@@ -76,6 +80,10 @@
   },
   "checklist": {
     "title": "Checklist",
+    "metadata": {
+      "title": "Warframe Checklist",
+      "description": "Realiza un seguimiento de tus tareas diarias, semanales y rotativas en Warframe con contadores de reinicio en vivo."
+    },
     "doneCount": "{count}/{total} hecho",
     "showHiddenItems": "Ocultos ({count})",
     "hideHiddenItems": "Ocultar ocultos",
@@ -172,8 +180,78 @@
       }
     }
   },
+  "kim": {
+    "title": "KIM",
+    "metadata": {
+      "title": "KIM Pathfinder",
+      "description": "Explora las salas de chat de KIM en Warframe y elige una conversación para simular los resultados de diálogo preferidos.",
+      "chatroom": {
+        "title": "{chatroomName} KIM Diálogo",
+        "description": "Simula y analiza los caminos de diálogo de {chatroomName} KIM con química, contadores y cálculo de estados booleanos.",
+        "notFound": "Sala de chat no encontrada."
+      }
+    },
+    "windowTitle": "¡Bienvenidos a KIM!",
+    "username": "Nombre de usuario:",
+    "drifter": "Viajero",
+    "showSpoilers": "Mostrar spoilers",
+    "settings": {
+      "title": "Configuración de progresión de KIM",
+      "openSettings": "Abrir Configuración de progresión de KIM",
+      "close": "Cerrar configuración",
+      "booleans": "Banderas",
+      "booleanName": "Nombre de la bandera",
+      "noBooleansSaved": "No hay banderas guardadas todavía.",
+      "counters": "Contadores",
+      "counterName": "Nombre del contador",
+      "noCountersSaved": "No hay contadores guardados todavía.",
+      "completedDialogues": "Diálogos completados",
+      "dialogueCodename": "Nombre en clave del diálogo",
+      "noCompletedDialoguesSaved": "No hay diálogos completados guardados todavía.",
+      "actions": {
+        "add": "Agregar",
+        "activate": "Activar",
+        "deactivate": "Desactivar",
+        "remove": "Eliminar",
+        "completed": "Completado",
+        "notCompleted": "No completado"
+      }
+    },
+    "chatroom": {
+      "selectTheDialogue": "Selecciona el diálogo ({count, plural, =1 {# disponible} other {# disponibles}})",
+      "searchByDialogue": "Buscar por diálogo o nombre en clave",
+      "noDialoguesMatch": "Ningún diálogo coincide con tu búsqueda.",
+      "booleanChecks": "Verificaciones de banderas",
+      "true": "Verdadero",
+      "false": "Falso",
+      "noBooleanChecksRequired": "Este diálogo no requiere verificaciones de banderas.",
+      "counterValues": "Valores de contadores",
+      "noCounterValuesRequired": "Este diálogo no requiere valores de contadores.",
+      "conditions": "Condiciones: {conditions}",
+      "simulate": "Simular",
+      "simulateLoading": "Simulando rutas...",
+      "choosePreferredPath": "Elegir ruta preferida",
+      "bestOverallPath": "Mejor ruta general",
+      "mostBooleanActivations": "Más activaciones de banderas",
+      "bestChemistryPath": "Mejor ruta de química",
+      "bestThermostatPath": "Mejor ruta de termostato",
+      "flirtingNoFlirting": "sin coqueteo",
+      "flirtingWith": "con {names}",
+      "showConversation": "Mostrar conversación",
+      "simulatedDialogue": "Diálogo simulado",
+      "noDialogueTextAvailable": "No hay texto de diálogo disponible en esta ruta.",
+      "chemistry": "Química",
+      "updateBooleanValues": "Actualizar valores de banderas basados en esta conversación",
+      "booleanUpdated": "Valores de banderas actualizados.",
+      "futureSimulationsNotice": "Esto afectará los diálogos disponibles en futuras simulaciones."
+    }
+  },
   "masteryChecklist": {
     "title": "Checklist de Maestría",
+    "metadata": {
+      "title": "Checklist de Maestría de Warframe",
+      "description": "Realiza un seguimiento de tu progreso en el Rango de Maestría de Warframe registrando armas, warframes, compañeros e intrínsecos para que siempre sepas qué dominar después."
+    },
     "categories": {
       "itemCompletion": "Completación de ítems",
       "railjackIntrinsic": "Intrínsecos del Railjack",
@@ -222,5 +300,24 @@
       "legalDisclaimer": "Este sitio no está afiliado con Digital Extremes. Warframe y el logo de Warframe son marcas registradas de Digital Extremes Ltd.",
       "browseWfCredits": "Los datos y recursos multimedia son proporcionados por <link>browse.wf</link>, una base de datos y sitio de recursos de Warframe gestionado por la comunidad."
     }
+  },
+  "worldCycles": {
+    "status": {
+      "unavailable": "No disponible"
+    },
+    "states": {
+      "day": "Día",
+      "night": "Noche",
+      "warm": "Cálido",
+      "cold": "Frío",
+      "fass": "Fass",
+      "vome": "Vome"
+    }
+  },
+  "newsWidget": {
+    "title": "Noticias",
+    "empty": "No hay noticias disponibles en este momento.",
+    "community": "Comunidad",
+    "official": "Oficial"
   }
 }

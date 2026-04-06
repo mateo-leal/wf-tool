@@ -1,4 +1,4 @@
-import { SPEAKERS } from '@/lib/chatrooms'
+import { SPEAKERS } from '@/lib/kim/chatrooms'
 import { parseEmojiContent } from '@/lib/emoji-tokens'
 import { TranscriptLine } from '@/lib/types'
 import Image from 'next/image'

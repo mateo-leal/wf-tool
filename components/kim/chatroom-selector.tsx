@@ -1,10 +1,10 @@
 'use client'
 
 import Image from 'next/image'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
 import { cn } from '@/lib/utils'
 import { usePathname } from 'next/navigation'
-import { CATHEDRALE_CHATROOMS, HEX_CHATROOMS } from '@/lib/chatrooms'
+import { CATHEDRALE_CHATROOMS, HEX_CHATROOMS } from '@/lib/kim/chatrooms'
 import { Link } from '@/i18n/navigation'
 
 type ChatroomSelectorProps = {

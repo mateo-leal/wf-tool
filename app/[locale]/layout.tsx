@@ -8,7 +8,7 @@ import './globals.css'
 import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { routing } from '@/i18n/routing'
 import { notFound } from 'next/navigation'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 const oxanium = Oxanium({
   variable: '--font-ui-sans',
@@ -21,77 +21,71 @@ const cormorantGaramond = Cormorant_Garamond({
   subsets: ['latin'],
 })
 
-export const metadata: Metadata = {
-  metadataBase: getSiteOrigin(),
-  applicationName: APP_TITLE,
-  title: {
-    default: APP_TITLE,
-    template: '%s | Tenno Companion',
-  },
-  description:
-    'Your Warframe companion for KIM dialogue simulation and daily or weekly checklist tracking with live reset counters.',
-  keywords: [
-    APP_TITLE,
-    'Warframe',
-    'KIM',
-    'dialogue pathfinder',
-    'dialogue simulator',
-    'kim pathfinder',
-    'Warframe Tools',
-    'Hex',
-    'chatroom',
-    'WF',
-    'checklist',
-    'tasks',
-    'daily',
-    'weekly',
-    'sortie',
-    'nightwave',
-    'syndicate',
-    'steel path',
-    'archon hunt',
-    'focus',
-    'tenno',
-    'game tool',
-  ],
-  alternates: {
-    canonical: '/',
-  },
-  openGraph: {
-    type: 'website',
-    title: APP_TITLE,
-    description:
-      'Your Warframe companion for KIM dialogue simulation and daily or weekly checklist tracking with live reset counters.',
-    url: '/',
-    siteName: APP_TITLE,
-    locale: 'en_US',
-    images: [
-      {
-        url: '/favicon.ico',
-        width: 256,
-        height: 256,
-      },
+export async function generateMetadata(
+  { params }: LayoutProps<'/[locale]'>
+  // parent: ResolvingMetadata
+): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale })
+
+  return {
+    metadataBase: getSiteOrigin(),
+    applicationName: APP_TITLE,
+    title: {
+      default: APP_TITLE,
+      template: `%s | ${APP_TITLE}`,
+    },
+    description: t('metadata.description'),
+    keywords: [
+      APP_TITLE,
+      'Warframe',
+      'KIM',
+      'dialogue pathfinder',
+      'dialogue simulator',
+      'kim pathfinder',
+      'Warframe Tools',
+      'Hex',
+      'chatroom',
+      'WF',
+      'checklist',
+      'tasks',
+      'daily',
+      'weekly',
+      'sortie',
+      'nightwave',
+      'syndicate',
+      'steel path',
+      'archon hunt',
+      'focus',
+      'tenno',
+      'game tool',
     ],
-  },
-  twitter: {
-    card: 'summary',
-    title: APP_TITLE,
-    description:
-      'Your Warframe companion for KIM dialogue simulation and daily or weekly checklist tracking with live reset counters.',
-    images: ['/favicon.ico'],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+    openGraph: {
+      type: 'website',
+      title: APP_TITLE,
+      description: t('metadata.description'),
+      url: '/',
+      siteName: APP_TITLE,
+      locale: locale,
+    },
+    twitter: {
+      card: 'summary',
+      title: APP_TITLE,
+      description: t('metadata.description'),
+    },
+    robots: {
       index: true,
       follow: true,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-      'max-video-preview': -1,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+        'max-video-preview': -1,
+      },
     },
-  },
-  category: 'games',
+    category: 'games',
+  }
 }
 
 export function generateStaticParams() {

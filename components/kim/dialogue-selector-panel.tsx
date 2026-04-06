@@ -1,11 +1,6 @@
 'use client'
 
 import { useEffect, useMemo, useState } from 'react'
-import {
-  DEFAULT_LANGUAGE,
-  LANGUAGE_OPTIONS,
-  normalizeLanguage,
-} from '@/lib/language'
 import { DialogueOptionsList } from './dialogue-selector-panel/dialogue-options-list'
 import { SimulationLoadingState } from './dialogue-selector-panel/loading-state'
 import { PreferredPathPanel } from './dialogue-selector-panel/preferred-path-panel'
@@ -21,9 +16,9 @@ import {
   COMPLETED_DIALOGUES_CHANGE_EVENT,
   COMPLETED_DIALOGUES_STORAGE_KEY,
   COUNTERS_STORAGE_KEY,
-  LANGUAGE_STORAGE_KEY,
 } from '@/lib/constants'
 import { Type } from '@/lib/types'
+import { useLocale, useTranslations } from 'next-intl'
 
 function loadBooleansFromStorage(): Record<string, boolean> {
   try {
@@ -234,6 +229,8 @@ export function DialogueSelectorPanel({
   dialogueOptions,
   requirementsByStartId,
 }: DialogueSelectorPanelProps) {
+  const locale = useLocale()
+  const t = useTranslations('kim.chatroom')
   const [options, setOptions] = useState<DialogueOption[]>(dialogueOptions)
   const [isLoadingOptions, setIsLoadingOptions] = useState(false)
   const [selectedStartId, setSelectedStartId] = useState<number | null>(
@@ -264,25 +261,13 @@ export function DialogueSelectorPanel({
   >(null)
   const [showConversation, setShowConversation] = useState(false)
   const [optionsRefreshToken, setOptionsRefreshToken] = useState(0)
-  const [language, setLanguage] = useState(() => {
-    try {
-      return normalizeLanguage(localStorage.getItem(LANGUAGE_STORAGE_KEY))
-    } catch {
-      return DEFAULT_LANGUAGE
-    }
-  })
 
   useEffect(() => {
-    try {
-      localStorage.setItem(LANGUAGE_STORAGE_KEY, language)
-    } catch {
-      // ignore storage errors
-    }
     setPreferredPaths([])
     setSelectedPreferredPathId(null)
     setShowConversation(false)
     setSimulateError(null)
-  }, [language])
+  }, [])
 
   useEffect(() => {
     let cancelled = false
@@ -291,7 +276,7 @@ export function DialogueSelectorPanel({
     const storedBooleans = loadBooleansFromStorage()
     const params = new URLSearchParams({
       chatroom,
-      language,
+      language: locale,
       booleans: JSON.stringify(storedBooleans),
     })
 
@@ -322,7 +307,7 @@ export function DialogueSelectorPanel({
       cancelled = true
       controller.abort()
     }
-  }, [language, chatroom, optionsRefreshToken])
+  }, [locale, chatroom, optionsRefreshToken])
 
   useEffect(() => {
     if (!requirements) {
@@ -379,7 +364,7 @@ export function DialogueSelectorPanel({
       const params = new URLSearchParams({
         chatroom,
         startId: String(selectedOption.id),
-        language,
+        language: locale,
         booleans: JSON.stringify(booleanValues),
         counters: JSON.stringify(counterValues),
       })
@@ -421,26 +406,6 @@ export function DialogueSelectorPanel({
             <p className="font-title text-xl text-primary">
               {selectedOption.label}
             </p>
-            <div className="space-y-1">
-              <label
-                htmlFor="sim-language"
-                className="block text-xs uppercase tracking-wide"
-              >
-                Language
-              </label>
-              <select
-                id="sim-language"
-                value={language}
-                onChange={(event) => setLanguage(event.target.value)}
-                className="w-full border border-muted-primary bg-background px-2 py-1.5 text-sm outline-none focus:border-primary"
-              >
-                {LANGUAGE_OPTIONS.map((option) => (
-                  <option key={option.value} value={option.value}>
-                    {option.label}
-                  </option>
-                ))}
-              </select>
-            </div>
 
             {isSimulating ? (
               <SimulationLoadingState />

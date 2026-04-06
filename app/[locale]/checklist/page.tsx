@@ -1,20 +1,27 @@
 import { ChecklistWindow } from '@/components/windows/checklist'
 import { Metadata } from 'next'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
-export const metadata: Metadata = {
-  title: 'Warframe Checklist',
-  description:
-    'Track your Warframe daily, weekly, and rotating tasks with live reset counters and progression reminders.',
-  alternates: {
-    canonical: '/checklist',
-  },
-  openGraph: {
-    title: 'Warframe Checklist',
-    description:
-      'Track your Warframe daily, weekly, and rotating tasks with live reset counters and progression reminders.',
-    url: '/checklist',
-  },
+export async function generateMetadata({
+  params,
+}: PageProps<'/[locale]/checklist'>): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({ locale, namespace: 'checklist.metadata' })
+
+  return {
+    title: t('title'),
+    description: t('description'),
+    openGraph: {
+      title: t('title'),
+      description: t('description'),
+      url: locale === 'en' ? '/checklist' : `/${locale}/checklist`,
+    },
+    twitter: {
+      card: 'summary',
+      title: t('title'),
+      description: t('description'),
+    },
+  }
 }
 
 export default async function Page({

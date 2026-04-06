@@ -1,8 +1,5 @@
-import {
-  resolveDictName,
-  type PublicExportIntrinsic,
-  type PublicExportDictionary,
-} from '@/lib/public-export/fetch-public-export'
+import { type PublicExportIntrinsic } from '@/lib/public-export/fetch-public-export'
+import { Dictionary, resolveDictionary } from './language'
 
 export type MasteryCategory =
   | 'itemCompletion'
@@ -83,7 +80,7 @@ function buildIconUrl(iconPath: string | undefined): string | undefined {
 }
 
 export function buildMasteryData(
-  dict: PublicExportDictionary,
+  dict: Dictionary,
   weaponsMap: Record<
     string,
     {
@@ -156,7 +153,7 @@ export function buildMasteryData(
     }
 
     const schoolFallback = intrinsicKey.replace('LPS_', '').toLowerCase()
-    const schoolName = resolveDictName(dict, intrinsic.name, schoolFallback)
+    const schoolName = resolveDictionary(dict, intrinsic.name, schoolFallback)
     subcategoryLabels.railjackIntrinsic[intrinsicKey] = schoolName
     const ranks = intrinsic.ranks ?? []
 
@@ -173,7 +170,7 @@ export function buildMasteryData(
     for (const [index, rank] of ranks.entries()) {
       const rankNumber = index + 1
       const rankFallback = `${schoolName} ${rankNumber}`
-      const rankName = resolveDictName(dict, rank.name, rankFallback)
+      const rankName = resolveDictionary(dict, rank.name, rankFallback)
 
       data.railjackIntrinsic[intrinsicKey].push({
         id: `intrinsic:${intrinsicKey}:${rankNumber}`,
@@ -204,7 +201,7 @@ export function buildMasteryData(
     const fallback = path.split('/').pop() ?? path
     data.itemCompletion[targetSubcategory].push({
       id: `warframe:${path}`,
-      name: resolveDictName(dict, frame.name, fallback),
+      name: resolveDictionary(dict, frame.name, fallback),
       iconUrl: buildIconUrl(frame.icon),
       masteryReq: frame.masteryReq,
       masteryPoints: getItemMasteryPoints(targetSubcategory),
@@ -290,7 +287,7 @@ export function buildMasteryData(
     const fallback = path.split('/').pop() ?? path
     data.itemCompletion[targetSubcategory].push({
       id: `weapon:${path}`,
-      name: resolveDictName(dict, weapon.name, fallback),
+      name: resolveDictionary(dict, weapon.name, fallback),
       iconUrl: buildIconUrl(weapon.icon),
       masteryReq: weapon.masteryReq,
       masteryPoints: getItemMasteryPoints(
@@ -317,7 +314,7 @@ export function buildMasteryData(
     const fallback = path.split('/').pop() ?? path
     data.itemCompletion[targetSubcategory].push({
       id: `sentinel:${path}`,
-      name: resolveDictName(dict, sentinel.name, fallback),
+      name: resolveDictionary(dict, sentinel.name, fallback),
       iconUrl: buildIconUrl(sentinel.icon),
       masteryReq: sentinel.masteryReq,
       masteryPoints: getItemMasteryPoints(targetSubcategory),

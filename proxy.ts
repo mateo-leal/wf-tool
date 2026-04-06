@@ -1,7 +1,27 @@
 import createMiddleware from 'next-intl/middleware'
 import { routing } from './i18n/routing'
+import { NextRequest } from 'next/server'
+import LinkHeader from 'http-link-header'
 
-export default createMiddleware(routing)
+const handleI18nRouting = createMiddleware(routing)
+
+export default async function middleware(request: NextRequest) {
+  const response = handleI18nRouting(request)
+
+  const linkHeader = response.headers.get('Link')
+  if (linkHeader) {
+    const link = LinkHeader.parse(linkHeader)
+    link.refs = link.refs.map((ref) => {
+      if (ref.hreflang === 'tc') {
+        ref.hreflang = 'zh-TW'
+      }
+      return ref
+    })
+    response.headers.set('Link', link.toString())
+  }
+
+  return response
+}
 
 export const config = {
   // Match all pathnames except for

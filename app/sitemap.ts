@@ -1,5 +1,5 @@
 import type { MetadataRoute } from 'next'
-import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
+import { CHATROOM_SOURCE_BY_ID } from '@/lib/kim/chatrooms'
 import { getSiteUrl } from '@/lib/seo'
 import { routing } from '@/i18n/routing'
 
@@ -21,6 +21,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     alternates: {
       languages: localePrefixes.reduce(
         (acc, locale) => {
+          if (locale === 'tc') {
+            acc['zh-TW'] = `${siteUrl}/${locale}${path.url}`
+            return acc
+          }
           acc[locale] = `${siteUrl}/${locale}${path.url}`
           return acc
         },
@@ -38,6 +42,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     alternates: {
       languages: localePrefixes.reduce(
         (acc, locale) => {
+          if (locale === 'tc') {
+            acc['zh-TW'] = `${siteUrl}/${locale}/kim/${chatroomId}`
+            return acc
+          }
           acc[locale] = `${siteUrl}/${locale}/kim/${chatroomId}`
           return acc
         },

@@ -1,5 +1,5 @@
-import { DialogueSelectorPanel } from '@/components/dialogue-selector-panel'
-import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
+import { DialogueSelectorPanel } from '@/components/kim/dialogue-selector-panel'
+import { CHATROOM_SOURCE_BY_ID } from '@/lib/kim/chatrooms'
 import { notFound } from 'next/navigation'
 import { Type, type DialogueNode } from '@/lib/types'
 import { CloseButton } from '../close-button'
@@ -13,12 +13,10 @@ import {
   getMultiBooleanNames,
   resolveContent,
   resolveStartNodes,
-} from '@/lib/core/node-utils'
-import {
-  DEFAULT_DICT_SOURCE,
-  loadDictionary,
-  loadNodes,
-} from '@/lib/core/loader'
+} from '@/lib/kim/node-utils'
+import { loadDictionary, loadNodes } from '@/lib/kim/loader'
+import { getLocale, getTranslations } from 'next-intl/server'
+import { getKIMDictionarySource } from '@/lib/language'
 
 const BOOLEAN_CHECK_TYPES = new Set<Type>([
   Type.CheckBooleanDialogueNode,
@@ -215,7 +213,10 @@ function buildConversationLabel(
 }
 
 export async function ChatWindow({ chatroom }: { chatroom: string }) {
+  const locale = await getLocale()
+  const t = await getTranslations('kim.chatroom')
   const source = CHATROOM_SOURCE_BY_ID[chatroom]
+  const dictionarySource = getKIMDictionarySource(locale)
 
   if (!source) {
     notFound()
@@ -223,7 +224,7 @@ export async function ChatWindow({ chatroom }: { chatroom: string }) {
 
   const [nodes, dictionary] = await Promise.all([
     loadNodes(source),
-    loadDictionary(DEFAULT_DICT_SOURCE).catch(() => new Map<string, string>()),
+    loadDictionary(dictionarySource).catch(() => new Map<string, string>()),
   ])
 
   const startNodes = resolveStartNodes(nodes)
@@ -258,7 +259,7 @@ export async function ChatWindow({ chatroom }: { chatroom: string }) {
       </WindowTitlebar>
       <WindowContent className="sm:p-3">
         <div className="border border-muted-primary bg-background px-2 py-1 text-sm text-foreground">
-          Select the dialogue ({dialogueOptions.length} available)
+          {t('selectTheDialogue', { count: dialogueOptions.length })}
         </div>
 
         <div className="mt-2 grid min-h-0 flex-1 gap-2 grid-rows-[minmax(170px,30svh)_minmax(0,1fr)] md:grid-rows-1 md:grid-cols-[minmax(0,270px)_minmax(0,1fr)]">

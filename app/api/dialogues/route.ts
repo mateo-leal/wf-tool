@@ -1,14 +1,14 @@
 import { NextResponse } from 'next/server'
-import { CHATROOM_SOURCE_BY_ID } from '@/lib/chatrooms'
-import { getDictionarySource, normalizeLanguage } from '@/lib/language'
+import { CHATROOM_SOURCE_BY_ID } from '@/lib/kim/chatrooms'
+import { getKIMDictionarySource, normalizeLanguage } from '@/lib/language'
 import { type DialogueNode, Type } from '@/lib/types'
 import {
   getConversationName,
   getBooleanName,
   resolveContent,
   resolveStartNodes,
-} from '@/lib/core/node-utils'
-import { loadDictionary, loadNodes } from '@/lib/core/loader'
+} from '@/lib/kim/node-utils'
+import { loadDictionary, loadNodes } from '@/lib/kim/loader'
 
 const NON_DIALOGUE_PREVIEW_TYPES = new Set<Type>([
   Type.StartDialogueNode,
@@ -176,7 +176,7 @@ export async function GET(request: Request) {
 
     const [nodes, dictionary] = await Promise.all([
       loadNodes(source),
-      loadDictionary(getDictionarySource(language)).catch(
+      loadDictionary(getKIMDictionarySource(language)).catch(
         () => new Map<string, string>()
       ),
     ])

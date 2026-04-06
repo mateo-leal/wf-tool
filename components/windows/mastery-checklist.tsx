@@ -1,6 +1,5 @@
 import { buildMasteryData, type MasteryData } from '@/lib/mastery'
 import {
-  fetchPublicExportDictionary,
   fetchPublicExportIntrinsics,
   fetchPublicExportSentinels,
   fetchPublicExportWarframes,
@@ -11,6 +10,8 @@ import { MasteryPanel } from '../mastery/mastery-panel'
 import { Window } from '../ui/window'
 import { WindowContent } from '../ui/window-content'
 import { WindowTitlebar } from '../ui/window-titlebar'
+import { getDictionary } from '@/lib/language'
+import { CloseButton } from '../close-button'
 
 export async function MasteryChecklistWindow() {
   const t = await getTranslations('masteryChecklist')
@@ -22,7 +23,7 @@ export async function MasteryChecklistWindow() {
   try {
     const [dict, weaponsMap, warframesMap, sentinelsMap, intrinsicsMap] =
       await Promise.all([
-        fetchPublicExportDictionary(locale),
+        getDictionary(locale),
         fetchPublicExportWeapons(),
         fetchPublicExportWarframes(),
         fetchPublicExportSentinels(),
@@ -44,6 +45,7 @@ export async function MasteryChecklistWindow() {
     <Window className="relative mt-0 h-[calc(100svh-5.5rem)] min-h-75 max-w-none md:mt-10 md:h-[85svh]">
       <WindowTitlebar>
         <p>{t('title')}</p>
+        <CloseButton href="/" />
       </WindowTitlebar>
       <WindowContent className="min-h-0 p-2">
         <MasteryPanel masteryData={masteryData} initialError={initialError} />

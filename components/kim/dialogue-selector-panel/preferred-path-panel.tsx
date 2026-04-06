@@ -1,10 +1,11 @@
 import { type PreferredPathOption } from './types'
-import { isAvoidableBoolean, isFlirtingBoolean } from '@/lib/core/boolean-utils'
+import { isAvoidableBoolean, isFlirtingBoolean } from '@/lib/kim/boolean-utils'
 import { TranscriptLine } from '@/lib/types'
 import { ChatLine } from '../chat-line'
 import { SystemChatLine } from '../system-chat-line'
 import { useEffect, useState } from 'react'
-import { Button } from '../ui/button'
+import { Button } from '../../ui/button'
+import { useTranslations } from 'next-intl'
 
 type PreferredPathPanelProps = {
   selectedOptionId: number
@@ -35,6 +36,7 @@ export function PreferredPathPanel({
   onShowConversation,
   showConversation,
 }: PreferredPathPanelProps) {
+  const t = useTranslations('kim.chatroom')
   const [showBooleanUpdateNotice, setShowBooleanUpdateNotice] = useState(false)
 
   const selectedPreferredPath = preferredPaths.find(
@@ -55,7 +57,7 @@ export function PreferredPathPanel({
     <div className="space-y-3">
       <div className="border border-[#6b4820] bg-[#120e08] p-2">
         <p className="font-title text-lg text-[#f0bb5f]">
-          Choose preferred path
+          {t('choosePreferredPath')}
         </p>
         <ul className="mt-2 space-y-2">
           {preferredPaths.map((option) => (
@@ -119,13 +121,13 @@ export function PreferredPathPanel({
         onClick={onShowConversation}
         className="w-full border border-[#8f5d1f] bg-[#2c1300] px-3 py-2 font-title text-lg text-[#f0bb5f] transition hover:bg-[#4a2000] disabled:cursor-not-allowed disabled:opacity-60"
       >
-        Show conversation
+        {t('showConversation')}
       </button>
 
       {showConversation && selectedPreferredPath ? (
         <div className="border border-[#6b4820] bg-[#120e08] p-2">
           <p className="font-title text-lg text-[#f0bb5f]">
-            Conversacion simulada
+            {t('simulatedDialogue')}
           </p>
           {selectedPreferredPath.chatLines.length > 0 ? (
             <ul className="mt-2 space-y-1 border border-[#3f2a11] bg-[#0f0a06] p-2 text-sm text-[#ddd7c9]">
@@ -145,7 +147,7 @@ export function PreferredPathPanel({
             </ul>
           ) : (
             <p className="mt-2 text-sm text-[#b9ac8f]">
-              No dialogue text available on this path.
+              {t('noDialogueTextAvailable')}
             </p>
           )}
 
@@ -158,15 +160,15 @@ export function PreferredPathPanel({
               setShowBooleanUpdateNotice(true)
             }}
           >
-            Update boolean values based on this conversation
+            {t('updateBooleanValues')}
           </Button>
           {showBooleanUpdateNotice ? (
             <p className="mt-2 border border-success-border bg-success-bg px-2 py-1 text-sm text-success">
-              Boolean values updated.
+              {t('booleanUpdated')}
             </p>
           ) : null}
           <p className="mt-1 text-center text-xs text-[#b9ac8f]">
-            This will affect the dialogues available in future simulations
+            {t('futureSimulationsNotice')}
           </p>
         </div>
       ) : null}

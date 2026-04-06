@@ -1,22 +1,32 @@
 import { Metadata } from 'next'
-import { setRequestLocale } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { MasteryChecklistWindow } from '@/components/windows/mastery-checklist'
 
 export const revalidate = 3600 // Revalidate every hour
 
-export const metadata: Metadata = {
-  title: 'Mastery Checklist',
-  description:
-    'Track your Warframe Mastery Rank progress by logging domained weapons, frames, companions, and intrinsics so you always know what to level next.',
-  alternates: {
-    canonical: '/mastery',
-  },
-  openGraph: {
-    title: 'Mastery Checklist',
-    description:
-      'Track your Warframe Mastery Rank progress by logging domained weapons, frames, companions, and intrinsics so you always know what to level next.',
-    url: '/mastery',
-  },
+export async function generateMetadata({
+  params,
+}: PageProps<'/[locale]/mastery'>): Promise<Metadata> {
+  const { locale } = await params
+  const t = await getTranslations({
+    locale,
+    namespace: 'masteryChecklist.metadata',
+  })
+
+  return {
+    title: t('title'),
+    description: t('description'),
+    openGraph: {
+      title: t('title'),
+      description: t('description'),
+      url: locale === 'en' ? '/mastery' : `/${locale}/mastery`,
+    },
+    twitter: {
+      card: 'summary',
+      title: t('title'),
+      description: t('description'),
+    },
+  }
 }
 
 export default async function Page({ params }: PageProps<'/[locale]/mastery'>) {
