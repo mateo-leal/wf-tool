@@ -8,6 +8,7 @@ import type {
 
 // Known Baro weekend anchor in UTC. Availability repeats every 14 days.
 // Baro arrives Friday 13:00 UTC and leaves Sunday 13:00 UTC.
+// Used as fallback when API data is unavailable.
 const BARO_ANCHOR_START_UTC = Date.UTC(2026, 2, 20, 13, 0, 0)
 const BARO_PERIOD_MS = 14 * 24 * 60 * 60 * 1000
 const BARO_ACTIVE_WINDOW_MS = 48 * 60 * 60 * 1000
@@ -91,6 +92,15 @@ const VALID_EXPANDED_GROUP_IDS = {
   other: new Set(
     OTHER_TASKS.filter((task) => task.subitems?.length).map((task) => task.id)
   ),
+}
+
+/**
+ * Baro Ki'Teer availability data sourced from the Oracle world-state API.
+ * When provided, these timestamps take priority over the anchor-based fallback.
+ */
+export type BaroApiData = {
+  activationMs: number
+  expiryMs: number
 }
 
 function isObject(value: unknown): value is Record<string, unknown> {
@@ -215,8 +225,16 @@ export function formatRemainingTime(totalMs: number): string {
   return `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m`
 }
 
-export function isBaroKiteerAvailable(now: Date): boolean {
+export function isBaroKiteerAvailable(
+  now: Date,
+  baroApi?: BaroApiData
+): boolean {
   const nowMs = now.getTime()
+
+  if (baroApi) {
+    return nowMs >= baroApi.activationMs && nowMs < baroApi.expiryMs
+  }
+
   if (nowMs < BARO_ANCHOR_START_UTC) {
     return false
   }
@@ -242,8 +260,19 @@ export function getNextBaroAvailabilityStartUtc(now: Date): Date {
   return new Date(currentCycleStartMs + BARO_PERIOD_MS)
 }
 
-export function getTimeUntilNextBaroChange(now: Date): number {
+export function getTimeUntilNextBaroChange(
+  now: Date,
+  baroApi?: BaroApiData
+): number {
   const nowMs = now.getTime()
+
+  if (baroApi && baroApi.expiryMs > nowMs) {
+    // API data is still relevant (Baro is active or upcoming)
+    if (nowMs >= baroApi.activationMs) {
+      return baroApi.expiryMs - nowMs
+    }
+    return baroApi.activationMs - nowMs
+  }
 
   if (nowMs < BARO_ANCHOR_START_UTC) {
     return BARO_ANCHOR_START_UTC - nowMs
@@ -260,7 +289,8 @@ export function getTimeUntilNextBaroChange(now: Date): number {
 
 export function getChecklistTaskCounter(
   task: Pick<ChecklistTask, 'resets'>,
-  now: Date
+  now: Date,
+  baroApi?: BaroApiData
 ): ChecklistCounter | undefined {
   switch (task.resets) {
     case 'daily':
@@ -280,8 +310,8 @@ export function getChecklistTaskCounter(
       }
     case 'baro': {
       return {
-        label: isBaroKiteerAvailable(now) ? 'leavesIn' : 'arrivesIn',
-        time: formatRemainingTime(getTimeUntilNextBaroChange(now)),
+        label: isBaroKiteerAvailable(now, baroApi) ? 'leavesIn' : 'arrivesIn',
+        time: formatRemainingTime(getTimeUntilNextBaroChange(now, baroApi)),
       }
     }
     default:

@@ -10,13 +10,15 @@ import {
   getWeeklyResetKey,
   isBaroKiteerAvailable,
   normalizeChecklistState,
+  BaroApiData,
 } from '@/lib/checklist'
 import { useEffect, useRef, useState } from 'react'
 import { CHECKLIST_STORAGE_KEY } from '@/lib/constants'
 import { ChecklistState, ChecklistTask } from '@/lib/types'
 import {
   fetchOracleWorldState,
-  getVoidTraderNode,
+  getVoidTrader,
+  VoidTrader,
 } from '@/lib/world-state/fetch-world-state'
 import { useTranslations } from 'next-intl'
 import { ChecklistSectionCard } from './checklist-section-card'
@@ -51,7 +53,7 @@ export function ChecklistPanel() {
     createEmptyChecklistState(new Date())
   )
   const [now, setNow] = useState(() => new Date())
-  const [baroNode, setBaroNode] = useState<string | null>(null)
+  const [baro, setBaro] = useState<VoidTrader | null>(null)
   const skipFirstPersistRef = useRef(true)
 
   useEffect(() => {
@@ -125,11 +127,11 @@ export function ChecklistPanel() {
       try {
         const worldState = await fetchOracleWorldState()
         if (!isCancelled) {
-          setBaroNode(getVoidTraderNode(worldState))
+          setBaro(getVoidTrader(worldState))
         }
       } catch {
         if (!isCancelled) {
-          setBaroNode(null)
+          setBaro(null)
         }
       }
     }
@@ -228,11 +230,18 @@ export function ChecklistPanel() {
 
   const weeklyResetCountdown = formatRemainingTime(getTimeUntilNextUtcWeek(now))
 
+  const baroApi: BaroApiData | undefined = baro
+    ? {
+        activationMs: parseInt(baro.Activation.$date.$numberLong, 10),
+        expiryMs: parseInt(baro.Expiry.$date.$numberLong, 10),
+      }
+    : undefined
+
+  const isBaroAvailable = isBaroKiteerAvailable(now, baroApi)
   const dailyTasks: ChecklistTask[] = CHECKLIST_TASKS.daily
   const weeklyTasks: ChecklistTask[] = CHECKLIST_TASKS.weekly
 
   const otherTasks: ChecklistTask[] = (() => {
-    const isBaroAvailable = isBaroKiteerAvailable(now)
     const base = CHECKLIST_TASKS.other.filter(
       (task) => task.id !== 'other-baro'
     )
@@ -241,8 +250,8 @@ export function ChecklistPanel() {
       (task) => task.id === 'other-baro'
     ) as ChecklistTask
 
-    const resolvedBaroLocation = baroNode
-      ? `locations.${baroNode}`
+    const resolvedBaroLocation = baro?.Node
+      ? `locations.${baro.Node}`
       : 'checklist.other.relayLocationPending'
 
     const baroTask: ChecklistTask = {
@@ -315,6 +324,7 @@ export function ChecklistPanel() {
         now={now}
         completed={state.other.completed}
         hidden={state.other.hidden}
+        baroApi={baroApi}
         onToggle={(taskId) => toggleTask('other', taskId)}
         onToggleHidden={(taskId) => toggleHidden('other', taskId)}
         onClear={() => clearSection('other')}

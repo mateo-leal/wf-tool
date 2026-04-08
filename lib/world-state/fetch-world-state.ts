@@ -1,11 +1,17 @@
 export type OracleWorldState = {
-  VoidTraders?: Array<{
-    Node?: string | null
-  }>
+  VoidTraders: Array<VoidTrader>
   Events: OracleWorldEvent[]
 }
 
-type OracleWorldEventId = {
+export type VoidTrader = {
+  _id: OracleWorldStateId
+  Activation: OracleWorldStateDate
+  Expiry: OracleWorldStateDate
+  Character: string
+  Node: string
+}
+
+type OracleWorldStateId = {
   $oid: string
 }
 
@@ -14,7 +20,7 @@ type OracleWorldEventMessage = {
   Message?: string
 }
 
-type OracleWorldEventDate = {
+type OracleWorldStateDate = {
   $date: {
     $numberLong: string
   }
@@ -26,11 +32,11 @@ type OracleWorldEventLink = {
 }
 
 export type OracleWorldEvent = {
-  _id: OracleWorldEventId
+  _id: OracleWorldStateId
   Messages: OracleWorldEventMessage[]
   Prop: string
   Community?: boolean
-  Date?: OracleWorldEventDate
+  Date?: OracleWorldStateDate
   Links?: OracleWorldEventLink[]
 }
 
@@ -48,9 +54,9 @@ export async function fetchOracleWorldState(): Promise<OracleWorldState> {
   return (await response.json()) as OracleWorldState
 }
 
-export function getVoidTraderNode(worldState: OracleWorldState): string | null {
-  const node = worldState.VoidTraders?.[0]?.Node
-  return typeof node === 'string' && node.trim().length > 0 ? node.trim() : null
+export function getVoidTrader(worldState: OracleWorldState) {
+  const node = worldState.VoidTraders[0]
+  return node ? node : null
 }
 
 export async function fetchEventsNode() {

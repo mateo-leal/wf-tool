@@ -1,6 +1,6 @@
 import { ChecklistCounter, ChecklistTask } from '@/lib/types'
 import { Button } from '../ui/button'
-import { getChecklistTaskCounter } from '@/lib/checklist'
+import { BaroApiData, getChecklistTaskCounter } from '@/lib/checklist'
 import {
   AppWindowIcon,
   CheckCircleIcon,
@@ -20,6 +20,7 @@ interface TaskRowProps {
   checked: boolean
   checkable?: boolean
   isHidden?: boolean
+  baroApi?: BaroApiData
   onToggle: () => void
   onToggleHidden: () => void
 }
@@ -30,11 +31,12 @@ export function TaskRow({
   checked,
   checkable = true,
   isHidden = false,
+  baroApi,
   onToggle,
   onToggleHidden,
 }: TaskRowProps) {
   const t = useTranslations()
-  const counter = getChecklistTaskCounter(task, now)
+  const counter = getChecklistTaskCounter(task, now, baroApi)
 
   // Logic for showing details: always show if not checkable, or show if not checked
   const showDetails = !checkable || !checked
