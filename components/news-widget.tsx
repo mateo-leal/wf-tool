@@ -2,7 +2,7 @@
 
 import { useEffect, useState, useCallback, useMemo } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
-import { fetchEventsNode } from '@/lib/world-state/fetch-world-state'
+import { fetchEvents } from '@/lib/world-state/fetch-world-state'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
 
@@ -81,7 +81,7 @@ export function NewsWidget() {
 
   const updateEvents = useCallback(async () => {
     try {
-      const events = await fetchEventsNode()
+      const events = await fetchEvents()
       const parsed = events
         .filter((event) => event.Date)
         .map((event): EventItem | undefined => {

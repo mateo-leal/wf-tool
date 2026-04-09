@@ -162,7 +162,7 @@ export function Taskbar() {
 
       <SettingsPortal
         isOpen={isSettingsOpen}
-        onClose={() => setIsSettingsOpen(false)}
+        onCloseAction={() => setIsSettingsOpen(false)}
       />
     </footer>
   )

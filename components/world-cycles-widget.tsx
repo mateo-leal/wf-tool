@@ -1,10 +1,10 @@
 'use client'
 
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
 import { BountyCycles, WorldCycle } from '@/lib/types'
-import { Dictionary } from '@/lib/language'
+import { Dictionary, getDictionary } from '@/lib/language'
 
 const CYCLE_ACCENT_CLASSES: Record<string, string> = {
   cetus: 'border-[#b58d57]/70 bg-[#24170c]/70',
@@ -84,17 +84,20 @@ function CycleCard({
   )
 }
 
-type Props = {
-  dict: Dictionary
-  osDict: Dictionary
-}
-
-export function WorldCyclesWidget({ dict, osDict }: Props) {
+export function WorldCyclesWidget() {
+  const locale = useLocale()
   const t = useTranslations('worldCycles')
   const [mounted, setMounted] = useState(false)
   const [bountyData, setBountyData] = useState<BountyCycles | null>(null)
   const [isError, setIsError] = useState(false)
   const [now, setNow] = useState(0)
+  const [dictionaries, setDictionaries] = useState<{
+    default: Dictionary
+    oracle: Dictionary
+  }>({
+    default: {},
+    oracle: {},
+  })
 
   const isFetching = useRef(false)
 
@@ -116,6 +119,47 @@ export function WorldCyclesWidget({ dict, osDict }: Props) {
       isFetching.current = false
     }
   }, [])
+
+  useEffect(() => {
+    const controller = new AbortController()
+
+    // Preload dictionaries on mount
+    async function loadDictionaries() {
+      try {
+        const [defaultDict, oracleDict] = await Promise.all([
+          getDictionary(locale, { signal: controller.signal }),
+          getDictionary(locale, {
+            source: 'oracle',
+            signal: controller.signal,
+          }),
+        ])
+
+        if (controller.signal.aborted) {
+          return
+        }
+
+        setDictionaries({
+          default: defaultDict,
+          oracle: oracleDict,
+        })
+      } catch {
+        if (controller.signal.aborted) {
+          return
+        }
+
+        setDictionaries({
+          default: {},
+          oracle: {},
+        })
+      }
+    }
+
+    void loadDictionaries()
+
+    return () => {
+      controller.abort()
+    }
+  }, [locale])
 
   // Hydration fix: Set mounted and initial time only on client
   useEffect(() => {
@@ -153,7 +197,7 @@ export function WorldCyclesWidget({ dict, osDict }: Props) {
       results.zariman = {
         expiry: bountyData.expiry,
         state:
-          dict[
+          dictionaries.default[
             bountyData.zarimanFaction === 'FC_GRINEER'
               ? '/Lotus/Language/Game/Faction_GrineerUC'
               : '/Lotus/Language/Game/Faction_CorpusUC'
@@ -183,16 +227,16 @@ export function WorldCyclesWidget({ dict, osDict }: Props) {
     ]
     results.duviri = {
       expiry: (dIndex + 1) * 7_200_000,
-      state: osDict[dMoods[dIndex % 5]],
+      state: dictionaries.oracle[dMoods[dIndex % 5]],
     }
 
     return results
-  }, [now, bountyData, mounted, dict, osDict])
+  }, [now, bountyData, mounted, dictionaries])
 
   return (
     <div className="flex flex-col gap-2">
       <CycleCard
-        title={dict['/Lotus/Language/Locations/EidolonPlains']}
+        title={dictionaries.default['/Lotus/Language/Locations/EidolonPlains']}
         stateLabel={
           cycleStates.cetus?.state
             ? t(`states.${cycleStates.cetus.state}`)
@@ -207,7 +251,7 @@ export function WorldCyclesWidget({ dict, osDict }: Props) {
       />
 
       <CycleCard
-        title={dict['/Lotus/Language/Locations/VenusLandscape']}
+        title={dictionaries.default['/Lotus/Language/Locations/VenusLandscape']}
         stateLabel={
           cycleStates.vallis?.state
             ? t(`states.${cycleStates.vallis.state}`)
@@ -222,7 +266,7 @@ export function WorldCyclesWidget({ dict, osDict }: Props) {
 
       <CycleCard
         title={
-          dict[
+          dictionaries.default[
             '/Lotus/Language/InfestedMicroplanet/SolarMapDeimosLandscapeName'
           ]
         }
@@ -240,7 +284,7 @@ export function WorldCyclesWidget({ dict, osDict }: Props) {
       />
 
       <CycleCard
-        title={dict['/Lotus/Language/Locations/Duviri']}
+        title={dictionaries.default['/Lotus/Language/Locations/Duviri']}
         stateLabel={cycleStates.duviri?.state}
         expiry={cycleStates.duviri?.expiry}
         now={now}
@@ -250,7 +294,9 @@ export function WorldCyclesWidget({ dict, osDict }: Props) {
       />
 
       <CycleCard
-        title={dict['/Lotus/Language/Zariman/ZarimanRegionName']}
+        title={
+          dictionaries.default['/Lotus/Language/Zariman/ZarimanRegionName']
+        }
         stateLabel={cycleStates.zariman?.state}
         expiry={cycleStates.zariman?.expiry}
         now={now}

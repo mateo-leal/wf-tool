@@ -1,7 +1,9 @@
 import {
   createEmptyChecklistState,
   formatRemainingTime,
+  getBaroPeriodKey,
   getChecklistTaskCounter,
+  getEightHoursPeriodKey,
   getNextBaroAvailabilityStartUtc,
   getDailyResetKey,
   getTimeUntilNextEightHourReset,
@@ -85,6 +87,8 @@ describe('checklist reset utilities', () => {
           },
         },
         other: {
+          eightHoursPeriodKey: getEightHoursPeriodKey(now),
+          baroPeriodKey: getBaroPeriodKey(now),
           completed: {
             'other-baro': true,
           },
@@ -98,6 +102,27 @@ describe('checklist reset utilities', () => {
     expect(normalized.other.completed).toEqual({
       'other-baro': true,
     })
+  })
+
+  it('clears baro and eightHours other completions when their periods expire', () => {
+    const now = new Date('2026-03-30T12:00:00.000Z')
+    const normalized = normalizeChecklistState(
+      {
+        other: {
+          // stale period keys — baro and eightHours tasks should be cleared
+          eightHoursPeriodKey: '0',
+          baroPeriodKey: '0',
+          completed: {
+            'other-baro': true,
+            'other-entrati-tokens': true,
+            'other-voidplume-trade': true,
+          },
+        },
+      },
+      now
+    )
+
+    expect(normalized.other.completed).toEqual({})
   })
 
   it('keeps in-period daily and weekly completions', () => {

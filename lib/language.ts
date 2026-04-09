@@ -44,13 +44,22 @@ export function getDictionarySource(language?: string): string {
 
 export type Dictionary = Record<string, string>
 
+type GetDictionaryOptions = {
+  source?: 'kim' | 'oracle' | 'default'
+  signal?: AbortSignal
+}
+
+function isAbortError(error: unknown): boolean {
+  return error instanceof DOMException && error.name === 'AbortError'
+}
+
 export async function getDictionary(
   language?: string,
-  source?: 'kim' | 'oracle' | 'default'
+  options?: GetDictionaryOptions
 ): Promise<Dictionary> {
   try {
     let url: string
-    switch (source) {
+    switch (options?.source) {
       case 'kim':
         url = getKIMDictionarySource(language)
         break
@@ -63,18 +72,23 @@ export async function getDictionary(
 
     const response = await fetch(url, {
       cache: 'force-cache',
+      signal: options?.signal,
     })
 
     if (!response.ok) {
       throw new Error(`Failed to fetch ${url}: ${response.status}`)
     }
     return (await response.json()) as Dictionary
-  } catch {
+  } catch (error) {
+    if (isAbortError(error)) {
+      throw error
+    }
+
     if (normalizeLanguage(language) === DEFAULT_LANGUAGE) {
       throw new Error('Failed to fetch dictionary for default locale')
     }
 
-    return getDictionary(DEFAULT_LANGUAGE, source)
+    return getDictionary(DEFAULT_LANGUAGE, options)
   }
 }
 

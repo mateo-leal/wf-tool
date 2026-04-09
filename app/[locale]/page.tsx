@@ -5,7 +5,7 @@ import {
   MedalMilitaryIcon,
 } from '@phosphor-icons/react/ssr'
 import Widgets from '@/components/widgets'
-import { getTranslations } from 'next-intl/server'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 const DESKTOP_SHORTCUTS = [
   {
@@ -25,8 +25,13 @@ const DESKTOP_SHORTCUTS = [
   },
 ]
 
-export default async function Home() {
+export default async function Home({ params }: PageProps<'/[locale]'>) {
+  const { locale } = await params
   const t = await getTranslations()
+
+  // Enable static rendering
+  setRequestLocale(locale)
+
   return (
     <section className="relative flex min-h-0 flex-1 flex-col gap-4 md:flex-row md:items-start md:justify-between">
       <div className="hidden md:flex flex-col gap-3 pt-2">
