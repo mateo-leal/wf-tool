@@ -11,10 +11,10 @@ import { useLocale, useTranslations } from 'next-intl'
 
 type SettingsPortalProps = {
   isOpen: boolean
-  onClose: () => void
+  onCloseAction: () => void
 }
 
-export function SettingsPortal({ isOpen, onClose }: SettingsPortalProps) {
+export function SettingsPortal({ isOpen, onCloseAction }: SettingsPortalProps) {
   const locale = useLocale()
   const router = useRouter()
   const pathname = usePathname()
@@ -33,7 +33,7 @@ export function SettingsPortal({ isOpen, onClose }: SettingsPortalProps) {
       <Window className="pointer-events-auto w-full max-w-sm">
         <WindowTitlebar>
           <p>{t('title')}</p>
-          <CloseButton onClick={onClose} />
+          <CloseButton onClick={onCloseAction} />
         </WindowTitlebar>
         <WindowContent>
           <label
@@ -54,6 +54,21 @@ export function SettingsPortal({ isOpen, onClose }: SettingsPortalProps) {
               </option>
             ))}
           </select>
+
+          {locale !== 'en' && locale !== 'es' ? (
+            <p className="mt-2 text-sm text-muted-foreground">
+              Help us translate the app to your language. Volunteer on{' '}
+              <a
+                href="https://crowdin.com/project/tenno-companion"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="underline underline-offset-2 hover:text-foreground"
+              >
+                Crowdin
+              </a>
+              .
+            </p>
+          ) : null}
 
           <Link
             href="https://github.com/mateo-leal/wf-tool"
