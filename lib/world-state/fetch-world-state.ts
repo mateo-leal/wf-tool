@@ -15,8 +15,7 @@ export async function fetchOracleWorldState(): Promise<OracleWorldState> {
 }
 
 export function getVoidTrader(worldState: OracleWorldState) {
-  const node = worldState.VoidTraders[0]
-  return node ? node : null
+  return worldState.VoidTraders?.[0] ?? null
 }
 
 export async function fetchEvents() {
