@@ -1,45 +1,12 @@
-import { buildMasteryData, type MasteryData } from '@/lib/mastery'
-import {
-  fetchPublicExportIntrinsics,
-  fetchPublicExportSentinels,
-  fetchPublicExportWarframes,
-  fetchPublicExportWeapons,
-} from '@/lib/public-export/fetch-public-export'
-import { getLocale, getTranslations } from 'next-intl/server'
+import { getTranslations } from 'next-intl/server'
 import { MasteryPanel } from '../mastery/mastery-panel'
 import { Window } from '../ui/window'
 import { WindowContent } from '../ui/window-content'
 import { WindowTitlebar } from '../ui/window-titlebar'
-import { getDictionary } from '@/lib/language'
 import { CloseButton } from '../close-button'
 
 export async function MasteryChecklistWindow() {
   const t = await getTranslations('masteryChecklist')
-  const locale = await getLocale()
-
-  let masteryData: MasteryData | null = null
-  let initialError: string | null = null
-
-  try {
-    const [dict, weaponsMap, warframesMap, sentinelsMap, intrinsicsMap] =
-      await Promise.all([
-        getDictionary(locale),
-        fetchPublicExportWeapons(),
-        fetchPublicExportWarframes(),
-        fetchPublicExportSentinels(),
-        fetchPublicExportIntrinsics(),
-      ])
-
-    masteryData = buildMasteryData(
-      dict,
-      weaponsMap,
-      warframesMap,
-      sentinelsMap,
-      intrinsicsMap
-    )
-  } catch {
-    initialError = t('loadFailed')
-  }
 
   return (
     <Window className="relative mt-0 h-[calc(100svh-5.5rem)] min-h-75 max-w-none md:mt-10 md:h-[85svh]">
@@ -48,7 +15,7 @@ export async function MasteryChecklistWindow() {
         <CloseButton href="/" />
       </WindowTitlebar>
       <WindowContent className="min-h-0 p-2">
-        <MasteryPanel masteryData={masteryData} initialError={initialError} />
+        <MasteryPanel />
       </WindowContent>
     </Window>
   )

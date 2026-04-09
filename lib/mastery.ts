@@ -1,5 +1,5 @@
-import { type PublicExportIntrinsic } from '@/lib/public-export/fetch-public-export'
 import { Dictionary, resolveDictionary } from './language'
+import { PublicExportIntrinsic } from './public-export/types'
 
 export type MasteryCategory =
   | 'itemCompletion'

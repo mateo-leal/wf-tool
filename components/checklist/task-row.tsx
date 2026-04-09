@@ -1,6 +1,6 @@
 import { ChecklistCounter, ChecklistTask } from '@/lib/types'
 import { Button } from '../ui/button'
-import { getChecklistTaskCounter } from '@/lib/checklist'
+import { BaroApiData, getChecklistTaskCounter } from '@/lib/checklist'
 import {
   AppWindowIcon,
   CheckCircleIcon,
@@ -8,6 +8,7 @@ import {
   EyeIcon,
   EyeSlashIcon,
   MapPinIcon,
+  TreasureChestIcon,
   UserIcon,
   XIcon,
 } from '@phosphor-icons/react'
@@ -20,6 +21,7 @@ interface TaskRowProps {
   checked: boolean
   checkable?: boolean
   isHidden?: boolean
+  baroApi?: BaroApiData
   onToggle: () => void
   onToggleHidden: () => void
 }
@@ -30,12 +32,12 @@ export function TaskRow({
   checked,
   checkable = true,
   isHidden = false,
+  baroApi,
   onToggle,
   onToggleHidden,
 }: TaskRowProps) {
   const t = useTranslations()
-  const counter = getChecklistTaskCounter(task, now)
-
+  const counter = getChecklistTaskCounter(task, now, baroApi)
   // Logic for showing details: always show if not checkable, or show if not checked
   const showDetails = !checkable || !checked
 
@@ -62,7 +64,8 @@ export function TaskRow({
               : 'text-foreground'
           )}
         >
-          {t(task.title)}
+          {task.title as string}{' '}
+          {task.steelPath && <span>({t('common.steelPath')})</span>}
         </p>
         {showDetails && (
           <>
@@ -129,6 +132,12 @@ function TaskMeta({
 
   const items = [
     {
+      condition: !!task.dynamicInfo,
+      icon: TreasureChestIcon,
+      label: task.dynamicInfo,
+      className: 'text-primary',
+    },
+    {
       condition: !!counter,
       icon: ClockCountdownIcon,
       label:
@@ -139,25 +148,44 @@ function TaskMeta({
     {
       condition: !!task.location,
       icon: MapPinIcon,
-      label: task.location && t(task.location),
+      label:
+        task.location &&
+        (typeof task.location === 'string'
+          ? task.location
+          : task.location.map((label) => label.key).join(', ')),
       alt: t('locations.title'),
     },
     {
       condition: !!task.terminal,
       icon: AppWindowIcon,
-      label: task.terminal && t(task.terminal),
+      label:
+        typeof task.terminal === 'string' ? task.terminal : task.terminal?.key,
       alt: t('terminal.title'),
     },
     {
       condition: !!task.npc,
       icon: UserIcon,
-      label: task.npc && t(task.npc),
+      label: typeof task.npc === 'string' ? task.npc : task.npc?.key,
       alt: t('npcs.title'),
     },
     {
       condition: !!task.prerequisite,
       icon: CheckCircleIcon,
-      label: task.prerequisite && t(task.prerequisite),
+      label:
+        typeof task.prerequisite === 'string'
+          ? task.prerequisite
+          : task.prerequisite?.key,
+      alt: t('checklist.prerequisite'),
+    },
+    {
+      condition: !!task.syndicateRank,
+      icon: CheckCircleIcon,
+      label: task.syndicateRank
+        ? t('prerequisites.syndicateRank', {
+            syndicate: task.syndicateRank.syndicate as string,
+            rank: task.syndicateRank.rank,
+          })
+        : undefined,
       alt: t('checklist.prerequisite'),
     },
   ]

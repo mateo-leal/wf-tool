@@ -3,14 +3,22 @@
 import Image from 'next/image'
 import { MASTERY_CHECKLIST_STORAGE_KEY } from '@/lib/constants'
 import {
+  buildMasteryData,
   CATEGORY_ORDER,
   type MasteryCategory,
   type MasteryData,
 } from '@/lib/mastery'
-import { useMemo, useState } from 'react'
-import { useTranslations } from 'next-intl'
+import { useEffect, useMemo, useState } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
 import { ListIcon, CaretDownIcon } from '@phosphor-icons/react'
 import { isDevelopment } from '@/lib/utils'
+import { getDictionary } from '@/lib/language'
+import {
+  fetchPublicExportIntrinsics,
+  fetchPublicExportSentinels,
+  fetchPublicExportWarframes,
+  fetchPublicExportWeapons,
+} from '@/lib/public-export/fetch-public-export'
 
 type MasteryProgress = Record<string, boolean>
 
@@ -54,16 +62,14 @@ function saveProgress(progress: MasteryProgress): void {
   }
 }
 
-type MasteryPanelProps = {
-  masteryData: MasteryData | null
-  initialError?: string | null
-}
-
-export function MasteryPanel({
-  masteryData,
-  initialError = null,
-}: MasteryPanelProps) {
+export function MasteryPanel() {
+  const locale = useLocale()
   const t = useTranslations('masteryChecklist')
+
+  const [masteryData, setMasteryData] = useState<MasteryData | null>(null)
+  const [error, setError] = useState<string | null>(null)
+  const [isLoading, setIsLoading] = useState(true)
+
   const [activeCategory, setActiveCategory] =
     useState<MasteryCategory>('itemCompletion')
   const [activeSubcategory, setActiveSubcategory] = useState<string>('warframe')
@@ -71,11 +77,60 @@ export function MasteryPanel({
     Set<MasteryCategory>
   >(new Set(['itemCompletion']))
   const [query, setQuery] = useState('')
-  const [progress, setProgress] = useState<MasteryProgress>(() =>
-    loadProgress()
-  )
-  const [error] = useState<string | null>(initialError)
+
+  const [progress, setProgress] = useState<MasteryProgress>({})
   const [sidebarOpen, setSidebarOpen] = useState(false)
+
+  useEffect(() => {
+    let isCancelled = false
+
+    async function loadMasteryData() {
+      setIsLoading(true)
+
+      try {
+        const [dict, weaponsMap, warframesMap, sentinelsMap, intrinsicsMap] =
+          await Promise.all([
+            getDictionary(locale),
+            fetchPublicExportWeapons(),
+            fetchPublicExportWarframes(),
+            fetchPublicExportSentinels(),
+            fetchPublicExportIntrinsics(),
+          ])
+
+        if (!isCancelled) {
+          setMasteryData(
+            buildMasteryData(
+              dict,
+              weaponsMap,
+              warframesMap,
+              sentinelsMap,
+              intrinsicsMap
+            )
+          )
+          setError(null)
+          setIsLoading(false)
+        }
+      } catch {
+        if (!isCancelled) {
+          setMasteryData(null)
+          setError(t('loadFailed'))
+          setIsLoading(false)
+        }
+      }
+    }
+
+    void loadMasteryData()
+
+    return () => {
+      isCancelled = true
+    }
+  }, [locale, t])
+
+  useEffect(() => {
+    const savedProgress = loadProgress()
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setProgress(savedProgress)
+  }, [])
 
   const resolveSubcategoryLabel = (
     category: MasteryCategory,
@@ -382,7 +437,9 @@ export function MasteryPanel({
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto border border-muted-primary bg-background/35 p-2">
-          {error ? (
+          {isLoading ? (
+            <p className="text-sm text-muted-foreground">{t('loading')}</p>
+          ) : error ? (
             <p className="text-sm text-error">{error}</p>
           ) : filteredItems.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t('emptyState')}</p>

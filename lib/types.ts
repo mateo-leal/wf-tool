@@ -69,14 +69,22 @@ export type TranscriptLine = {
 // Checklist related types
 export type ChecklistCategory = 'daily' | 'weekly' | 'other'
 
+export type LabelExternal = {
+  key: string
+  source?: 'oracle' | 'default'
+}
+
 export type ChecklistTask = {
   id: string
-  title: string
-  location?: string
-  terminal?: string
+  title: LabelExternal | string
+  location?: LabelExternal[] | string
+  terminal?: LabelExternal | string
   info?: string
-  prerequisite?: string
-  npc?: string
+  dynamicInfo?: string
+  steelPath?: boolean
+  prerequisite?: LabelExternal | string
+  syndicateRank?: { syndicate: LabelExternal | string; rank: number }
+  npc?: LabelExternal | string
   checkable?: boolean
   resets?: 'daily' | 'weekly' | 'baro' | 'eightHours'
   subitems?: ChecklistTask[]
@@ -92,7 +100,10 @@ export type ChecklistGroup = {
 export type ChecklistState = {
   daily: ChecklistGroup
   weekly: ChecklistGroup
-  other: Omit<ChecklistGroup, 'periodKey'>
+  other: Omit<ChecklistGroup, 'periodKey'> & {
+    eightHoursPeriodKey: string
+    baroPeriodKey: string
+  }
 }
 
 export type ChecklistCounter = {

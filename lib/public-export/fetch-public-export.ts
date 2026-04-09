@@ -1,39 +1,12 @@
-export type PublicExportWeapon = {
-  name?: string
-  icon?: string
-  productCategory?: string
-  masteryReq?: number
-  partType?: string
-  maxLevelCap?: number
-}
-
-export type PublicExportWarframe = {
-  name?: string
-  icon?: string
-  productCategory?: string
-  masteryReq?: number
-}
-
-export type PublicExportSentinel = {
-  name?: string
-  icon?: string
-  productCategory?: string
-  masteryReq?: number
-}
-
-export type PublicExportIntrinsicRank = {
-  name?: string
-  description?: string
-}
-
-export type PublicExportIntrinsic = {
-  name?: string
-  description?: string
-  icon?: string
-  ranks?: PublicExportIntrinsicRank[]
-}
-
-export type PublicExportMap<T> = Record<string, T>
+import {
+  PublicExportIntrinsic,
+  PublicExportMap,
+  MissionType,
+  PublicExportSentinel,
+  PublicExportWarframe,
+  PublicExportWeapon,
+  Region,
+} from './types'
 
 const EXPORT_WEAPONS_URL =
   // using github for now since browse.wf is outdated and doesn't have the latest export, but ideally we should switch back to browse.wf once it's updated
@@ -46,6 +19,10 @@ const EXPORT_SENTINELS_URL =
   'https://browse.wf/warframe-public-export-plus/ExportSentinels.json'
 const EXPORT_INTRINSICS_URL =
   'https://browse.wf/warframe-public-export-plus/ExportIntrinsics.json'
+const EXPORT_MISSION_TYPES_URL =
+  'https://browse.wf/warframe-public-export-plus/ExportMissionTypes.json'
+const EXPORT_REGIONS_URL =
+  'https://browse.wf/warframe-public-export-plus/ExportRegions.json'
 
 async function fetchJson<T>(url: string): Promise<T> {
   const response = await fetch(url, {
@@ -75,4 +52,12 @@ export function fetchPublicExportIntrinsics() {
   return fetchJson<PublicExportMap<PublicExportIntrinsic>>(
     EXPORT_INTRINSICS_URL
   )
+}
+
+export function fetchPublicExportMissionTypes() {
+  return fetchJson<PublicExportMap<MissionType>>(EXPORT_MISSION_TYPES_URL)
+}
+
+export function fetchPublicExportRegions() {
+  return fetchJson<PublicExportMap<Region>>(EXPORT_REGIONS_URL)
 }
