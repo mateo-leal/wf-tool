@@ -75,6 +75,7 @@ export type ChecklistTask = {
   location?: string
   terminal?: string
   info?: string
+  dynamicInfo?: string
   prerequisite?: string
   npc?: string
   checkable?: boolean

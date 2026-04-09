@@ -1,7 +1,7 @@
 'use client'
 
-import { useTranslations } from 'next-intl'
-import { useEffect, useRef, useState } from 'react'
+import { useLocale, useTranslations } from 'next-intl'
+import { useCallback, useEffect, useRef, useState } from 'react'
 import {
   CHECKLIST_TASKS,
   clearExpiredOtherCompletions,
@@ -24,7 +24,11 @@ import {
   getVoidTrader,
 } from '@/lib/world-state/fetch-world-state'
 import { ChecklistSectionCard } from './checklist-section-card'
-import { VoidTrader } from '@/lib/world-state/types'
+import { OracleWorldState, VoidTrader } from '@/lib/world-state/types'
+import { fetchPublicExportMissionTypes } from '@/lib/public-export/fetch-public-export'
+import { Dictionary, getDictionary } from '@/lib/language'
+import { PublicExportMap, MissionType } from '@/lib/public-export/types'
+import { toTitleCase } from '@/lib/utils'
 
 type ChecklistSection = 'daily' | 'weekly' | 'other'
 
@@ -50,6 +54,7 @@ function saveChecklistPanelState(checklistState: ChecklistState): void {
 }
 
 export function ChecklistPanel() {
+  const locale = useLocale()
   const t = useTranslations()
 
   const [state, setState] = useState<ChecklistState>(() =>
@@ -57,7 +62,63 @@ export function ChecklistPanel() {
   )
   const [now, setNow] = useState(() => new Date())
   const [baro, setBaro] = useState<VoidTrader | null>(null)
+  const [archonRewardLabel, setArchonRewardLabel] = useState<string | null>(
+    null
+  )
   const skipFirstPersistRef = useRef(true)
+
+  const getArchonRewardLabel = useCallback(
+    (
+      worldState: OracleWorldState,
+      missionTypes: PublicExportMap<MissionType>,
+      dictionary: Dictionary
+    ): string | null => {
+      const sorties = worldState.LiteSorties ?? []
+      if (sorties.length === 0) {
+        return null
+      }
+
+      const sortie = sorties[0]
+
+      const bossName = toTitleCase(sortie.Boss.substring(12)) // remove "SORTIE_BOSS_"
+
+      const missions = sortie.Missions.map((mission) => {
+        const missionTypeName = missionTypes[mission.missionType].name
+
+        if (missionTypeName) {
+          return toTitleCase(dictionary[missionTypeName])
+        }
+
+        return mission.missionType
+      }).join(', ')
+
+      const reward = `${bossName} (${missions})`
+      if (!reward) {
+        return null
+      }
+
+      return `${t('quests.title')}: ${reward}`
+    },
+    [t]
+  )
+
+  const getTeshinRewardLabel = useCallback(() => {
+    const EPOCH = 1736121600 * 1000
+    const week = Math.trunc((now.getTime() - EPOCH) / 604800000)
+
+    const reward = [
+      'umbraForma',
+      'kuva',
+      'kitgunRiven',
+      'forma',
+      'zawRiven',
+      'endo',
+      'rifleRiven',
+      'shotgunRiven',
+    ][week % 8]
+
+    return `${t('rewards')}: ${t(`teshinOffers.${reward}`)}`
+  }, [t, now])
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -150,12 +211,18 @@ export function ChecklistPanel() {
     async function loadWorldState() {
       try {
         const worldState = await fetchOracleWorldState()
+        const missionTypes = await fetchPublicExportMissionTypes()
+        const dictionary = await getDictionary(locale)
         if (!isCancelled) {
           setBaro(getVoidTrader(worldState))
+          setArchonRewardLabel(
+            getArchonRewardLabel(worldState, missionTypes, dictionary)
+          )
         }
       } catch {
         if (!isCancelled) {
           setBaro(null)
+          setArchonRewardLabel(null)
         }
       }
     }
@@ -170,7 +237,7 @@ export function ChecklistPanel() {
       isCancelled = true
       window.clearInterval(interval)
     }
-  }, [])
+  }, [getArchonRewardLabel, locale])
 
   function toggleTask(section: ChecklistSection, taskId: string) {
     setState((previous) => {
@@ -263,7 +330,30 @@ export function ChecklistPanel() {
 
   const isBaroAvailable = isBaroKiteerAvailable(now, baroApi)
   const dailyTasks: ChecklistTask[] = CHECKLIST_TASKS.daily
-  const weeklyTasks: ChecklistTask[] = CHECKLIST_TASKS.weekly
+  const weeklyTasks: ChecklistTask[] = CHECKLIST_TASKS.weekly.map((task) => {
+    if (task.id === 'weekly-archon-hunt') {
+      return {
+        ...task,
+        dynamicInfo: archonRewardLabel ?? undefined,
+      }
+    }
+
+    if (task.id === 'weekly-vendors' && task.subitems) {
+      return {
+        ...task,
+        subitems: task.subitems.map((subitem) =>
+          subitem.id === 'weekly-vendor-teshin'
+            ? {
+                ...subitem,
+                dynamicInfo: getTeshinRewardLabel(),
+              }
+            : subitem
+        ),
+      }
+    }
+
+    return task
+  })
 
   const otherTasks: ChecklistTask[] = (() => {
     const base = CHECKLIST_TASKS.other.filter(

@@ -37,6 +37,7 @@
     "helminth": "Helminth"
   },
   "quests": {
+    "title": "Quests",
     "voxSolaris": "Vox Solaris",
     "heartOfDeimos": "Heart of Deimos",
     "theSecondDream": "The Second Dream",
@@ -77,6 +78,17 @@
     "baro": "Baro Ki'Teer",
     "grandmother": "Grandmother",
     "loid": "Loid"
+  },
+  "rewards": "Rewards",
+  "teshinOffers": {
+    "umbraForma": "Umbra Forma Blueprint",
+    "kuva": "50,000x Kuva",
+    "kitgunRiven": "Kitgun Riven Mod",
+    "forma": "3x Forma",
+    "zawRiven": "Zaw Riven Mod",
+    "endo": "30,000x Endo",
+    "rifleRiven": "Rifle Riven Mod",
+    "shotgunRiven": "Shotgun Riven Mod"
   },
   "checklist": {
     "title": "Checklist",

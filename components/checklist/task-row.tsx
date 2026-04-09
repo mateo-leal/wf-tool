@@ -8,6 +8,7 @@ import {
   EyeIcon,
   EyeSlashIcon,
   MapPinIcon,
+  TreasureChestIcon,
   UserIcon,
   XIcon,
 } from '@phosphor-icons/react'
@@ -130,6 +131,12 @@ function TaskMeta({
   const t = useTranslations()
 
   const items = [
+    {
+      condition: !!task.dynamicInfo,
+      icon: TreasureChestIcon,
+      label: task.dynamicInfo,
+      className: 'text-primary',
+    },
     {
       condition: !!counter,
       icon: ClockCountdownIcon,

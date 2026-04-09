@@ -37,6 +37,7 @@
     "helminth": "Helminto"
   },
   "quests": {
+    "title": "Misiones",
     "voxSolaris": "Vox Solaris",
     "heartOfDeimos": "Corazón de Deimos",
     "theSecondDream": "El segundo sueño",
@@ -77,6 +78,17 @@
     "baro": "Baro Ki'Teer",
     "grandmother": "Abuela",
     "loid": "Loid"
+  },
+  "rewards": "Recompensas",
+  "teshinOffers": {
+    "umbraForma": "Plano de Forma Umbra",
+    "kuva": "50.000 de Kuva",
+    "kitgunRiven": "Mod Riven de Kitgun",
+    "forma": "3x Forma",
+    "zawRiven": "Mod Riven de Zaw",
+    "endo": "30.000 de Endo",
+    "rifleRiven": "Mod Riven de Rifle",
+    "shotgunRiven": "Mod Riven de Escopeta"
   },
   "checklist": {
     "title": "Checklist",
