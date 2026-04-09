@@ -82,7 +82,9 @@ export async function resolveChecklistExternalLabels(
   const dictionariesBySource = new Map<ExternalLabelSource, Dictionary>()
   await Promise.all(
     [...requiredSources].map(async (source) => {
-      const dictionary = await getDictionary(normalizeLanguage(locale), source)
+      const dictionary = await getDictionary(normalizeLanguage(locale), {
+        source,
+      })
       dictionariesBySource.set(source, dictionary)
     })
   )

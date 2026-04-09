@@ -121,18 +121,32 @@ export function WorldCyclesWidget() {
   }, [])
 
   useEffect(() => {
+    const controller = new AbortController()
+
     // Preload dictionaries on mount
     async function loadDictionaries() {
       try {
         const [defaultDict, oracleDict] = await Promise.all([
-          getDictionary(locale, 'default'),
-          getDictionary(locale, 'oracle'),
+          getDictionary(locale, { signal: controller.signal }),
+          getDictionary(locale, {
+            source: 'oracle',
+            signal: controller.signal,
+          }),
         ])
+
+        if (controller.signal.aborted) {
+          return
+        }
+
         setDictionaries({
           default: defaultDict,
           oracle: oracleDict,
         })
       } catch {
+        if (controller.signal.aborted) {
+          return
+        }
+
         setDictionaries({
           default: {},
           oracle: {},
@@ -140,7 +154,11 @@ export function WorldCyclesWidget() {
       }
     }
 
-    loadDictionaries()
+    void loadDictionaries()
+
+    return () => {
+      controller.abort()
+    }
   }, [locale])
 
   // Hydration fix: Set mounted and initial time only on client
