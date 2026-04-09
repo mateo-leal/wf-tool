@@ -71,6 +71,7 @@ export async function getDictionary(
     }
 
     const response = await fetch(url, {
+      cache: 'force-cache',
       signal: options?.signal,
     })
 
