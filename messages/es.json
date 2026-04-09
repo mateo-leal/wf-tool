@@ -8,10 +8,10 @@
     "collapse": "Colapsar",
     "expand": "Expandir",
     "clear": "Limpiar",
-    "loading": "Loading..."
+    "loading": "Cargando..."
   },
   "common": {
-    "steelPath": "Steel Path"
+    "steelPath": "Camino de Acero"
   },
   "locations": {
     "title": "Ubicación",
@@ -29,7 +29,7 @@
   },
   "prerequisites": {
     "steelPath": "Camino de acero desbloqueado",
-    "syndicateRank": "Rank {rank} {syndicate}"
+    "syndicateRank": "Rango {rank} {syndicate}"
   },
   "npcs": {
     "title": "PNJ",
@@ -40,16 +40,16 @@
     "yonta": "Arquimediana Yonta",
     "bird3": "Bird 3"
   },
-  "rewards": "Rewards",
+  "rewards": "Recompensas",
   "teshinOffers": {
-    "umbraForma": "Umbra Forma Blueprint",
-    "kuva": "50,000x Kuva",
-    "kitgunRiven": "Kitgun Riven Mod",
-    "forma": "3x Forma",
-    "zawRiven": "Zaw Riven Mod",
-    "endo": "30,000x Endo",
-    "rifleRiven": "Rifle Riven Mod",
-    "shotgunRiven": "Shotgun Riven Mod"
+    "umbraForma": "Plano de Forma Umbra",
+    "kuva": "50.000 de Kuva",
+    "kitgunRiven": "Mod agrietado de Kitgun",
+    "forma": "3 de Forma",
+    "zawRiven": "Mod agrietado de Zaw",
+    "endo": "30.000 de Endo",
+    "rifleRiven": "Mod agrietado de Rifle",
+    "shotgunRiven": "Mod agrietado de Escopeta"
   },
   "checklist": {
     "title": "Checklist",
