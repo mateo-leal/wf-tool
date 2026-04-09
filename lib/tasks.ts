@@ -53,61 +53,81 @@ export const DAILY_TASKS: ChecklistTask[] = [
         id: 'daily-world-ostron',
         title: 'checklist.daily.tasks.ostron',
         location: 'locations.cetus',
-        prerequisite: 'quests.sayasVigil',
+        prerequisite: {
+          key: '/Lotus/Language/GlassQuest/GlassQuestTitle',
+        },
       },
       {
         id: 'daily-world-quills',
         title: 'checklist.daily.tasks.theQuills',
         location: 'locations.cetus',
-        prerequisite: 'quests.theWarWithin',
+        prerequisite: {
+          key: '/Lotus/Language/G1Quests/WarWithinQuestName',
+        },
       },
       {
         id: 'daily-world-solaris-united',
         title: 'checklist.daily.tasks.solarisUnited',
         location: 'locations.fortuna',
-        prerequisite: 'quests.voxSolaris',
+        prerequisite: {
+          key: '/Lotus/Language/SolarisQuest/VoxSolarisKeyChainName',
+        },
       },
       {
         id: 'daily-world-vox-solaris',
         title: 'checklist.daily.tasks.voxSolaris',
         location: 'locations.fortuna',
-        prerequisite: 'quests.theWarWithin',
+        prerequisite: {
+          key: '/Lotus/Language/G1Quests/WarWithinQuestName',
+        },
       },
       {
         id: 'daily-world-ventkids',
         title: 'checklist.daily.tasks.ventkids',
         location: 'locations.fortuna',
-        prerequisite: 'quests.voxSolaris',
+        prerequisite: {
+          key: '/Lotus/Language/SolarisQuest/VoxSolarisKeyChainName',
+        },
       },
       {
         id: 'daily-world-entrati',
         title: 'checklist.daily.tasks.entrati',
         location: 'locations.necralisk',
-        prerequisite: 'quests.heartOfDeimos',
+        prerequisite: {
+          key: '/Lotus/Language/InfestedMicroplanetQuest/QuestName',
+        },
       },
       {
         id: 'daily-world-necraloid',
         title: 'checklist.daily.tasks.necraloid',
         location: 'locations.necralisk',
-        prerequisite: 'quests.theWarWithin',
+        prerequisite: {
+          key: '/Lotus/Language/G1Quests/WarWithinQuestName',
+        },
       },
       {
         id: 'daily-world-holdfasts',
         title: 'checklist.daily.tasks.theHoldfasts',
         location: 'locations.chrysalith',
-        prerequisite: 'quests.angelsOfTheZariman',
+        prerequisite: {
+          key: '/Lotus/Language/ZarimanQuest/ZQName',
+        },
       },
       {
         id: 'daily-world-cavia',
         title: 'checklist.daily.tasks.cavia',
         location: 'locations.sanctumAnatomica',
-        prerequisite: 'quests.whispersInTheWalls',
+        prerequisite: {
+          key: '/Lotus/Language/EntratiLab/EntratiQuest/EntratiQuestTitle',
+        },
       },
       {
         id: 'daily-world-hex',
         title: 'checklist.daily.tasks.theHex',
         location: 'locations.hollvaniaCentralMall',
-        prerequisite: 'quests.theHex',
+        prerequisite: {
+          key: '/Lotus/Language/1999Quest/QuestTitle',
+        },
       },
     ],
   },
@@ -120,13 +140,17 @@ export const DAILY_TASKS: ChecklistTask[] = [
     info: 'checklist.daily.tasks.sortieInfo',
     location: 'locations.baseOfOperations',
     terminal: 'terminal.navigation',
-    prerequisite: 'quests.theWarWithin',
+    prerequisite: {
+      key: '/Lotus/Language/G1Quests/WarWithinQuestName',
+    },
   },
   {
     id: 'daily-focus',
     title: 'checklist.daily.tasks.focus',
     info: 'checklist.daily.tasks.focusInfo',
-    prerequisite: 'quests.theSecondDream',
+    prerequisite: {
+      key: '/Lotus/Language/G1Quests/SecondDreamKeychain',
+    },
   },
   {
     id: 'daily-vendors',
@@ -145,7 +169,9 @@ export const DAILY_TASKS: ChecklistTask[] = [
         info: 'checklist.daily.tasks.tickerInfo',
         location: 'locations.fortuna',
         npc: 'npcs.ticker',
-        prerequisite: 'quests.risingTide',
+        prerequisite: {
+          key: '/Lotus/Language/G1Quests/RailjackBuildQuestName',
+        },
       },
       {
         id: 'daily-vendor-marie',
@@ -153,7 +179,9 @@ export const DAILY_TASKS: ChecklistTask[] = [
         info: 'checklist.daily.tasks.marieInfo',
         location: 'locations.laCathedrale',
         npc: 'npcs.marie',
-        prerequisite: 'quests.theOldPeace',
+        prerequisite: {
+          key: '/Lotus/Language/TauPrequel/TauPrequelFinal/TauPrequelQuestName',
+        },
       },
     ],
   },
@@ -179,7 +207,9 @@ export const WEEKLY_TASKS: ChecklistTask[] = [
     title: 'checklist.weekly.tasks.helpClem',
     location: 'locations.anyRelay',
     npc: 'npcs.darvo',
-    prerequisite: 'quests.aManOfFewWords',
+    prerequisite: {
+      key: '/Lotus/Language/G1Quests/GetClemName',
+    },
   },
   {
     id: 'weekly-archon-hunt',
@@ -190,7 +220,9 @@ export const WEEKLY_TASKS: ChecklistTask[] = [
     info: 'checklist.weekly.tasks.archonHuntInfo',
     location: 'locations.baseOfOperations',
     terminal: 'terminal.navigation',
-    prerequisite: 'quests.theNewWar',
+    prerequisite: {
+      key: '/Lotus/Language/NewWar/NewWarQuestName',
+    },
   },
   {
     id: 'weekly-circuit-normal',
@@ -198,7 +230,9 @@ export const WEEKLY_TASKS: ChecklistTask[] = [
     info: 'checklist.weekly.tasks.circuitInfo',
     location: 'locations.baseOfOperations',
     terminal: 'terminal.navigation',
-    prerequisite: 'quests.theDuviriParadox',
+    prerequisite: {
+      key: '/Lotus/Language/Duviri/MapNodeQuest',
+    },
   },
   {
     id: 'weekly-circuit-sp',
@@ -206,7 +240,9 @@ export const WEEKLY_TASKS: ChecklistTask[] = [
     info: 'checklist.weekly.tasks.circuitSPInfo',
     location: 'locations.baseOfOperations',
     terminal: 'terminal.navigation',
-    prerequisite: 'quests.theDuviriParadox',
+    prerequisite: {
+      key: '/Lotus/Language/Duviri/MapNodeQuest',
+    },
   },
   {
     id: 'weekly-search-pulses',
@@ -219,7 +255,9 @@ export const WEEKLY_TASKS: ChecklistTask[] = [
         info: 'checklist.weekly.tasks.netracellsInfo',
         location: 'locations.sanctumAnatomica',
         npc: 'npcs.tagfer',
-        prerequisite: 'quests.whispersInTheWalls',
+        prerequisite: {
+          key: '/Lotus/Language/EntratiLab/EntratiQuest/EntratiQuestTitle',
+        },
       },
       {
         id: 'weekly-search-pulses-deep-archimedea',
@@ -251,7 +289,9 @@ export const WEEKLY_TASKS: ChecklistTask[] = [
     info: 'checklist.weekly.tasks.the1999CalendarInfo',
     location: 'locations.baseOfOperations',
     terminal: 'terminal.pom2pc',
-    prerequisite: 'quests.theHex',
+    prerequisite: {
+      key: '/Lotus/Language/1999Quest/QuestTitle',
+    },
   },
   {
     id: 'weekly-helminth',
@@ -267,7 +307,9 @@ export const WEEKLY_TASKS: ChecklistTask[] = [
     info: 'checklist.weekly.tasks.descendiaInfo',
     location: 'locations.darkRefactory',
     terminal: 'terminal.navigation',
-    prerequisite: 'quests.theOldPeace',
+    prerequisite: {
+      key: '/Lotus/Language/TauPrequel/TauPrequelFinal/TauPrequelQuestName',
+    },
   },
   {
     id: 'weekly-descendia-steel-path',
@@ -275,7 +317,9 @@ export const WEEKLY_TASKS: ChecklistTask[] = [
     info: 'checklist.weekly.tasks.descendiaInfo',
     location: 'locations.darkRefactory',
     terminal: 'terminal.navigation',
-    prerequisite: 'quests.theOldPeace',
+    prerequisite: {
+      key: '/Lotus/Language/TauPrequel/TauPrequelFinal/TauPrequelQuestName',
+    },
   },
   {
     id: 'weekly-vendors',
@@ -287,7 +331,9 @@ export const WEEKLY_TASKS: ChecklistTask[] = [
         info: 'checklist.weekly.tasks.paladinoInfo',
         location: 'locations.ironWake',
         npc: 'npcs.paladino',
-        prerequisite: 'quests.theChainsOfHarrow',
+        prerequisite: {
+          key: '/Lotus/Language/Quests/PriestQuestName',
+        },
       },
       {
         id: 'weekly-vendor-yonta',
@@ -295,7 +341,9 @@ export const WEEKLY_TASKS: ChecklistTask[] = [
         info: 'checklist.weekly.tasks.yontaInfo',
         location: 'locations.chrysalith',
         npc: 'npcs.yonta',
-        prerequisite: 'quests.angelsOfTheZariman',
+        prerequisite: {
+          key: '/Lotus/Language/ZarimanQuest/ZQName',
+        },
       },
       {
         id: 'weekly-vendor-acrithis',
@@ -303,7 +351,9 @@ export const WEEKLY_TASKS: ChecklistTask[] = [
         info: 'checklist.weekly.tasks.acrithisInfo',
         location: 'locations.dormizone',
         npc: 'npcs.acrithis',
-        prerequisite: 'quests.theDuviriParadox',
+        prerequisite: {
+          key: '/Lotus/Language/Duviri/MapNodeQuest',
+        },
       },
       {
         id: 'weekly-vendor-teshin',
@@ -327,7 +377,9 @@ export const WEEKLY_TASKS: ChecklistTask[] = [
         info: 'checklist.weekly.tasks.nightcapInfo',
         location: 'locations.fortuna',
         npc: 'npcs.nightcap',
-        prerequisite: 'quests.theNewWar',
+        prerequisite: {
+          key: '/Lotus/Language/NewWar/NewWarQuestName',
+        },
       },
     ],
   },
@@ -347,7 +399,9 @@ export const OTHER_TASKS: ChecklistTask[] = [
     info: 'checklist.other.tasks.entratiTokensInfo',
     location: 'locations.necralisk',
     npc: 'npcs.grandmother',
-    prerequisite: 'quests.heartOfDeimos',
+    prerequisite: {
+      key: '/Lotus/Language/InfestedMicroplanetQuest/QuestName',
+    },
     resets: 'eightHours',
   },
   {
@@ -355,7 +409,9 @@ export const OTHER_TASKS: ChecklistTask[] = [
     title: 'checklist.other.tasks.voidplumeTrade',
     location: 'locations.chrysalith',
     npc: 'npcs.yonta',
-    prerequisite: 'quests.angelsOfTheZariman',
+    prerequisite: {
+      key: '/Lotus/Language/ZarimanQuest/ZQName',
+    },
     resets: 'eightHours',
   },
   {
@@ -363,7 +419,9 @@ export const OTHER_TASKS: ChecklistTask[] = [
     title: 'checklist.other.tasks.vocaTrade',
     location: 'locations.sanctumAnatomica',
     npc: 'npcs.loid',
-    prerequisite: 'quests.whispersInTheWalls',
+    prerequisite: {
+      key: '/Lotus/Language/EntratiLab/EntratiQuest/EntratiQuestTitle',
+    },
     resets: 'eightHours',
   },
 ]

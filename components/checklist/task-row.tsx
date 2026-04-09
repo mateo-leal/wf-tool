@@ -169,7 +169,7 @@ function TaskMeta({
     {
       condition: !!task.prerequisite,
       icon: CheckCircleIcon,
-      label: task.prerequisite && t(task.prerequisite),
+      label: task.prerequisite && t(task.prerequisite as string),
       alt: t('checklist.prerequisite'),
     },
   ]

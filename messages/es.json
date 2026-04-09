@@ -35,23 +35,6 @@
     "pom2pc": "POM-2-PC",
     "helminth": "Helminto"
   },
-  "quests": {
-    "title": "Misiones",
-    "voxSolaris": "Vox Solaris",
-    "heartOfDeimos": "Corazón de Deimos",
-    "theSecondDream": "El segundo sueño",
-    "theWarWithin": "La guerra interna",
-    "risingTide": "Ola creciente",
-    "theChainsOfHarrow": "Las cadenas de Harrow",
-    "theNewWar": "La nueva guerra",
-    "theDuviriParadox": "La paradoja de Duviri",
-    "angelsOfTheZariman": "Ángeles de Zariman",
-    "whispersInTheWalls": "Susurros en las paredes",
-    "theHex": "Los Hex",
-    "theOldPeace": "La paz ancestral",
-    "sayasVigil": "La vigilia de Saya",
-    "aManOfFewWords": "Un hombre de pocas palabras"
-  },
   "prerequisites": {
     "steelPath": "Camino de acero desbloqueado",
     "erisJunction": "Convergencia de Eris",

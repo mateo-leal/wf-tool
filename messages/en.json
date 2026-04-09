@@ -35,23 +35,6 @@
     "pom2pc": "POM-2-PC",
     "helminth": "Helminth"
   },
-  "quests": {
-    "title": "Quests",
-    "voxSolaris": "Vox Solaris",
-    "heartOfDeimos": "Heart of Deimos",
-    "theSecondDream": "The Second Dream",
-    "theWarWithin": "The War Within",
-    "risingTide": "Rising Tide",
-    "theChainsOfHarrow": "The Chains of Harrow",
-    "theNewWar": "The New War",
-    "theDuviriParadox": "The Duviri Paradox",
-    "angelsOfTheZariman": "Angels of the Zariman",
-    "whispersInTheWalls": "Whispers in the Walls",
-    "theHex": "The Hex",
-    "theOldPeace": "The Old Peace",
-    "sayasVigil": "Saya's Vigil",
-    "aManOfFewWords": "A Man of Few Words"
-  },
   "prerequisites": {
     "steelPath": "Steel Path Unlocked",
     "erisJunction": "Eris Junction",

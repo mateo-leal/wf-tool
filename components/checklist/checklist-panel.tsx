@@ -78,6 +78,7 @@ export function ChecklistPanel() {
   function applyDictionaryTitles(tasks: ChecklistTask[]): ChecklistTask[] {
     return tasks.map((task) => {
       let title = task.title
+      let prerequisite = task.prerequisite
 
       if (typeof task.title !== 'string') {
         const source = task.title.source ?? 'default'
@@ -91,6 +92,24 @@ export function ChecklistPanel() {
         title = t(task.title)
       }
 
+      if (task.prerequisite) {
+        if (typeof task.prerequisite === 'string') {
+          prerequisite = t(task.prerequisite)
+        } else {
+          const source = task.prerequisite.source ?? 'default'
+          const dictionary = dictionariesBySource[source] ?? {}
+          let resolvedPrerequisite = resolveDictionary(
+            dictionary,
+            task.prerequisite.key,
+            task.prerequisite.key
+          )
+          if (resolvedPrerequisite === task.prerequisite.key) {
+            resolvedPrerequisite = t('ui.loading')
+          }
+          prerequisite = resolvedPrerequisite
+        }
+      }
+
       const subitems = task.subitems
         ? applyDictionaryTitles(task.subitems)
         : undefined
@@ -98,6 +117,7 @@ export function ChecklistPanel() {
       return {
         ...task,
         title,
+        prerequisite,
         subitems,
       }
     })
