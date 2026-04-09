@@ -1,5 +1,6 @@
 import type { Metadata } from 'next'
 import { Analytics } from '@vercel/analytics/next'
+import { SpeedInsights } from '@vercel/speed-insights/next'
 import { Cormorant_Garamond, Oxanium } from 'next/font/google'
 import { Taskbar } from '@/components/taskbar'
 import { MigrationBridge } from '@/components/migration-bridge'
@@ -120,6 +121,7 @@ export default async function RootLayout({
           </NextIntlClientProvider>
         </div>
         <Analytics />
+        <SpeedInsights />
         <MigrationBridge />
       </body>
     </html>
