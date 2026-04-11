@@ -3,8 +3,8 @@ import {
   type Dictionary,
   normalizeLanguage,
 } from '@/lib/language'
-import { DAILY_TASKS, OTHER_TASKS, WEEKLY_TASKS } from '@/lib/tasks'
 import { type ChecklistTask, type LabelExternal } from '@/lib/types'
+import { DAILY_TASKS, OTHER_TASKS, WEEKLY_TASKS } from './tasks'
 
 export type ExternalLabelMap = Record<string, string>
 

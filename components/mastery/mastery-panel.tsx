@@ -1,75 +1,36 @@
 'use client'
 
 import Image from 'next/image'
-import { MASTERY_CHECKLIST_STORAGE_KEY } from '@/lib/constants'
-import {
-  buildMasteryData,
-  CATEGORY_ORDER,
-  type MasteryCategory,
-  type MasteryData,
-} from '@/lib/mastery'
 import { useEffect, useMemo, useState } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
 import { ListIcon, CaretDownIcon } from '@phosphor-icons/react'
+
 import { isDevelopment } from '@/lib/utils'
-import { getDictionary } from '@/lib/language'
 import {
-  fetchPublicExportIntrinsics,
-  fetchPublicExportSentinels,
-  fetchPublicExportWarframes,
-  fetchPublicExportWeapons,
-} from '@/lib/public-export/fetch-public-export'
+  getRailjackIntrinsics,
+  loadProgress,
+  MasteryProgress,
+  saveProgress,
+} from '@/lib/mastery/client'
+import type { MasteryCategory, MasteryData } from '@/lib/mastery/types'
 
-type MasteryProgress = Record<string, boolean>
+const CATEGORY_ORDER: MasteryCategory[] = [
+  'itemCompletion',
+  'railjackIntrinsic',
+  // 'drifterIntrinsic',
+  // 'starchartCompletion',
+]
 
-function normalizeProgress(value: unknown): MasteryProgress {
-  if (!value || typeof value !== 'object' || Array.isArray(value)) {
-    return {}
-  }
-
-  return Object.fromEntries(
-    Object.entries(value as Record<string, unknown>)
-      .filter(([key]) => key.trim().length > 0)
-      .map(([key, checked]) => [key, Boolean(checked)])
-  )
-}
-
-function loadProgress(): MasteryProgress {
-  if (typeof window === 'undefined') {
-    return {}
-  }
-
-  try {
-    const raw = localStorage.getItem(MASTERY_CHECKLIST_STORAGE_KEY)
-    if (!raw) {
-      return {}
-    }
-
-    return normalizeProgress(JSON.parse(raw))
-  } catch {
-    return {}
-  }
-}
-
-function saveProgress(progress: MasteryProgress): void {
-  try {
-    localStorage.setItem(
-      MASTERY_CHECKLIST_STORAGE_KEY,
-      JSON.stringify(progress)
-    )
-  } catch {
-    // ignore storage errors
-  }
-}
-
-export function MasteryPanel() {
+export function MasteryPanel({
+  masteryData: masteryDataInitial,
+}: {
+  masteryData: MasteryData
+}) {
   const locale = useLocale()
   const t = useTranslations('masteryChecklist')
 
-  const [masteryData, setMasteryData] = useState<MasteryData | null>(null)
-  const [error, setError] = useState<string | null>(null)
-  const [isLoading, setIsLoading] = useState(true)
-
+  const [masteryData, setMasteryData] =
+    useState<MasteryData>(masteryDataInitial)
   const [activeCategory, setActiveCategory] =
     useState<MasteryCategory>('itemCompletion')
   const [activeSubcategory, setActiveSubcategory] = useState<string>('warframe')
@@ -82,49 +43,19 @@ export function MasteryPanel() {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
-    let isCancelled = false
-
-    async function loadMasteryData() {
-      setIsLoading(true)
-
-      try {
-        const [dict, weaponsMap, warframesMap, sentinelsMap, intrinsicsMap] =
-          await Promise.all([
-            getDictionary(locale),
-            fetchPublicExportWeapons(),
-            fetchPublicExportWarframes(),
-            fetchPublicExportSentinels(),
-            fetchPublicExportIntrinsics(),
-          ])
-
-        if (!isCancelled) {
-          setMasteryData(
-            buildMasteryData(
-              dict,
-              weaponsMap,
-              warframesMap,
-              sentinelsMap,
-              intrinsicsMap
-            )
-          )
-          setError(null)
-          setIsLoading(false)
-        }
-      } catch {
-        if (!isCancelled) {
-          setMasteryData(null)
-          setError(t('loadFailed'))
-          setIsLoading(false)
-        }
-      }
+    const fetchRailjackIntrinsics = async () => {
+      const data = await getRailjackIntrinsics(locale)
+      setMasteryData((previous) => ({
+        ...previous,
+        railjackIntrinsic: data.masteryItems,
+        subcategoryLabels: {
+          ...previous.subcategoryLabels,
+          railjackIntrinsic: data.labels,
+        },
+      }))
     }
-
-    void loadMasteryData()
-
-    return () => {
-      isCancelled = true
-    }
-  }, [locale, t])
+    fetchRailjackIntrinsics()
+  }, [locale])
 
   useEffect(() => {
     const savedProgress = loadProgress()
@@ -437,11 +368,7 @@ export function MasteryPanel() {
         </div>
 
         <div className="min-h-0 flex-1 overflow-y-auto border border-muted-primary bg-background/35 p-2">
-          {isLoading ? (
-            <p className="text-sm text-muted-foreground">{t('loading')}</p>
-          ) : error ? (
-            <p className="text-sm text-error">{error}</p>
-          ) : filteredItems.length === 0 ? (
+          {filteredItems.length === 0 ? (
             <p className="text-sm text-muted-foreground">{t('emptyState')}</p>
           ) : (
             <div className="space-y-1.5">

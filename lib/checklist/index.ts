@@ -4,7 +4,7 @@ import type {
   ChecklistCounter,
   ChecklistState,
   ChecklistTask,
-} from './types'
+} from '../types'
 
 // Known Baro weekend anchor in UTC. Availability repeats every 14 days.
 // Baro arrives Friday 13:00 UTC and leaves Sunday 13:00 UTC.
