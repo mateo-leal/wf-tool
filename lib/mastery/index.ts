@@ -127,7 +127,8 @@ export function getItemCompletion(locale: string) {
       'Archwing',
       'Misc',
     ],
-    i18n: [locale],
+    // TODO: Update to only load required locales once the dependency supports it
+    i18n: true,
     i18nOnObject: true,
   })
 
