@@ -4,7 +4,7 @@ import {
   ListChecksIcon,
   MedalMilitaryIcon,
 } from '@phosphor-icons/react/ssr'
-import Widgets from '@/components/widgets'
+import Widgets from '@/components/widgets/widgets'
 import { getTranslations, setRequestLocale } from 'next-intl/server'
 
 const DESKTOP_SHORTCUTS = [

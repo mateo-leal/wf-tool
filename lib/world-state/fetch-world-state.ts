@@ -13,12 +13,3 @@ export async function fetchOracleWorldState(): Promise<OracleWorldState> {
 
   return (await response.json()) as OracleWorldState
 }
-
-export function getVoidTrader(worldState: OracleWorldState) {
-  return worldState.VoidTraders?.[0] ?? null
-}
-
-export async function fetchEvents() {
-  const worldState = await fetchOracleWorldState()
-  return worldState.Events
-}

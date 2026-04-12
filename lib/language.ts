@@ -37,15 +37,16 @@ export function getOracleDictionarySource(language?: string): string {
   return `https://oracle.browse.wf/dicts/${normalizeLanguage(language)}.json`
 }
 
-export function getDictionarySource(language?: string): string {
+function getDictionarySource(language?: string): string {
   // return `https://browse.wf/warframe-public-export-plus/dict.${normalizeLanguage(language)}.json`
   return `https://raw.githubusercontent.com/calamity-inc/warframe-public-export-plus/refs/heads/senpai/dict.${normalizeLanguage(language)}.json`
 }
 
 export type Dictionary = Record<string, string>
+export type DictionarySource = 'kim' | 'oracle' | 'default'
 
 type GetDictionaryOptions = {
-  source?: 'kim' | 'oracle' | 'default'
+  source?: DictionarySource
   signal?: AbortSignal
 }
 

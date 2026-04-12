@@ -71,7 +71,7 @@ export function SettingsPortal({ isOpen, onCloseAction }: SettingsPortalProps) {
           ) : null}
 
           <Link
-            href="https://github.com/mateo-leal/wf-tool"
+            href="https://github.com/mateo-leal/tenno-companion"
             target="_blank"
             rel="noopener noreferrer"
             className="mt-3 inline-flex w-full items-center justify-center border border-muted-primary bg-background px-2 py-1.5 text-sm transition hover:bg-muted-primary/10"

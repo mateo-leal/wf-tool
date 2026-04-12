@@ -1,10 +1,10 @@
 'use client'
 
-import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useLocale, useTranslations } from 'next-intl'
+import { useEffect, useMemo, useState } from 'react'
+import { useTranslations } from 'next-intl'
 import { cn } from '@/lib/utils'
-import { BountyCycles, WorldCycle } from '@/lib/types'
-import { Dictionary, getDictionary } from '@/lib/language'
+import { WorldCycle } from '@/lib/types'
+import { useGameData } from '../providers/game-data'
 
 const CYCLE_ACCENT_CLASSES: Record<string, string> = {
   cetus: 'border-[#b58d57]/70 bg-[#24170c]/70',
@@ -14,7 +14,7 @@ const CYCLE_ACCENT_CLASSES: Record<string, string> = {
   zariman: 'border-[#6b9da4]/70 bg-[#102028]/70',
 }
 
-type CycleCardProps = {
+type Props = {
   title: string
   stateLabel?: string
   expiry?: number
@@ -34,7 +34,7 @@ function CycleCard({
   accentClass,
   isLoading,
   mounted,
-}: CycleCardProps) {
+}: Props) {
   const t = useTranslations('worldCycles')
 
   const formatCountdown = (expiryTime: number): string => {
@@ -85,109 +85,38 @@ function CycleCard({
 }
 
 export function WorldCyclesWidget() {
-  const locale = useLocale()
   const t = useTranslations('worldCycles')
+  const { bountyCycle, dictionaries, fetchDictionary, isLoading } =
+    useGameData()
+
   const [mounted, setMounted] = useState(false)
-  const [bountyData, setBountyData] = useState<BountyCycles | null>(null)
-  const [isError, setIsError] = useState(false)
   const [now, setNow] = useState(0)
-  const [dictionaries, setDictionaries] = useState<{
-    default: Dictionary
-    oracle: Dictionary
-  }>({
-    default: {},
-    oracle: {},
-  })
-
-  const isFetching = useRef(false)
-
-  const fetchBounties = useCallback(async () => {
-    if (isFetching.current) return
-
-    isFetching.current = true
-    try {
-      const res = await fetch('https://oracle.browse.wf/bounty-cycle', {
-        cache: 'no-store',
-      })
-      if (!res.ok) throw new Error()
-      const data = await res.json()
-      setBountyData(data)
-      setIsError(false)
-    } catch {
-      setIsError(true)
-    } finally {
-      isFetching.current = false
-    }
-  }, [])
 
   useEffect(() => {
-    const controller = new AbortController()
-
-    // Preload dictionaries on mount
-    async function loadDictionaries() {
-      try {
-        const [defaultDict, oracleDict] = await Promise.all([
-          getDictionary(locale, { signal: controller.signal }),
-          getDictionary(locale, {
-            source: 'oracle',
-            signal: controller.signal,
-          }),
-        ])
-
-        if (controller.signal.aborted) {
-          return
-        }
-
-        setDictionaries({
-          default: defaultDict,
-          oracle: oracleDict,
-        })
-      } catch {
-        if (controller.signal.aborted) {
-          return
-        }
-
-        setDictionaries({
-          default: {},
-          oracle: {},
-        })
-      }
-    }
-
-    void loadDictionaries()
-
-    return () => {
-      controller.abort()
-    }
-  }, [locale])
-
-  // Hydration fix: Set mounted and initial time only on client
-  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
     setNow(Date.now())
-    fetchBounties()
+
+    void fetchDictionary('default')
+    void fetchDictionary('oracle')
 
     const interval = setInterval(() => setNow(Date.now()), 1000)
     return () => clearInterval(interval)
-  }, [fetchBounties])
-
-  // Auto-refresh when data expires
-  useEffect(() => {
-    if (bountyData && now > bountyData.expiry && !isFetching.current) {
-      fetchBounties()
-    }
-  }, [now, bountyData, fetchBounties])
+  }, [fetchDictionary])
 
   const cycleStates = useMemo(() => {
     const results: Record<string, Partial<WorldCycle>> = {}
     if (!mounted) return results
 
-    // 1. API Driven Cycles
-    if (bountyData) {
-      const cetusNightStart = bountyData.expiry - 3_000_000
+    const dictDefault = dictionaries['default'] || {}
+    const dictOracle = dictionaries['oracle'] || {}
+
+    // API Driven Cycles
+    if (bountyCycle) {
+      const cetusNightStart = bountyCycle.expiry - 3_000_000
       const isCetusNight = now >= cetusNightStart
       results.cetus = {
-        expiry: isCetusNight ? bountyData.expiry : cetusNightStart,
+        expiry: isCetusNight ? bountyCycle.expiry : cetusNightStart,
         state: isCetusNight ? 'night' : 'day',
       }
       results.cambion = {
@@ -195,17 +124,17 @@ export function WorldCyclesWidget() {
         state: isCetusNight ? 'vome' : 'fass',
       }
       results.zariman = {
-        expiry: bountyData.expiry,
+        expiry: bountyCycle.expiry,
         state:
-          dictionaries.default[
-            bountyData.zarimanFaction === 'FC_GRINEER'
+          dictDefault[
+            bountyCycle.zarimanFaction === 'FC_GRINEER'
               ? '/Lotus/Language/Game/Faction_GrineerUC'
               : '/Lotus/Language/Game/Faction_CorpusUC'
           ],
       }
     }
 
-    // 2. Math Driven Cycles (Orb Vallis)
+    // Math Driven Cycles (Orb Vallis)
     const VALLIS_EPOCH = new Date('November 10, 2018 08:13:48 UTC').getTime()
     const vProgress = (now - VALLIS_EPOCH) % 1_600_000
     const isVallisWarm = vProgress < 400_000
@@ -216,7 +145,7 @@ export function WorldCyclesWidget() {
       state: isVallisWarm ? 'warm' : 'cold',
     }
 
-    // 3. Math Driven Cycles (Duviri)
+    // Math Driven Cycles (Duviri)
     const dIndex = Math.floor(now / 7_200_000)
     const dMoods = [
       '/Lotus/Language/Duviri/SadMoodTitleShort',
@@ -227,16 +156,18 @@ export function WorldCyclesWidget() {
     ]
     results.duviri = {
       expiry: (dIndex + 1) * 7_200_000,
-      state: dictionaries.oracle[dMoods[dIndex % 5]],
+      state: dictOracle[dMoods[dIndex % 5]],
     }
 
     return results
-  }, [now, bountyData, mounted, dictionaries])
+  }, [now, bountyCycle, mounted, dictionaries])
+
+  const dictDefault = dictionaries['default'] || {}
 
   return (
     <div className="flex flex-col gap-2">
       <CycleCard
-        title={dictionaries.default['/Lotus/Language/Locations/EidolonPlains']}
+        title={dictDefault['/Lotus/Language/Locations/EidolonPlains']}
         stateLabel={
           cycleStates.cetus?.state
             ? t(`states.${cycleStates.cetus.state}`)
@@ -245,13 +176,12 @@ export function WorldCyclesWidget() {
         expiry={cycleStates.cetus?.expiry}
         now={now}
         accentClass={CYCLE_ACCENT_CLASSES.cetus}
-        isLoading={!bountyData}
-        isUnavailable={isError}
+        isLoading={isLoading}
         mounted={mounted}
       />
 
       <CycleCard
-        title={dictionaries.default['/Lotus/Language/Locations/VenusLandscape']}
+        title={dictDefault['/Lotus/Language/Locations/VenusLandscape']}
         stateLabel={
           cycleStates.vallis?.state
             ? t(`states.${cycleStates.vallis.state}`)
@@ -266,7 +196,7 @@ export function WorldCyclesWidget() {
 
       <CycleCard
         title={
-          dictionaries.default[
+          dictDefault[
             '/Lotus/Language/InfestedMicroplanet/SolarMapDeimosLandscapeName'
           ]
         }
@@ -278,13 +208,12 @@ export function WorldCyclesWidget() {
         expiry={cycleStates.cambion?.expiry}
         now={now}
         accentClass={CYCLE_ACCENT_CLASSES.cambion}
-        isLoading={!bountyData}
-        isUnavailable={isError}
+        isLoading={isLoading}
         mounted={mounted}
       />
 
       <CycleCard
-        title={dictionaries.default['/Lotus/Language/Locations/Duviri']}
+        title={dictDefault['/Lotus/Language/Locations/Duviri']}
         stateLabel={cycleStates.duviri?.state}
         expiry={cycleStates.duviri?.expiry}
         now={now}
@@ -294,15 +223,12 @@ export function WorldCyclesWidget() {
       />
 
       <CycleCard
-        title={
-          dictionaries.default['/Lotus/Language/Zariman/ZarimanRegionName']
-        }
+        title={dictDefault['/Lotus/Language/Zariman/ZarimanRegionName']}
         stateLabel={cycleStates.zariman?.state}
         expiry={cycleStates.zariman?.expiry}
         now={now}
         accentClass={CYCLE_ACCENT_CLASSES.zariman}
-        isLoading={!bountyData}
-        isUnavailable={isError}
+        isLoading={isLoading}
         mounted={mounted}
       />
     </div>

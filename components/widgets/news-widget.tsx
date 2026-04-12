@@ -1,10 +1,10 @@
 'use client'
 
-import { useEffect, useState, useCallback, useMemo } from 'react'
+import { useEffect, useState, useMemo } from 'react'
 import { useLocale, useTranslations } from 'next-intl'
-import { fetchEvents } from '@/lib/world-state/fetch-world-state'
 import Link from 'next/link'
 import { cn } from '@/lib/utils'
+import { useGameData } from '../providers/game-data'
 
 type EventItem = {
   id: string
@@ -74,59 +74,54 @@ function NewsItem({ item }: { item: EventItem }) {
 export function NewsWidget() {
   const locale = useLocale()
   const t = useTranslations('newsWidget')
+  const { worldState, isLoading: isGlobalLoading } = useGameData()
 
-  const [eventItems, setEventItems] = useState<EventItem[]>([])
   const [mounted, setMounted] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-
-  const updateEvents = useCallback(async () => {
-    try {
-      const events = await fetchEvents()
-      const parsed = events
-        .filter((event) => event.Date)
-        .map((event): EventItem | undefined => {
-          const time = Math.trunc(Number(event.Date!.$date.$numberLong) / 1000)
-          const message = event.Messages.find(
-            (m) => m.LanguageCode === locale
-          )?.Message
-          const eventLink = event.Links?.find(
-            (l) => l.LanguageCode === locale
-          )?.Link
-          const link = parseLink(event.Prop.length > 0 ? event.Prop : eventLink)
-
-          if (
-            message &&
-            message !== '/Lotus/Language/CommunityMessages/JoinDiscord'
-          ) {
-            return {
-              id: event._id.$oid,
-              type: event.Community ? 'community' : 'official',
-              message,
-              time,
-              link,
-            }
-          }
-          return undefined
-        })
-        .filter((item): item is EventItem => !!item)
-        .sort((a, b) => b.time - a.time)
-
-      setEventItems(parsed)
-    } catch (error) {
-      console.error('Failed to fetch news:', error)
-    } finally {
-      setIsLoading(false)
-    }
-  }, [locale])
 
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
     setMounted(true)
-    updateEvents()
+  }, [])
 
-    // Refresh every 5 minutes
-    const interval = setInterval(updateEvents, 5 * 60 * 1000)
-    return () => clearInterval(interval)
-  }, [updateEvents])
+  const eventItems = useMemo(() => {
+    if (!worldState?.Events) return []
+
+    return worldState.Events.filter((event) => event.Date)
+      .map((event): EventItem | undefined => {
+        const time = Math.trunc(Number(event.Date!.$date.$numberLong) / 1000)
+
+        // Find localized message
+        const message = event.Messages.find(
+          (m) => m.LanguageCode === locale
+        )?.Message
+
+        // Find localized link
+        const eventLink = event.Links?.find(
+          (l) => l.LanguageCode === locale
+        )?.Link
+
+        const link = parseLink(event.Prop.length > 0 ? event.Prop : eventLink)
+
+        // Filter out system messages/discord invites
+        if (
+          message &&
+          message !== '/Lotus/Language/CommunityMessages/JoinDiscord'
+        ) {
+          return {
+            id: event._id.$oid,
+            type: event.Community ? 'community' : 'official',
+            message,
+            time,
+            link,
+          }
+        }
+        return undefined
+      })
+      .filter((item): item is EventItem => !!item)
+      .sort((a, b) => b.time - a.time)
+  }, [worldState, locale])
+
+  const showLoading = !mounted || (isGlobalLoading && !worldState)
 
   return (
     <div className="border border-muted-primary/60 bg-background/75 p-3 pb-0 pr-0">
@@ -137,7 +132,7 @@ export function NewsWidget() {
       </div>
 
       <div className="max-h-96 overflow-y-auto pb-3 pr-1 pt-3">
-        {!mounted || isLoading ? (
+        {showLoading ? (
           // Skeleton
           <div className="grid gap-2 mr-2">
             {[...Array(3)].map((_, i) => (

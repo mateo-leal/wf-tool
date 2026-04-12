@@ -1,3 +1,5 @@
+export type PublicExportType = 'missionTypes' | 'regions' | 'railjackIntrinsics'
+
 export type PublicExportWeapon = {
   name?: string
   icon?: string
@@ -26,7 +28,7 @@ export type PublicExportIntrinsicRank = {
   description?: string
 }
 
-export type PublicExportIntrinsic = {
+export type Intrinsic = {
   name?: string
   description?: string
   icon?: string
