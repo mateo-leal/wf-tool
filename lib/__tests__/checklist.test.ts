@@ -3,14 +3,46 @@ import {
   formatRemainingTime,
   getChecklistTaskCounter,
   getEightHoursPeriodKey,
+  getHourlyPeriodKey,
   getDailyResetKey,
   getTimeUntilNextEightHourReset,
+  getTimeUntilNextHourlyReset,
   getTimeUntilNextUtcDay,
   getTimeUntilNextUtcWeek,
+  getSortiePeriodKey,
   getWeeklyResetKey,
   normalizeChecklistState,
 } from '../checklist'
 import { getBaroPeriodKey, isBaroKiteerAvailable } from '../world-state/baro'
+import { OracleWorldState } from '../world-state/types'
+
+function createSortieWorldState(
+  activationIso: string,
+  expiryIso: string
+): OracleWorldState {
+  return {
+    Events: [],
+    LiteSorties: [],
+    VoidTraders: [],
+    Sorties: [
+      {
+        _id: { $oid: 'sortie-1' },
+        Activation: {
+          $date: { $numberLong: String(new Date(activationIso).getTime()) },
+        },
+        Expiry: {
+          $date: { $numberLong: String(new Date(expiryIso).getTime()) },
+        },
+        Reward: 'SORTIE_REWARD_TEST',
+        Seed: 1,
+        Boss: 'SORTIE_BOSS_TEST',
+        ExtraDrops: [],
+        Variants: [],
+        Twitter: false,
+      },
+    ],
+  }
+}
 
 describe('checklist reset utilities', () => {
   it('computes daily reset key in UTC', () => {
@@ -64,7 +96,89 @@ describe('checklist reset utilities', () => {
 
     expect(counter).toEqual({
       label: 'resetsIn',
-      time: '00h 50m',
+      time: '50m 00s',
+    })
+  })
+
+  it('returns time to next hourly reset', () => {
+    expect(
+      getTimeUntilNextHourlyReset(new Date('2026-03-25T10:15:00.000Z'))
+    ).toBe(45 * 60 * 1000)
+
+    expect(
+      getTimeUntilNextHourlyReset(new Date('2026-03-25T10:00:00.000Z'))
+    ).toBe(60 * 60 * 1000)
+  })
+
+  it('returns checklist counter for hourly resets', () => {
+    const counter = getChecklistTaskCounter(
+      { resets: 'hourly' },
+      new Date('2026-03-25T10:15:00.000Z')
+    )
+
+    expect(counter).toEqual({
+      label: 'resetsIn',
+      time: '45m 00s',
+    })
+  })
+
+  it('computes sortie period key on 16:00 UTC boundary', () => {
+    const before = new Date('2026-03-25T15:59:59.000Z')
+    const atReset = new Date('2026-03-25T16:00:00.000Z')
+
+    expect(getSortiePeriodKey(before)).toBe(
+      String(new Date('2026-03-24T16:00:00.000Z').getTime())
+    )
+    expect(getSortiePeriodKey(atReset)).toBe(
+      String(new Date('2026-03-25T16:00:00.000Z').getTime())
+    )
+  })
+
+  it('returns checklist counter for sortie using fallback reset time', () => {
+    const counter = getChecklistTaskCounter(
+      { resets: 'sortie' },
+      new Date('2026-03-25T15:30:00.000Z')
+    )
+
+    expect(counter).toEqual({
+      label: 'resetsIn',
+      time: '30m 00s',
+    })
+  })
+
+  it('returns checklist counter for active sortie using world state expiry', () => {
+    const worldState = createSortieWorldState(
+      '2026-03-25T10:00:00.000Z',
+      '2026-03-25T12:00:00.000Z'
+    )
+
+    const counter = getChecklistTaskCounter(
+      { resets: 'sortie' },
+      new Date('2026-03-25T10:15:00.000Z'),
+      worldState
+    )
+
+    expect(counter).toEqual({
+      label: 'resetsIn',
+      time: '01h 45m',
+    })
+  })
+
+  it('returns checklist counter for upcoming sortie using world state activation', () => {
+    const worldState = createSortieWorldState(
+      '2026-03-25T09:30:00.000Z',
+      '2026-03-26T09:30:00.000Z'
+    )
+
+    const counter = getChecklistTaskCounter(
+      { resets: 'sortie' },
+      new Date('2026-03-25T08:00:00.000Z'),
+      worldState
+    )
+
+    expect(counter).toEqual({
+      label: 'resetsIn',
+      time: '01h 30m',
     })
   })
 
@@ -121,6 +235,52 @@ describe('checklist reset utilities', () => {
     )
 
     expect(normalized.other.completed).toEqual({})
+  })
+
+  it('clears hourly other completions when the hourly period expires', () => {
+    const now = new Date('2026-03-30T12:25:00.000Z')
+    const normalized = normalizeChecklistState(
+      {
+        other: {
+          hourlyPeriodKey: '0',
+          eightHoursPeriodKey: getEightHoursPeriodKey(now),
+          baroPeriodKey: getBaroPeriodKey(now),
+          sortiePeriodKey: getSortiePeriodKey(now),
+          completed: {
+            'other-arbitration': true,
+            'other-baro': true,
+          },
+        },
+      },
+      now
+    )
+
+    expect(normalized.other.completed).toEqual({
+      'other-baro': true,
+    })
+  })
+
+  it('clears sortie other completions when the sortie period expires', () => {
+    const now = new Date('2026-03-30T12:25:00.000Z')
+    const normalized = normalizeChecklistState(
+      {
+        other: {
+          hourlyPeriodKey: getHourlyPeriodKey(now),
+          eightHoursPeriodKey: getEightHoursPeriodKey(now),
+          baroPeriodKey: getBaroPeriodKey(now),
+          sortiePeriodKey: '0',
+          completed: {
+            'other-sortie': true,
+            'other-baro': true,
+          },
+        },
+      },
+      now
+    )
+
+    expect(normalized.other.completed).toEqual({
+      'other-baro': true,
+    })
   })
 
   it('keeps in-period daily and weekly completions', () => {

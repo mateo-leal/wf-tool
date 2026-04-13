@@ -9,6 +9,7 @@ import {
   formatRemainingTime,
   getDailyResetKey,
   getEightHoursPeriodKey,
+  getHourlyPeriodKey,
   getSortiePeriodKey,
   getTimeUntilNextUtcDay,
   getTimeUntilNextUtcWeek,
@@ -18,7 +19,7 @@ import {
 import { CHECKLIST_STORAGE_KEY } from '@/lib/constants'
 import { ChecklistState, ChecklistTask, LabelExternal } from '@/lib/types'
 import { ChecklistSectionCard } from './checklist-section-card'
-import { toTitleCase } from '@/lib/utils'
+import { counterToString, toTitleCase } from '@/lib/utils'
 import { useGameData } from '../providers/game-data'
 import {
   getBaro,
@@ -71,6 +72,7 @@ export function ChecklistPanel() {
       setState((prev) => {
         const nextDaily = getDailyResetKey(current)
         const nextWeekly = getWeeklyResetKey(current)
+        const nextHourly = getHourlyPeriodKey(current)
         const nextEightHours = getEightHoursPeriodKey(current)
         const nextSortie = getSortiePeriodKey(current)
         const nextBaro = getBaroPeriodKey(current)
@@ -83,19 +85,41 @@ export function ChecklistPanel() {
           next.weekly = { ...next.weekly, periodKey: nextWeekly, completed: {} }
         }
 
-        const eExpired = next.other.eightHoursPeriodKey !== nextEightHours
-        const bExpired = next.other.baroPeriodKey !== nextBaro
-        const sExpired = next.other.sortiePeriodKey !== nextSortie
-        if (eExpired || bExpired || sExpired) {
+        const hourlyExpired = next.other.hourlyPeriodKey !== nextHourly
+        const eightHoursExpired =
+          next.other.eightHoursPeriodKey !== nextEightHours
+        const baroExpired = next.other.baroPeriodKey !== nextBaro
+        const sortieExpired = next.other.sortiePeriodKey !== nextSortie
+
+        const hasPeriodChange =
+          prev.daily.periodKey !== nextDaily ||
+          prev.weekly.periodKey !== nextWeekly ||
+          hourlyExpired ||
+          eightHoursExpired ||
+          baroExpired ||
+          sortieExpired
+
+        if (!hasPeriodChange) {
+          return prev
+        }
+
+        if (
+          hourlyExpired ||
+          eightHoursExpired ||
+          baroExpired ||
+          sortieExpired
+        ) {
           next.other = {
             ...next.other,
+            hourlyPeriodKey: nextHourly,
             eightHoursPeriodKey: nextEightHours,
             baroPeriodKey: nextBaro,
             sortiePeriodKey: nextSortie,
             completed: clearExpiredOtherCompletions(next.other.completed, {
-              eightHours: eExpired,
-              baro: bExpired,
-              sortie: sExpired,
+              hourly: hourlyExpired,
+              eightHours: eightHoursExpired,
+              baro: baroExpired,
+              sortie: sortieExpired,
             }),
           }
         }
@@ -323,10 +347,13 @@ export function ChecklistPanel() {
       <ChecklistSectionCard
         title={t('checklist.daily.title')}
         subtitle={t('checklist.daily.description', {
-          time: formatRemainingTime(getTimeUntilNextUtcDay(now)),
+          time: counterToString(
+            formatRemainingTime(getTimeUntilNextUtcDay(now)),
+            t,
+            { showSeconds: false }
+          ),
         })}
         tasks={dailyTasks}
-        now={now}
         completed={state.daily.completed}
         hidden={state.daily.hidden}
         onToggle={(id) => toggleTask('daily', id)}
@@ -345,10 +372,13 @@ export function ChecklistPanel() {
       <ChecklistSectionCard
         title={t('checklist.weekly.title')}
         subtitle={t('checklist.weekly.description', {
-          time: formatRemainingTime(getTimeUntilNextUtcWeek(now)),
+          time: counterToString(
+            formatRemainingTime(getTimeUntilNextUtcWeek(now)),
+            t,
+            { showSeconds: false }
+          ),
         })}
         tasks={weeklyTasks}
-        now={now}
         completed={state.weekly.completed}
         hidden={state.weekly.hidden}
         onToggle={(id) => toggleTask('weekly', id)}
@@ -368,7 +398,6 @@ export function ChecklistPanel() {
         title={t('checklist.other.title')}
         subtitle={t('checklist.other.description')}
         tasks={otherTasks}
-        now={now}
         completed={state.other.completed}
         hidden={state.other.hidden}
         onToggle={(id) => toggleTask('other', id)}

@@ -8,7 +8,13 @@
     "collapse": "Colapsar",
     "expand": "Expandir",
     "clear": "Limpiar",
-    "loading": "Cargando..."
+    "loading": "Cargando...",
+    "counter": {
+      "days": "{days}d",
+      "hours": "{hours}h",
+      "minutes": "{minutes}m",
+      "seconds": "{seconds}s"
+    }
   },
   "common": {
     "steelPath": "Camino de Acero"

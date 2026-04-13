@@ -53,7 +53,6 @@ export function ChecklistSectionCard({
   title,
   subtitle,
   tasks,
-  now,
   completed,
   hidden,
   onToggle,
@@ -65,7 +64,6 @@ export function ChecklistSectionCard({
   title: string
   subtitle: string
   tasks: ChecklistTask[]
-  now: Date
   completed: Record<string, boolean>
   hidden: Record<string, boolean>
   onToggle: (taskId: string) => void
@@ -189,7 +187,6 @@ export function ChecklistSectionCard({
               <TaskRow
                 key={task.id}
                 task={task}
-                now={now}
                 checked={Boolean(completed[task.id])}
                 checkable={task.checkable}
                 isHidden={Boolean(hidden[task.id])}
@@ -271,7 +268,6 @@ export function ChecklistSectionCard({
                     <TaskRow
                       key={subitem.id}
                       task={subitem}
-                      now={now}
                       checked={Boolean(completed[subitem.id])}
                       checkable={subitem.checkable}
                       isHidden={Boolean(hidden[subitem.id])}

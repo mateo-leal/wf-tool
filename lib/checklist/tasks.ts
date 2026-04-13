@@ -23,19 +23,6 @@ export const DAILY_TASKS: ChecklistTask[] = [
     info: 'checklist.daily.tasks.factionSyndicatesInfo',
   },
   {
-    id: 'daily-arbitration',
-    title: {
-      key: '/Lotus/Language/Menu/AlertHardMode',
-      source: 'oracle',
-    },
-    location: 'locations.baseOfOperations',
-    terminal: 'terminal.navigation',
-    prerequisite: {
-      key: '/Lotus/Language/Locations/ErisJunction',
-      format: 'titleCase',
-    },
-  },
-  {
     id: 'daily-nightwave',
     title: { key: '/Lotus/Language/Syndicates/RadioLegionTitle' },
     info: 'checklist.daily.tasks.nightwaveInfo',
@@ -469,6 +456,20 @@ export const OTHER_TASKS: ChecklistTask[] = [
     info: 'checklist.other.tasks.baroInfo',
     npc: { key: '/Lotus/Language/G1Quests/VoidTraderName' },
     resets: 'baro',
+  },
+  {
+    id: 'other-arbitration',
+    title: {
+      key: '/Lotus/Language/Menu/AlertHardMode',
+      source: 'oracle',
+    },
+    location: 'locations.baseOfOperations',
+    terminal: 'terminal.navigation',
+    prerequisite: {
+      key: '/Lotus/Language/Locations/ErisJunction',
+      format: 'titleCase',
+    },
+    resets: 'hourly',
   },
   {
     id: 'other-sortie',

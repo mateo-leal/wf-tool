@@ -4,6 +4,7 @@ import type {
   ChecklistCounter,
   ChecklistState,
   ChecklistTask,
+  Counter,
 } from '../types'
 import {
   getBaroPeriodKey,
@@ -14,6 +15,7 @@ import { OracleWorldState } from '../world-state/types'
 
 const EIGHT_HOURS_ANCHOR_UTC = Date.UTC(1970, 0, 1, 8, 0, 0)
 const EIGHT_HOURS_PERIOD_MS = 8 * 60 * 60 * 1000
+const HOURLY_PERIOD_MS = 60 * 60 * 1000
 
 const SORTIE_RESET_HOUR_UTC = Date.UTC(1970, 0, 1, 16, 0, 0)
 const SORTIE_PERIOD_MS = 24 * 60 * 60 * 1000
@@ -126,17 +128,30 @@ function isObject(value: unknown): value is Record<string, unknown> {
 
 const OTHER_EIGHT_HOURS_IDS = collectIdsByReset(OTHER_TASKS, 'eightHours')
 const OTHER_BARO_IDS = collectIdsByReset(OTHER_TASKS, 'baro')
+const OTHER_HOURLY_IDS = collectIdsByReset(OTHER_TASKS, 'hourly')
+const OTHER_SORTIE_IDS = collectIdsByReset(OTHER_TASKS, 'sortie')
 
 export function clearExpiredOtherCompletions(
   completed: Record<string, boolean>,
-  expired: { eightHours?: boolean; baro?: boolean; sortie?: boolean }
+  expired: {
+    hourly?: boolean
+    eightHours?: boolean
+    baro?: boolean
+    sortie?: boolean
+  }
 ): Record<string, boolean> {
   let result = completed
+  if (expired.hourly) {
+    result = clearCompletedByIds(result, OTHER_HOURLY_IDS)
+  }
   if (expired.eightHours) {
     result = clearCompletedByIds(result, OTHER_EIGHT_HOURS_IDS)
   }
   if (expired.baro) {
     result = clearCompletedByIds(result, OTHER_BARO_IDS)
+  }
+  if (expired.sortie) {
+    result = clearCompletedByIds(result, OTHER_SORTIE_IDS)
   }
   return result
 }
@@ -244,6 +259,20 @@ export function getEightHoursPeriodKey(now: Date): string {
   return String(now.getTime() - phaseMs)
 }
 
+export function getHourlyPeriodKey(now: Date): string {
+  const nowMs = now.getTime()
+  const phaseMs =
+    ((nowMs % HOURLY_PERIOD_MS) + HOURLY_PERIOD_MS) % HOURLY_PERIOD_MS
+  return String(nowMs - phaseMs)
+}
+
+export function getTimeUntilNextHourlyReset(date: Date): number {
+  const nowMs = date.getTime()
+  const phaseMs =
+    ((nowMs % HOURLY_PERIOD_MS) + HOURLY_PERIOD_MS) % HOURLY_PERIOD_MS
+  return HOURLY_PERIOD_MS - phaseMs
+}
+
 export function getTimeUntilNextEightHourReset(date: Date): number {
   const elapsedMs = date.getTime() - EIGHT_HOURS_ANCHOR_UTC
   const phaseMs =
@@ -289,18 +318,20 @@ function getTimeUntilNextSortieReset(
   return SORTIE_PERIOD_MS - phaseMs
 }
 
-export function formatRemainingTime(totalMs: number): string {
+export function formatRemainingTime(totalMs: number): Counter {
   const safeMs = Math.max(0, totalMs)
   const totalSeconds = Math.floor(safeMs / 1000)
   const days = Math.floor(totalSeconds / 86400)
   const hours = Math.floor((totalSeconds % 86400) / 3600)
   const minutes = Math.floor((totalSeconds % 3600) / 60)
+  const seconds = totalSeconds % 60
 
-  if (days > 0) {
-    return `${days}d ${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m`
+  return {
+    days,
+    hours,
+    minutes,
+    seconds,
   }
-
-  return `${String(hours).padStart(2, '0')}h ${String(minutes).padStart(2, '0')}m`
 }
 
 export function getChecklistTaskCounter(
@@ -309,6 +340,11 @@ export function getChecklistTaskCounter(
   worldState?: OracleWorldState
 ): ChecklistCounter | undefined {
   switch (task.resets) {
+    case 'hourly':
+      return {
+        label: 'resetsIn',
+        time: formatRemainingTime(getTimeUntilNextHourlyReset(now)),
+      }
     case 'daily':
       return {
         label: 'resetsIn',
@@ -358,6 +394,7 @@ export function createEmptyChecklistState(now: Date): ChecklistState {
       expandedGroups: createDefaultExpandedGroups('weekly'),
     },
     other: {
+      hourlyPeriodKey: getHourlyPeriodKey(now),
       eightHoursPeriodKey: getEightHoursPeriodKey(now),
       baroPeriodKey: getBaroPeriodKey(now),
       sortiePeriodKey: getSortiePeriodKey(now),
@@ -414,11 +451,16 @@ export function normalizeChecklistState(
   const currentEightHoursPeriodKey = getEightHoursPeriodKey(now)
   const currentBaroPeriodKey = getBaroPeriodKey(now)
   const currentSortiePeriodKey = getSortiePeriodKey(now)
+  const currentHourlyPeriodKey = getHourlyPeriodKey(now)
 
   let otherCompleted = sanitizeCompleted(
     parsed.other?.completed,
     VALID_COMPLETED_IDS.other
   )
+
+  if (parsed.other?.hourlyPeriodKey !== currentHourlyPeriodKey) {
+    otherCompleted = clearCompletedByIds(otherCompleted, OTHER_HOURLY_IDS)
+  }
 
   if (parsed.other?.eightHoursPeriodKey !== currentEightHoursPeriodKey) {
     otherCompleted = clearCompletedByIds(otherCompleted, OTHER_EIGHT_HOURS_IDS)
@@ -426,6 +468,10 @@ export function normalizeChecklistState(
 
   if (parsed.other?.baroPeriodKey !== currentBaroPeriodKey) {
     otherCompleted = clearCompletedByIds(otherCompleted, OTHER_BARO_IDS)
+  }
+
+  if (parsed.other?.sortiePeriodKey !== currentSortiePeriodKey) {
+    otherCompleted = clearCompletedByIds(otherCompleted, OTHER_SORTIE_IDS)
   }
 
   const otherHidden = sanitizeHidden(
@@ -452,6 +498,7 @@ export function normalizeChecklistState(
       expandedGroups: weeklyExpandedGroups,
     },
     other: {
+      hourlyPeriodKey: currentHourlyPeriodKey,
       eightHoursPeriodKey: currentEightHoursPeriodKey,
       baroPeriodKey: currentBaroPeriodKey,
       sortiePeriodKey: currentSortiePeriodKey,
