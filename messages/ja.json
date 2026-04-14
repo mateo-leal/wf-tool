@@ -8,7 +8,13 @@
     "collapse": "Collapse",
     "expand": "Expand",
     "clear": "Clear",
-    "loading": "Loading..."
+    "loading": "Loading...",
+    "counter": {
+      "days": "{days}d",
+      "hours": "{hours}h",
+      "minutes": "{minutes}m",
+      "seconds": "{seconds}s"
+    }
   },
   "common": {
     "steelPath": "Steel Path"
@@ -50,6 +56,38 @@
     "endo": "30,000x Endo",
     "rifleRiven": "Rifle Riven Mod",
     "shotgunRiven": "Shotgun Riven Mod"
+  },
+  "sortieModifiers": {
+    "SORTIE_MODIFIER_LOW_ENERGY": "Energy Reduction",
+    "SORTIE_MODIFIER_IMPACT": "Enemy Physical Enhancement (Impact)",
+    "SORTIE_MODIFIER_SLASH": "Enemy Physical Enhancement (Slash)",
+    "SORTIE_MODIFIER_PUNCTURE": "Enemy Physical Enhancement (Puncture)",
+    "SORTIE_MODIFIER_EXIMUS": "Eximus Stronghold",
+    "SORTIE_MODIFIER_MAGNETIC": "Enemy Elemental Enhancement (Magnetic)",
+    "SORTIE_MODIFIER_CORROSIVE": "Enemy Elemental Enhancement (Corrosive)",
+    "SORTIE_MODIFIER_VIRAL": "Enemy Elemental Enhancement (Viral)",
+    "SORTIE_MODIFIER_ELECTRICITY": "Enemy Elemental Enhancement (Electricity)",
+    "SORTIE_MODIFIER_RADIATION": "Enemy Elemental Enhancement (Radiation)",
+    "SORTIE_MODIFIER_GAS": "Enemy Elemental Enhancement (Gas)",
+    "SORTIE_MODIFIER_FIRE": "Enemy Elemental Enhancement (Heat)",
+    "SORTIE_MODIFIER_EXPLOSION": "Enemy Elemental Enhancement (Blast)",
+    "SORTIE_MODIFIER_FREEZE": "Enemy Elemental Enhancement (Cold)",
+    "SORTIE_MODIFIER_TOXIN": "Enemy Elemental Enhancement (Toxin)",
+    "SORTIE_MODIFIER_POISON": "Enemy Elemental Enhancement (Toxin)",
+    "SORTIE_MODIFIER_HAZARD_RADIATION": "Radiation Hazard",
+    "SORTIE_MODIFIER_HAZARD_MAGNETIC": "Electromagnetic Anomalies",
+    "SORTIE_MODIFIER_HAZARD_FOG": "Dense Fog",
+    "SORTIE_MODIFIER_HAZARD_FIRE": "Fire Hazard",
+    "SORTIE_MODIFIER_HAZARD_ICE": "Cryogenic Leakage",
+    "SORTIE_MODIFIER_HAZARD_COLD": "Extreme Cold",
+    "SORTIE_MODIFIER_ARMOR": "Augmented Enemy Armor",
+    "SORTIE_MODIFIER_SHIELDS": "Enhanced Enemy Shields",
+    "SORTIE_MODIFIER_SECONDARY_ONLY": "Pistol Only",
+    "SORTIE_MODIFIER_SHOTGUN_ONLY": "Shotgun Only",
+    "SORTIE_MODIFIER_SNIPER_ONLY": "Sniper Only",
+    "SORTIE_MODIFIER_RIFLE_ONLY": "Assault Rifle Only",
+    "SORTIE_MODIFIER_MELEE_ONLY": "Melee Only",
+    "SORTIE_MODIFIER_BOW_ONLY": "Bow Only"
   },
   "checklist": {
     "title": "Checklist",
@@ -211,20 +249,13 @@
       "primary": "Primary",
       "secondary": "Secondary",
       "melee": "Melee",
-      "kitgun": "Kitgun",
-      "zaw": "Zaw",
-      "amp": "Amp",
-      "sentinel": "Sentinel",
-      "moa": "MOA",
-      "hound": "Hound",
-      "beast": "Beast",
       "robotic": "Robotic",
-      "archwing": "Archwing",
+      "companion": "Companions",
+      "vehicle": "Vehicles",
       "archgun": "Archgun",
       "archmelee": "Archmelee",
-      "necramech": "Necramech",
-      "railjack": "Railjack",
-      "kDrive": "K-Drive"
+      "amp": "Amp",
+      "railjack": "Railjack"
     },
     "doneCount": "{count}/{total} done",
     "masteryPointsProgress": "{gained, number}/{total, number} MP",
