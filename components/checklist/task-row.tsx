@@ -55,7 +55,7 @@ export function TaskRow({
       <div className="min-w-0">
         <p
           className={cn(
-            'text-sm leading-tight',
+            'text-sm leading-relaxed',
             checkable && checked
               ? 'text-muted-foreground line-through'
               : 'text-foreground'
