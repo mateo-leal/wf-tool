@@ -234,5 +234,7 @@ function Counter({ task }: { task: ChecklistTask }) {
 
   if (!counter) return null
 
-  return `${t.rich(`checklist.counters.${counter.label}`, { time: counterToString(counter.time, t) })}`
+  return t.rich(`checklist.counters.${counter.label}`, {
+    time: counterToString(counter.time, t),
+  })
 }
