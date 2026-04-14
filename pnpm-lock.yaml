@@ -21,8 +21,8 @@ importers:
         specifier: ^2.0.0
         version: 2.0.0(next@16.2.3(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
       '@wfcd/items':
-        specifier: ^1.1273.17
-        version: 1.1273.17(warframe-worldstate-data@3.13.1)
+        specifier: ^1.1273.20
+        version: 1.1273.20(warframe-worldstate-data@3.13.1)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -1567,8 +1567,8 @@ packages:
       vue-router:
         optional: true
 
-  '@wfcd/items@1.1273.17':
-    resolution: {integrity: sha512-64n6m6ZdqBbsAf0FeUH+evrSf2Vknoee1HG/K/VddxjUS8uMVSkAlUy6ekheHApWnXPrf94Bb1kxquhhJUS0Pw==}
+  '@wfcd/items@1.1273.20':
+    resolution: {integrity: sha512-XNE1ALTEcIKOWB+aD6DQo0DUahuFRWPicZe3dyYQpbGTtdUZORn1lwuQh6/StP5z65ZK28aqb2I0zGaKTFEfsg==}
     peerDependencies:
       warframe-worldstate-data: ^3.0.0
 
@@ -5757,7 +5757,7 @@ snapshots:
       next: 16.2.3(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
       react: 19.2.3
 
-  '@wfcd/items@1.1273.17(warframe-worldstate-data@3.13.1)':
+  '@wfcd/items@1.1273.20(warframe-worldstate-data@3.13.1)':
     dependencies:
       warframe-worldstate-data: 3.13.1
 

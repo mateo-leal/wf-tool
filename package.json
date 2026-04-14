@@ -15,7 +15,7 @@
     "@phosphor-icons/react": "^2.1.10",
     "@vercel/analytics": "^2.0.1",
     "@vercel/speed-insights": "^2.0.0",
-    "@wfcd/items": "^1.1273.17",
+    "@wfcd/items": "^1.1273.20",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "http-link-header": "^1.1.3",
