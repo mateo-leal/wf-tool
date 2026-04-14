@@ -184,7 +184,7 @@ export function getItemCompletion(locale: string) {
 
   const orderedItems = filterEmptySubcategories(mappedItems)
 
-  return Object.assign(itemCompletionSubcategoryOrder, orderedItems)
+  return Object.assign({}, itemCompletionSubcategoryOrder, orderedItems)
 }
 
 export async function buildMasteryData(locale: string): Promise<MasteryData> {
