@@ -203,6 +203,13 @@ function TaskMeta({ task }: { task: ChecklistTask }) {
 function Counter({ task }: { task: ChecklistTask }) {
   const t = useTranslations()
   const { worldState } = useGameData()
+  const [isMounted, setIsMounted] = useState(false)
+
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setIsMounted(true)
+  }, [])
+
   const [now, setNow] = useState(() => new Date())
 
   useEffect(() => {
@@ -217,7 +224,7 @@ function Counter({ task }: { task: ChecklistTask }) {
     return () => clearInterval(interval)
   }, [task.resets])
 
-  if (!task.resets) return null
+  if (!isMounted || !task.resets) return null
 
   const counter: ChecklistCounter | undefined = getChecklistTaskCounter(
     task,
