@@ -1,4 +1,8 @@
-export type PublicExportType = 'missionTypes' | 'regions' | 'railjackIntrinsics'
+export type PublicExportType =
+  | 'missionTypes'
+  | 'regions'
+  | 'railjackIntrinsics'
+  | 'factions'
 
 export type PublicExportWeapon = {
   name?: string
@@ -35,7 +39,7 @@ export type Intrinsic = {
   ranks?: PublicExportIntrinsicRank[]
 }
 
-export type MissionType = {
+export type IndexNameType = {
   index: number
   name?: string
 }

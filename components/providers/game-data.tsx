@@ -15,7 +15,7 @@ import { OracleWorldState } from '@/lib/world-state/types'
 import { Dictionary, DictionarySource, getDictionary } from '@/lib/language'
 import { fetchOracleWorldState } from '@/lib/world-state/fetch-world-state'
 import {
-  MissionType,
+  IndexNameType,
   Intrinsic,
   PublicExportMap,
   PublicExportType,
@@ -23,6 +23,7 @@ import {
 } from '@/lib/public-export/types'
 import { useLocale } from 'next-intl'
 import {
+  fetchPublicExportFactions,
   fetchPublicExportIntrinsics,
   fetchPublicExportMissionTypes,
   fetchPublicExportRegions,
@@ -34,8 +35,9 @@ type GameDataContextValue = {
   bountyCycle?: BountyCycles
   arbitrations?: ArbitrationCycle[]
   exportData: Partial<{
-    missionTypes: PublicExportMap<MissionType>
+    missionTypes: PublicExportMap<IndexNameType>
     regions: PublicExportMap<Region>
+    factions: PublicExportMap<IndexNameType>
     railjackIntrinsics: PublicExportMap<Intrinsic>
   }>
   isLoading: boolean
@@ -147,15 +149,23 @@ export function GameDataProvider({ children }: { children: ReactNode }) {
 
       fetchingRefs.current.add(`export-${type}`)
       try {
-        if (type === 'missionTypes') {
-          const data = await fetchPublicExportMissionTypes()
-          setExportData((prev) => ({ ...prev, missionTypes: data }))
-        } else if (type === 'regions') {
-          const data = await fetchPublicExportRegions()
-          setExportData((prev) => ({ ...prev, regions: data }))
-        } else if (type === 'railjackIntrinsics') {
-          const data = await fetchPublicExportIntrinsics()
-          setExportData((prev) => ({ ...prev, railjackIntrinsics: data }))
+        switch (type) {
+          case 'factions':
+            const factions = await fetchPublicExportFactions()
+            setExportData((prev) => ({ ...prev, factions }))
+            break
+          case 'missionTypes':
+            const missionTypes = await fetchPublicExportMissionTypes()
+            setExportData((prev) => ({ ...prev, missionTypes }))
+            break
+          case 'railjackIntrinsics':
+            const railjackIntrinsics = await fetchPublicExportIntrinsics()
+            setExportData((prev) => ({ ...prev, railjackIntrinsics }))
+            break
+          case 'regions':
+            const regions = await fetchPublicExportRegions()
+            setExportData((prev) => ({ ...prev, regions }))
+            break
         }
       } catch (error) {
         console.error(`Error fetching export data ${type}:`, error)

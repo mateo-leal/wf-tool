@@ -1,28 +1,13 @@
-import {
-  Intrinsic,
-  PublicExportMap,
-  MissionType,
-  // PublicExportSentinel,
-  // PublicExportWarframe,
-  // PublicExportWeapon,
-  Region,
-} from './types'
+import { Intrinsic, PublicExportMap, IndexNameType, Region } from './types'
 
-// const EXPORT_WEAPONS_URL =
-//   // using github for now since browse.wf is outdated and doesn't have the latest export, but ideally we should switch back to browse.wf once it's updated
-//   // 'https://browse.wf/warframe-public-export-plus/ExportWeapons.json'
-//   'https://raw.githubusercontent.com/calamity-inc/warframe-public-export-plus/refs/heads/senpai/ExportWeapons.json'
-// const EXPORT_WARFRAMES_URL =
-//   // 'https://browse.wf/warframe-public-export-plus/ExportWarframes.json'
-//   'https://raw.githubusercontent.com/calamity-inc/warframe-public-export-plus/refs/heads/senpai/ExportWarframes.json'
-// const EXPORT_SENTINELS_URL =
-//   'https://browse.wf/warframe-public-export-plus/ExportSentinels.json'
 const EXPORT_INTRINSICS_URL =
   'https://browse.wf/warframe-public-export-plus/ExportIntrinsics.json'
 const EXPORT_MISSION_TYPES_URL =
   'https://browse.wf/warframe-public-export-plus/ExportMissionTypes.json'
 const EXPORT_REGIONS_URL =
   'https://browse.wf/warframe-public-export-plus/ExportRegions.json'
+const EXPORT_FACTIONS_URL =
+  'https://browse.wf/warframe-public-export-plus/ExportFactions.json'
 
 async function fetchJson<T>(url: string): Promise<T> {
   const response = await fetch(url, {
@@ -53,9 +38,13 @@ export function fetchPublicExportIntrinsics() {
 }
 
 export function fetchPublicExportMissionTypes() {
-  return fetchJson<PublicExportMap<MissionType>>(EXPORT_MISSION_TYPES_URL)
+  return fetchJson<PublicExportMap<IndexNameType>>(EXPORT_MISSION_TYPES_URL)
 }
 
 export function fetchPublicExportRegions() {
   return fetchJson<PublicExportMap<Region>>(EXPORT_REGIONS_URL)
+}
+
+export function fetchPublicExportFactions() {
+  return fetchJson<PublicExportMap<IndexNameType>>(EXPORT_FACTIONS_URL)
 }

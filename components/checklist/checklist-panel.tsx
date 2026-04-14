@@ -325,13 +325,14 @@ export function ChecklistPanel() {
               const dict = dictionaries.default
               const regionName = dict[region.name] || currentArbitration.node
               const systemName = dict[region.systemName] || region.systemName
+              const factionName = dict[region.factionName] || region.factionName
               const missionName = mission.name
                 ? dict[mission.name] || region.missionType
                 : region.missionType
 
               return {
                 ...task,
-                dynamicInfo: toTitleCase(missionName),
+                dynamicInfo: `${toTitleCase(missionName)} (${factionName})`,
                 location: `${regionName}, ${systemName}`,
               }
             }

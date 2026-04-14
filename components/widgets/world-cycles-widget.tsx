@@ -87,8 +87,14 @@ function CycleCard({
 
 export function WorldCyclesWidget() {
   const t = useTranslations('worldCycles')
-  const { bountyCycle, dictionaries, fetchDictionary, isLoading } =
-    useGameData()
+  const {
+    bountyCycle,
+    dictionaries,
+    exportData,
+    fetchDictionary,
+    fetchExportData,
+    isLoading,
+  } = useGameData()
 
   const [mounted, setMounted] = useState(false)
   const [now, setNow] = useState(0)
@@ -100,17 +106,18 @@ export function WorldCyclesWidget() {
 
     void fetchDictionary('default')
     void fetchDictionary('oracle')
+    void fetchExportData('factions')
 
     const interval = setInterval(() => setNow(Date.now()), 1000)
     return () => clearInterval(interval)
-  }, [fetchDictionary])
+  }, [fetchDictionary, fetchExportData])
 
   const cycleStates = useMemo(() => {
     const results: Record<string, Partial<WorldCycle>> = {}
     if (!mounted) return results
 
-    const dictDefault = dictionaries['default'] || {}
-    const dictOracle = dictionaries['oracle'] || {}
+    const dictDefault = dictionaries.default || {}
+    const dictOracle = dictionaries.oracle || {}
 
     // API Driven Cycles
     if (bountyCycle) {
@@ -124,14 +131,12 @@ export function WorldCyclesWidget() {
         expiry: results.cetus.expiry,
         state: isCetusNight ? 'vome' : 'fass',
       }
+      const zarimanFaction = exportData.factions?.[bountyCycle.zarimanFaction]
       results.zariman = {
         expiry: bountyCycle.expiry,
-        state:
-          dictDefault[
-            bountyCycle.zarimanFaction === 'FC_GRINEER'
-              ? '/Lotus/Language/Game/Faction_GrineerUC'
-              : '/Lotus/Language/Game/Faction_CorpusUC'
-          ],
+        state: zarimanFaction
+          ? dictDefault[zarimanFaction.name!]
+          : bountyCycle.zarimanFaction,
       }
     }
 
@@ -161,7 +166,14 @@ export function WorldCyclesWidget() {
     }
 
     return results
-  }, [now, bountyCycle, mounted, dictionaries])
+  }, [
+    mounted,
+    dictionaries.default,
+    dictionaries.oracle,
+    bountyCycle,
+    now,
+    exportData.factions,
+  ])
 
   const dictDefault = dictionaries.default || {}
 
