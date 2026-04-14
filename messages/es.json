@@ -113,7 +113,7 @@
         "craftOther": "Fabrica otros recursos de la fundición",
         "factionSyndicates": "Reputación de los sindicatos de facción",
         "factionSyndicatesInfo": "Completa cualquier misión",
-        "nightwaveInfo": "Completa las misiones diarias de Nightwave.",
+        "nightwaveInfo": "Completa las misiones diarias de Onda Nocturna.",
         "worldSyndicates": "Reputación de los sindicatos globales",
         "sortieInfo": "Completa las 3 misiones diarias de incursión.",
         "focus": "Enfoque",
@@ -128,7 +128,7 @@
       "title": "Semanal",
       "description": "Se reinicia en {time}",
       "tasks": {
-        "nightwaveInfo": "Completa las misiones semanales de Nightwave.",
+        "nightwaveInfo": "Completa las misiones semanales de Onda Nocturna.",
         "ayatanTreasureHuntInfo": "Completa la cacería semanal de tesoros Ayatan.",
         "helpClemInfo": "Completa la misión semanal de Clem.",
         "archonHuntInfo": "Completa la misión de Cacería de Arcontes para obtener un fragmento de arconte.",
@@ -254,7 +254,7 @@
       "vehicle": "Vehículos",
       "archgun": "Archcañón",
       "archmelee": "Archmelé",
-      "amp": "Amp",
+      "amp": "Amps",
       "railjack": "Railjack"
     },
     "doneCount": "{count}/{total} hecho",
