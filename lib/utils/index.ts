@@ -1,7 +1,7 @@
 import { clsx, type ClassValue } from 'clsx'
 import { twMerge } from 'tailwind-merge'
 import type { Counter } from '../types'
-import { type _Translator } from 'next-intl'
+import type { useTranslations } from 'next-intl'
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
@@ -24,7 +24,7 @@ export function isDevelopment(): boolean {
 
 export function counterToString(
   counter: Counter,
-  t: _Translator,
+  t: ReturnType<typeof useTranslations>,
   options?: { showSeconds?: boolean; alwaysShowMinutes?: boolean }
 ) {
   const defaultOptions = { showSeconds: true, alwaysShowMinutes: false }
