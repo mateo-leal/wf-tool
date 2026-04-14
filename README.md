@@ -2,15 +2,46 @@
 
 # wf-kim-pathfinder
 
-KIM Pathfinder is a Next.js web app that explores and simulates Warframe KIM dialogue graphs.
+Warframe companion web app focused on KIM dialogue simulation plus practical daily tooling:
 
-Contributors can use this project to:
+- KIM chatroom pathfinder and transcript simulation.
+- Daily/weekly checklist tracking with live reset timers.
+- Mastery completion checklist from live item data.
+- Home widgets for world cycles and in-game news.
+- Multi-language UI.
 
-- Browse available chatrooms and conversations.
-- Simulate preferred conversation paths based on boolean and counter state.
-- Compare paths by chemistry, thermostat, and boolean activations.
-- View simulated conversations as chat transcripts.
-- Switch language dictionaries for translated dialogue labels.
+## Features
+
+### KIM Pathfinder
+
+- Browse available KIM chatrooms and dialogue starts.
+- Simulate conversation paths using boolean and counter input state.
+- Compare ranked preferred outcomes (best chemistry, thermostat, overall, and boolean-heavy routes).
+- Split recommendations by flirting-state outcomes when the graph branches that way.
+- View each result as an in-app chat transcript and persist mutations for later runs.
+
+### Checklist Tracker
+
+- Daily, weekly, and manual sections.
+- Auto-reset behavior for UTC daily/weekly periods.
+- Additional rotation handling (hourly, 8-hour, Sortie, and Baro windows).
+- Progress persistence with per-task completion, hidden rows, and expandable groups.
+
+### Mastery Checklist
+
+- Builds category/subcategory mastery data from `@wfcd/items`.
+- Includes mastery-point-aware item grouping.
+- Locale-aware item names when available.
+
+### Widgets and Live Data
+
+- World cycle cards (Cetus, Vallis, Cambion, Duviri, Zariman) with live countdowns.
+- News feed from live world state events.
+
+### Localization
+
+- Locale routing via `next-intl` with `as-needed` locale prefixing.
+- Language selector in settings and translation contribution link to Crowdin.
 
 ## Tech Stack
 
@@ -18,6 +49,8 @@ Contributors can use this project to:
 - React 19
 - TypeScript (strict)
 - Tailwind CSS 4
+- next-intl
+- Jest + Testing Library
 - pnpm
 
 ## Getting Started
@@ -25,7 +58,7 @@ Contributors can use this project to:
 ### Prerequisites
 
 - Node.js 20+
-- pnpm 9+
+- pnpm 10+
 
 ### Install
 
@@ -48,123 +81,93 @@ pnpm build
 pnpm start
 ```
 
-### Lint
+### Lint and tests
 
 ```bash
 pnpm lint
+pnpm test
+pnpm test:watch
 ```
 
-## Project Structure
+## Main Routes
 
-Top-level folders used most often:
+- `/`: Home dashboard with widgets and quick-launch shortcuts.
+- `/kim`: KIM landing/select experience.
+- `/kim/[chatroom]`: Chatroom-specific KIM simulation route.
+- `/checklist`: Daily/weekly/other checklist tracker.
+- `/mastery`: Mastery checklist view.
 
-- app: Next.js routes, layouts, and API handlers.
-- components: UI components for chatroom selection, dialogue simulation, and transcript rendering.
-- lib/kim: Pathfinder engine and graph traversal logic.
-- lib/chatrooms.ts: Chatroom metadata and source JSON endpoints.
-- lib/language.ts: Supported language list and dictionary URL resolver.
-- lib/types.ts: Shared graph node and transcript types.
-
-Important entry points:
-
-- app/kim/[chatroom]/page.tsx: SSG route for each chatroom view.
-- components/windows/chat.tsx: Server component that loads graph data and prepares simulation requirements.
-- components/dialogue-selector-panel.tsx: Client state for language, booleans, counters, and simulation requests.
-- app/api/simulate/route.ts: Simulation API endpoint.
-- app/api/dialogues/route.ts: Language-aware dialogue option labels endpoint.
-
-## Data Flow Overview
-
-1. A user opens a chatroom route under /kim/[chatroom].
-2. The server loads graph nodes from browse.wf and builds dialogue options.
-3. The client panel collects user state (booleans/counters) and calls /api/simulate.
-4. The simulation engine traverses the graph, ranks preferred paths, and returns transcript lines.
-5. The UI shows ranked path cards and a rendered chat transcript.
-
-Language behavior:
-
-- Default language is English (en) and uses server-rendered labels.
-- Selecting another language fetches translated labels from /api/dialogues.
-- Selected language is persisted in localStorage (wf-kim:language).
-
-Boolean persistence:
-
-- Boolean mutations can be saved to localStorage (wf-kim:booleans) from a simulated transcript.
-- Saved booleans are reused when preparing subsequent simulations.
+All routes are locale-aware under `app/[locale]`.
 
 ## API Endpoints
 
-### GET /api/dialogues
+### `GET /api/dialogues`
 
 Query params:
 
-- chatroom (required): chatroom id such as hex, arthur, marie.
-- language (optional): one of the supported language codes.
+- `chatroom` (required): chatroom id.
+- `language` (optional): language code.
+- `booleans` (optional): JSON object used to resolve boolean-gated previews.
 
 Response:
 
-- options: array of { option, id, label, codename }.
+- `options`: array of `{ option, id, label, codename }`.
 
-### GET /api/simulate
+### `GET /api/simulate`
 
 Query params:
 
-- chatroom (required)
-- startId (required)
-- language (optional)
-- booleans (optional JSON object)
-- counters (optional JSON object)
+- `chatroom` (required)
+- `startId` (required)
+- `language` (optional)
+- `booleans` (optional JSON object)
+- `counters` (optional JSON object)
 
 Response:
 
-- conversationName
-- options: ranked preferred paths with metrics, booleanMutations, and chatLines.
+- `conversationName`
+- `options`: ranked path options with metrics, mutations, and formatted `chatLines`.
 
-## Core Simulation Concepts
+## Project Structure
 
-- Chemistry: sum of ChemistryDelta changes along a path.
-- Thermostat: sum of thermostat-tagged OtherDialogueInfos values.
-- Boolean activations: count of set/reset boolean mutations.
-- Counter checks: evaluate Output expressions against provided counter values.
-- Multi-boolean checks: route selection using check expressions in output branches.
+Frequently used folders:
 
-Implementation is centered in lib/kim/pathfinder.ts.
+- `app`: Locale routes, metadata, and API handlers.
+- `components`: Windowed UI, KIM/chat components, checklist/mastery panels, taskbar, and widgets.
+- `lib/kim`: Graph loading, traversal, ranking, and formatting logic for KIM.
+- `lib/checklist`: Task definitions, reset logic, and checklist state sanitization.
+- `lib/mastery`: Mastery dataset assembly from item sources.
+- `lib/world-state`: World state fetchers and related types.
+- `messages`: Locale dictionaries.
 
-## Static Generation
+Key entry points:
 
-- /kim/[chatroom] is pre-rendered with generateStaticParams from app/kim/[chatroom]/page.tsx.
-- Chatrooms are generated from keys in lib/chatrooms.ts.
-
-If you add a new chatroom id to CHATROOM_SOURCE_BY_ID, it will be included in static generation automatically.
+- `app/[locale]/layout.tsx`
+- `app/[locale]/kim/[chatroom]/page.tsx`
+- `components/windows/chat.tsx`
+- `components/kim/dialogue-selector-panel/simulation-form.tsx`
+- `app/api/dialogues/route.ts`
+- `app/api/simulate/route.ts`
 
 ## Contributing
 
-### Typical workflow
-
 1. Fork and clone.
-2. Create a branch from main.
+2. Create a branch from `main`.
 3. Make focused changes.
-4. Run pnpm lint and pnpm build.
-5. Open a pull request with a clear problem statement and screenshots/GIFs for UI changes.
+4. Run `pnpm lint`, `pnpm test`, and `pnpm build`.
+5. Open a pull request with a clear summary and screenshots/GIFs for UI changes.
 
-### Contribution guidelines
+Guidelines:
 
-- Keep PRs small and scoped.
-- Preserve TypeScript strictness and avoid any casts unless required.
-- Reuse existing helpers in lib/kim/pathfinder.ts before adding duplicates.
-- Keep UI style consistent with the KIM in-game visual direction.
-- Add or update documentation when behavior changes.
-
-## Known Gaps
-
-- No automated test suite is configured yet.
-- Some metadata and labels are still coupled to upstream browse.wf payload conventions.
-
-Contributions for tests, resilience, and API hardening are welcome.
+- Keep PRs scoped and reviewable.
+- Preserve strict typing and reuse existing utilities when possible.
+- Update docs when behavior changes.
 
 ## Acknowledgements
 
-Special thanks to [browse.wf](https://browse.wf/) for making Warframe dialogue data easy to explore and reference. This project relies on browse.wf endpoints for chatroom graph and dictionary sources.
+- [browse.wf](https://browse.wf/) for KIM/world-state data sources and references.
+- [warframe-public-export-plus](https://github.com/calamity-inc/warframe-public-export-plus) dictionary data.
+- [warframe-items](https://github.com/WFCD/warframe-items) via `@wfcd/items` for mastery item metadata.
 
 ## License
 

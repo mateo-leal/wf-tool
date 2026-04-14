@@ -1,0 +1,60 @@
+name: Enhancement
+description: Suggest an improvement to something that already exists.
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use this template when you want to improve or refine an existing feature. For brand-new functionality use the **Feature Request** template instead.
+
+  - type: textarea
+    id: current
+    attributes:
+      label: What currently exists?
+      description: Describe the existing behaviour or UI element you want to change.
+      placeholder: The world cycle widget shows countdowns but does not indicate the current state label clearly when the screen is narrow.
+    validations:
+      required: true
+
+  - type: textarea
+    id: improvement
+    attributes:
+      label: What should be improved?
+      description: Describe the change and why it would be better.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: area
+    attributes:
+      label: Which area does this affect?
+      options:
+        - KIM Pathfinder
+        - Checklist
+        - Mastery Checklist
+        - Widgets / Live Data
+        - Localization / Translations
+        - Settings / UI
+        - API
+        - Performance
+        - Accessibility
+        - Other
+    validations:
+      required: true
+
+  - type: dropdown
+    id: impact
+    attributes:
+      label: Impact
+      options:
+        - Low — minor polish
+        - Medium — noticeable improvement
+        - High — significantly improves usability or correctness
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: Additional context
+      description: Before/after screenshots, references, or any other relevant details.
