@@ -56,7 +56,7 @@ components/            All UI components
 lib/
   kim/                 Graph loader, explorer, ranker, formatter, boolean/counter utils
   checklist/           Task definitions, reset logic, state sanitization
-  mastery/             Mastery data assembly from @wfcd/items
+  mastery/             Mastery data assembly from @tenno-labe/core
   world-state/         World state fetch helpers
 messages/              Locale JSON dictionaries (en.json is canonical)
 ```

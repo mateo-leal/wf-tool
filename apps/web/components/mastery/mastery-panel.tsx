@@ -5,19 +5,13 @@ import { useTranslations } from 'next-intl'
 import { useEffect, useMemo, useState } from 'react'
 import { ListIcon, CaretDownIcon } from '@phosphor-icons/react'
 
-import type {
-  MasteryCategory,
-  MasteryData,
-  MasteryItem,
-} from '@/lib/mastery/types'
+import type { MasteryCategory, MasteryData } from '@/lib/mastery/types'
 import {
   loadProgress,
   MasteryProgress,
   saveProgress,
 } from '@/lib/mastery/client'
-import { resolveDictionary } from '@/lib/language'
-import { isDevelopment, toTitleCase } from '@/lib/utils'
-import { useGameData } from '../providers/game-data'
+import { isDevelopment } from '@/lib/utils'
 
 const CATEGORY_ORDER: MasteryCategory[] = [
   'itemCompletion',
@@ -26,12 +20,8 @@ const CATEGORY_ORDER: MasteryCategory[] = [
   // 'starchartCompletion',
 ]
 
-const RAILJACK_INTRINSIC_MASTERY_POINTS = 1500
-
 export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
   const t = useTranslations('masteryChecklist')
-  const { dictionaries, exportData, fetchDictionary, fetchExportData } =
-    useGameData()
 
   const [activeCategory, setActiveCategory] =
     useState<MasteryCategory>('itemCompletion')
@@ -44,70 +34,12 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
-    void fetchDictionary('default')
-    void fetchExportData('railjackIntrinsics')
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setProgress(loadProgress())
-  }, [fetchDictionary, fetchExportData])
-
-  const intrinsicCalculations = useMemo(() => {
-    const intrinsicsMap = exportData.railjackIntrinsics
-    const dict = dictionaries['default']
-    if (!intrinsicsMap || !dict) return null
-
-    const labels: Record<string, string> = {}
-    const masteryItems: Record<string, MasteryItem[]> = {}
-
-    Object.entries(intrinsicsMap).forEach(([key, intrinsic]) => {
-      const schoolFallback = key.replace('LPS_', '').toLowerCase()
-      const schoolName = resolveDictionary(dict, intrinsic.name, schoolFallback)
-      labels[key] = toTitleCase(schoolName)
-
-      const ranks = intrinsic.ranks ?? []
-      masteryItems[key] =
-        ranks.length > 0
-          ? ranks.map((rank, index) => {
-              const rankNumber = index + 1
-              const rankName = resolveDictionary(
-                dict,
-                rank.name,
-                `${schoolName} ${rankNumber}`
-              )
-              return {
-                id: `intrinsic:${key}:${rankNumber}`,
-                name: rankName,
-                iconUrl: `https://browse.wf${intrinsic.icon}`,
-                rankNumber,
-                masteryPoints: RAILJACK_INTRINSIC_MASTERY_POINTS,
-              }
-            })
-          : [
-              {
-                id: `intrinsic:${key}`,
-                name: schoolName,
-                iconUrl: `https://browse.wf${intrinsic.icon}`,
-                masteryPoints: RAILJACK_INTRINSIC_MASTERY_POINTS,
-              },
-            ]
-    })
-
-    return { masteryItems, labels }
-  }, [exportData.railjackIntrinsics, dictionaries])
-
-  const mergedMasteryData = useMemo(() => {
-    if (!intrinsicCalculations) return masteryData
-    return {
-      ...masteryData,
-      railjackIntrinsic: intrinsicCalculations.masteryItems,
-      subcategoryLabels: {
-        ...masteryData.subcategoryLabels,
-        railjackIntrinsic: intrinsicCalculations.labels,
-      },
-    }
-  }, [masteryData, intrinsicCalculations])
+  }, [])
 
   const resolveSubcategoryLabel = (cat: MasteryCategory, sub: string) => {
-    const serverLabel = mergedMasteryData?.subcategoryLabels?.[cat]?.[sub]
+    const serverLabel = masteryData?.subcategoryLabels?.[cat]?.[sub]
     if (serverLabel) return serverLabel
     const key = `subcategories.${sub}`
     return t.has(key) ? t(key) : sub
@@ -122,12 +54,12 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
   const categorySubcategories = useMemo(() => {
     return CATEGORY_ORDER.reduce(
       (acc, cat) => {
-        acc[cat] = Object.keys(mergedMasteryData[cat] ?? {})
+        acc[cat] = Object.keys(masteryData[cat] ?? {})
         return acc
       },
       {} as Record<MasteryCategory, string[]>
     )
-  }, [mergedMasteryData])
+  }, [masteryData])
 
   const resolvedActiveSubcategory = useMemo(() => {
     const subcats = categorySubcategories[activeCategory] ?? []
@@ -139,16 +71,16 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
   const filteredItems = useMemo(() => {
     if (!resolvedActiveSubcategory) return []
     const items =
-      mergedMasteryData?.[activeCategory]?.[resolvedActiveSubcategory] ?? []
+      masteryData?.[activeCategory]?.[resolvedActiveSubcategory] ?? []
     const q = query.trim().toLowerCase()
     return q ? items.filter((i) => i.name.toLowerCase().includes(q)) : items
-  }, [activeCategory, mergedMasteryData, query, resolvedActiveSubcategory])
+  }, [activeCategory, masteryData, query, resolvedActiveSubcategory])
 
   const categoryStats = useMemo(() => {
     return Object.fromEntries(
       CATEGORY_ORDER.flatMap((cat) =>
         (categorySubcategories[cat] ?? []).map((sub) => {
-          const items = mergedMasteryData[cat]?.[sub] ?? []
+          const items = masteryData[cat]?.[sub] ?? []
           return [
             `${cat}:${sub}`,
             items.reduce(
@@ -172,7 +104,7 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
         })
       )
     )
-  }, [categorySubcategories, mergedMasteryData, progress])
+  }, [categorySubcategories, masteryData, progress])
 
   function toggleItem(itemId: string) {
     setProgress((prev) => {
@@ -185,7 +117,7 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
   function clearCategory() {
     if (!resolvedActiveSubcategory) return
     const ids = (
-      mergedMasteryData[activeCategory]?.[resolvedActiveSubcategory] ?? []
+      masteryData[activeCategory]?.[resolvedActiveSubcategory] ?? []
     ).map((i) => i.id)
     setProgress((prev) => {
       const next = { ...prev }

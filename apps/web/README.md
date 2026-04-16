@@ -30,7 +30,7 @@ Warframe companion web app focused on KIM dialogue simulation plus practical dai
 
 ### Mastery Checklist
 
-- Builds category/subcategory mastery data from `@wfcd/items`.
+- Builds category/subcategory mastery data from `@tenno-labs/core`.
 - Includes mastery-point-aware item grouping.
 - Locale-aware item names when available.
 
@@ -168,7 +168,6 @@ Guidelines:
 
 - [browse.wf](https://browse.wf/) for KIM/world-state data sources and references.
 - [warframe-public-export-plus](https://github.com/calamity-inc/warframe-public-export-plus) dictionary data.
-- [warframe-items](https://github.com/WFCD/warframe-items) via `@wfcd/items` for mastery item metadata.
 
 ## License
 

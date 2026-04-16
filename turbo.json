@@ -1,0 +1,25 @@
+{
+  "$schema": "https://turborepo.dev/schema.json",
+  "tasks": {
+    "fetch-data": {
+      "inputs": ["scripts/fetch-data.ts"],
+      "outputs": ["data/stats/**", "data/dicts/**"],
+      "cache": true
+    },
+    "build": {
+      "dependsOn": ["^build", "fetch-data"],
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+    },
+    "check-types": {
+      "dependsOn": ["^check-types", "fetch-data"]
+    },
+    "dev": {
+      "persistent": true,
+      "cache": false
+    },
+    "test": {
+      "dependsOn": ["^test", "fetch-data"]
+      // "outputs": ["coverage/**"]
+    }
+  }
+}

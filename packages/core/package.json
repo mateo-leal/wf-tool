@@ -1,0 +1,55 @@
+{
+  "name": "@tenno-labs/core",
+  "version": "0.0.1",
+  "keywords": [
+    "warframe"
+  ],
+  "description": "Core utilities and components for Tenno Labs projects",
+  "repository": {
+    "url": "github:mateo-leal/tenno-companion",
+    "directory": "packages/core"
+  },
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist",
+    "data"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./constants": {
+      "types": "./dist/lib/constants.d.ts",
+      "import": "./dist/lib/constants.js"
+    },
+    "./locales": {
+      "types": "./dist/lib/locales.d.ts",
+      "import": "./dist/lib/locales.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts"
+    }
+  },
+  "author": "Mateo Leal <me@mateoleal.com>",
+  "license": "MIT",
+  "scripts": {
+    "build": "tsup src/index.ts src/lib/constants.ts src/lib/locales.ts src/types/index.ts --format cjs,esm --dts --clean",
+    "dev": "tsup src/index.ts src/lib/constants.ts src/lib/locales.ts src/types/index.ts --format cjs,esm --dts --clean --watch",
+    "fetch-data": "tsx scripts/fetch-data.ts",
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20.19.39",
+    "eslint": "^9.39.4",
+    "jest": "^30.3.0",
+    "ts-jest": "^29.4.9",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}

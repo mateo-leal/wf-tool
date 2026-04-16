@@ -1,0 +1,340 @@
+export const MISSION_TYPE_IDS = [
+  'MT_SURVIVAL',
+  'MT_DEFENSE',
+  'MT_RESCUE',
+  'MT_CAPTURE',
+  'MT_EXTERMINATION',
+  'MT_SABOTAGE',
+  'MT_ASSASSINATION',
+  'MT_MOBILE_DEFENSE',
+  'MT_TERRITORY',
+  'MT_INTEL',
+  'MT_LANDSCAPE',
+  'MT_EXCAVATE',
+  'MT_PAINT_FLOOD',
+  'MT_OFFERING',
+  'MT_ARTIFACT',
+  'MT_PURSUIT',
+  'MT_EVACUATION',
+  'MT_RETRIEVAL',
+  'MT_PURIFY',
+  'MT_HIVE',
+  'MT_ARENA',
+  'MT_RACE',
+  'MT_ALCHEMY',
+  'MT_ASSAULT',
+  'MT_CORRUPTION',
+  'MT_VOID_CASCADE',
+  'MT_ARMAGEDDON',
+  'MT_ENDLESS_DUVIRI',
+  'MT_ENDLESS_CAPTURE',
+  'MT_PVPVE',
+  'MT_TAU_WAR',
+  'MT_DESCENT',
+  'MT_ENDLESS_EXTERMINATION',
+  'MT_PVP',
+  'MT_JUNCTION',
+  'MT_VAULTS',
+  'MT_ASCENSION',
+  'MT_RAILJACK',
+] as const
+
+export const FACTION_IDS = [
+  'FC_INFESTATION',
+  'FC_GRINEER',
+  'FC_CORPUS',
+  'FC_TENNO',
+  'FC_SENTIENT',
+  'FC_OROKIN',
+  'FC_MITW',
+  'FC_DUVIRI',
+  'FC_TECHROT',
+  'FC_SCALDRA',
+] as const
+
+export const DAMAGE_TYPES = [
+  'DT_IMPACT',
+  'DT_PUNCTURE',
+  'DT_SLASH',
+  'DT_FIRE',
+  'DT_FREEZE',
+  'DT_ELECTRICITY',
+  'DT_POISON',
+  'DT_RADIATION',
+  'DT_CORROSIVE',
+  'DT_MAGNETIC',
+  'DT_VIRAL',
+  'DT_GAS',
+  'DT_EXPLOSION',
+  'DT_RADIANT',
+] as const
+
+// MARK: Weapon Part Types
+export const AMP_PART_TYPES = [
+  'LWPT_AMP_OCULUS',
+  'LWPT_AMP_CORE',
+  'LWPT_AMP_BRACE',
+] as const
+
+export const HOUND_PART_TYPES = [
+  'LWPT_ZANUKA_HEAD',
+  'LWPT_ZANUKA_BODY',
+  'LWPT_ZANUKA_LEG',
+  'LWPT_ZANUKA_TAIL',
+] as const
+
+export const KDRIVE_PART_TYPES = [
+  'LWPT_HB_DECK',
+  'LWPT_HB_ENGINE',
+  'LWPT_HB_FRONT',
+  'LWPT_HB_JET',
+] as const
+
+export const KITGUN_PART_TYPES = [
+  'LWPT_GUN_BARREL',
+  'LWPT_GUN_CLIP',
+  'LWPT_GUN_PRIMARY_HANDLE',
+  'LWPT_GUN_SECONDARY_HANDLE',
+] as const
+
+export const MOA_PART_TYPES = [
+  'LWPT_MOA_ENGINE',
+  'LWPT_MOA_PAYLOAD',
+  'LWPT_MOA_HEAD',
+  'LWPT_MOA_LEG',
+] as const
+
+export const ANTIGEN_PART_TYPES = [
+  'LWPT_CATBROW_ANTIGEN',
+  'LWPT_KUBROW_ANTIGEN',
+] as const
+
+export const MUTAGEN_PART_TYPES = [
+  'LWPT_CATBROW_MUTAGEN',
+  'LWPT_KUBROW_MUTAGEN',
+] as const
+
+export const ZAW_PART_TYPES = [
+  'LWPT_HILT_WEIGHT',
+  'LWPT_HILT',
+  'LWPT_BLADE',
+] as const
+
+// MARK: Weapon Generics
+export const NOISE_TYPES = ['ALARMING', 'SILENT'] as const
+export const TRIGGER_TYPES = [
+  'AUTO',
+  'SEMI',
+  'BURST',
+  'HELD',
+  'DUPLEX',
+  'CHARGE',
+  'ACTIVE',
+  'Auto Burst',
+] as const
+
+export const VARIANT_TYPES = [
+  'VT_VARIANT',
+  'VT_NORMAL',
+  'VT_PRIME',
+  'VT_STARTER',
+  'VT_SYNDICATE',
+  'VT_KUVA',
+] as const
+
+// MARK: Holster Categories
+export const PRIMARY_HOLSTER_CATEGORIES = [
+  'RIFLE',
+  'SHOTGUN',
+  'SNIPER',
+  'WIDE_RIFLE',
+  'SMG',
+  'BOW',
+  'ARM_MOUNTED',
+] as const
+
+export const SECONDARY_HOLSTER_CATEGORY = ['ARM_MOUNTED', 'SMG'] as const
+
+export const MELEE_HOLSTER_CATEGORY = [
+  'MELEE',
+  'STAFF',
+  'FIST',
+  'TONFA',
+  'SHORT_MELEE',
+  'DUAL_SHORT_MELEE',
+  'LEFT_FOREARM_MOUNTED',
+  'HIP_MELEE',
+  'DUAL_MELEE',
+  'CLAWS',
+  'PUNCH_SLASH_KICK',
+  'ARM_MOUNTED',
+  'DUAL_HIP_MELEE',
+] as const
+
+export const ARCHMELEE_HOLSTER_CATEGORY = ['MELEE', 'FIST', 'STAFF'] as const
+
+export const ARCHGUN_HOLSTER_CATEGORY = ['RIFLE', 'SHOTGUN'] as const
+
+export const SENTINEL_WEAPON_HOLSTER_CATEGORY = [
+  'RIFLE',
+  'SHOTGUN',
+  'MELEE',
+  'SNIPER',
+] as const
+
+export const SPECIAL_ITEM_HOLSTER_CATEGORY = [
+  'MELEE',
+  'BOW',
+  'SMG',
+  'FIST',
+  'STAFF',
+  'SNIPER',
+  'ARM_MOUNTED',
+] as const
+
+export const DRIFTER_MELEE_HOLSTER_CATEGORIES = [
+  'DUAL_MELEE',
+  'MELEE',
+  'HIP_MELEE',
+  'LEFT_FOREARM_MOUNTED',
+] as const
+
+// MARK: Compatibility Tags
+export const PRIMARY_COMPATIBILITY_TAGS = [
+  'ASSAULT_AMMO',
+  'PROJECTILE',
+  'AOE',
+  'SEMI_AUTO',
+  'SINGLESHOT',
+  'SNIPER_AMMO',
+  'Vectis',
+  'ATTICA',
+  'CROSSBOW',
+  'BATTERY',
+  'IMPACTEXPLODE',
+  'BEAM',
+  'ZHUGE',
+  'INFBOW',
+  'DAIKYU',
+  'OMICRUS',
+  'SYNDICATEMODBLOCKED',
+  'INFCERNOS',
+  'MITER',
+  'GRNBOW',
+  'CRPBOW',
+] as const
+
+export const SECONDARY_COMPATIBILITY_TAGS = [
+  'PROJECTILE',
+  'SECONDARYSHOTGUN',
+  'SEMI_AUTO',
+  'AOE',
+  'BEAM',
+  'THROWN',
+  'DEPLOYABLE',
+  'SINGLESHOT',
+  'TNJETTURBINEPISTOL',
+  'BATTERY',
+] as const
+
+export const MELEE_COMPATIBILITY_TAGS = [
+  'SWORDS_STANCE',
+  'HAMMERS_STANCE',
+  'FIST_STANCE',
+  'TONFA_STANCE',
+  'HEAVY SCYTHE_STANCE',
+  'DAGGERS_STANCE',
+  'WHIPS_STANCE',
+  'WARFAN_STANCE',
+  'SWORDS_AND_SHIELD_STANCE',
+  'NIKANAS_STANCE',
+  'RAPIER_STANCE',
+  'LONG_KATANA_STANCE',
+  'BLADE_AND_WHIP_STANCE',
+  'HEAVY_BLADE_STANCE',
+  'DUAL_DAGGERS_STANCE',
+  'DUAL_SWORDS_STANCE',
+  'MACHETES_STANCE',
+  'STAVES_STANCE',
+  'SCYTHES_STANCE',
+  'CLAWS_STANCE_STANCE',
+  'NUNCHAKU_STANCE',
+  'SPARRING_STANCE',
+  'POLEARMS_STANCE',
+  'GUNBLADE_STANCE',
+  'GLAIVES_STANCE',
+  'BLADESAW_STANCE',
+  'DUAL_KATANAS_STANCE',
+  'BAYONET',
+] as const
+
+export const ARCHGUN_COMPATIBILITY_TAGS = ['BATTERY'] as const
+
+export const AMP_COMPATIBILITY_TAGS = ['PROJECTILE', 'SEMI_AUTO'] as const
+
+export const SENTINEL_WEAPON_COMPATIBILITY_TAGS = [
+  'BEAM',
+  'ASSAULT_AMMO',
+  'SENTINEL_WEAPON',
+  'PROJECTILE',
+  'AOE',
+  'SINGLESHOT',
+  'SNIPER_AMMO',
+  'HOUND_WEAPON',
+] as const
+
+export const SPECIAL_ITEM_COMPATIBILITY_TAGS = [
+  'POWER_WEAPON',
+  'PROJECTILE',
+  'AOE',
+  'POWER_WEAPON_LITE',
+  'NO_SLIDE',
+  'NO_FINISHER',
+  'NO_ATTACK_SPEED',
+  'CLAWS_STANCE_STANCE',
+  'SEMI_AUTO',
+  'SNIPER_AMMO',
+  'BATTERY',
+  'NO_HEAVY_ATTACK',
+  'NO_AIM',
+] as const
+
+export const DRIFTER_MELEE_COMPATIBILITY_TAGS = [
+  'DUAL_SWORDS_STANCE',
+  'HAMMERS_STANCE',
+  'POLEARMS_STANCE',
+  'NIKANAS_STANCE',
+  'LONG_KATANA_STANCE',
+  'SWORDS_AND_SHIELD_STANCE',
+] as const
+
+export const NON_MASTERABLE_PART_TYPES = [
+  // Amp parts
+  'LWPT_AMP_BRACE',
+  'LWPT_AMP_CORE',
+  // Zanuka parts
+  'LWPT_ZANUKA_BODY',
+  'LWPT_ZANUKA_LEG',
+  'LWPT_ZANUKA_TAIL',
+  // Mutagens
+  'LWPT_CATBROW_MUTAGEN',
+  'LWPT_KUBROW_MUTAGEN',
+  // Antigens
+  'LWPT_CATBROW_ANTIGEN',
+  'LWPT_KUBROW_ANTIGEN',
+  // Moa Parts
+  'LWPT_MOA_PAYLOAD',
+  'LWPT_MOA_ENGINE',
+  'LWPT_MOA_LEG',
+  // K-Drive Parts
+  'LWPT_HB_ENGINE',
+  'LWPT_HB_FRONT',
+  'LWPT_HB_JET',
+  // Kitgun Parts
+  'LWPT_GUN_CLIP',
+  'LWPT_GUN_PRIMARY_HANDLE',
+  'LWPT_GUN_SECONDARY_HANDLE',
+  // Zaw Parts
+  'LWPT_HILT',
+  'LWPT_HILT_WEIGHT',
+]

@@ -1,6 +1,11 @@
-ignoredBuiltDependencies:
-  - '@parcel/watcher'
-  - '@swc/core'
-  - msw
-  - sharp
-  - unrs-resolver
+packages:
+  - "apps/*"
+  - "packages/*"
+
+allowBuilds:
+  "@parcel/watcher": false
+  "@swc/core": false
+  esbuild: false
+  msw: false
+  sharp: false
+  unrs-resolver: false
