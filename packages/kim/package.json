@@ -1,0 +1,56 @@
+{
+  "name": "@tenno-companion/kim",
+  "version": "0.1.1",
+  "keywords": [
+    "warframe"
+  ],
+  "description": "",
+  "repository": {
+    "url": "github:mateo-leal/tenno-companion",
+    "directory": "packages/kim"
+  },
+  "bugs": "https://github.com/mateo-leal/tenno-companion/issues",
+  "main": "./dist/index.js",
+  "module": "./dist/index.mjs",
+  "types": "./dist/index.d.ts",
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    },
+    "./constants": {
+      "types": "./dist/lib/constants.d.ts",
+      "import": "./dist/lib/constants.js"
+    },
+    "./types": {
+      "types": "./dist/types/index.d.ts"
+    }
+  },
+  "author": "Mateo Leal <me@mateoleal.com>",
+  "license": "GPL-3.0-only",
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "prepublishOnly": "pnpm --filter @tenno-companion/core build",
+    "check-updates": "tsx scripts/check-updates.ts",
+    "fetch-data": "tsx scripts/fetch-data.ts",
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
+  },
+  "dependencies": {
+    "@tenno-companion/shared": "workspace:*"
+  },
+  "devDependencies": {
+    "@types/jest": "^30.0.0",
+    "@types/node": "^20.19.39",
+    "eslint": "^9.39.4",
+    "jest": "^30.3.0",
+    "ts-jest": "^29.4.9",
+    "tsup": "^8.5.1",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3"
+  }
+}
