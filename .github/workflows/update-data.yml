@@ -9,6 +9,7 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     permissions:
+      id-token: write
       contents: write
     steps:
       - uses: actions/checkout@v6
@@ -43,4 +44,4 @@ jobs:
 
       - name: Build and Publish
         if: steps.update.outcome == 'failure'
-        run: pnpm --filter @tenno-companion/core publish --access public --no-git-checks
+        run: pnpm --filter @tenno-companion/core publish --access public --no-git-checks --provenance
