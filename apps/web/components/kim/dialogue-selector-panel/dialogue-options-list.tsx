@@ -1,103 +1,121 @@
-import { useMemo, useState, useSyncExternalStore } from 'react'
+import { useMemo, useState } from 'react'
 import { type DialogueOption } from './types'
-import {
-  COMPLETED_DIALOGUES_CHANGE_EVENT,
-  COMPLETED_DIALOGUES_STORAGE_KEY,
-} from '@/lib/constants'
 import { CheckIcon } from '@phosphor-icons/react'
-import { useTranslations } from 'next-intl'
+import { useLocale, useTranslations } from 'next-intl'
+import { FirstContentNode } from '@tenno-companion/kim/types'
+import { getStandardLocale } from '@tenno-companion/core/locales'
+import { useKIMChat } from '@/components/providers/kim-chat'
 
-type DialogueOptionsListProps = {
-  dialogueOptions: DialogueOption[]
+type Props = {
+  firstNodes: FirstContentNode[]
   selectedStartId: number | null
   onSelect: (startId: number) => void
-  isLoading?: boolean
-}
-
-const EMPTY_COMPLETED_DIALOGUES: Readonly<Record<string, boolean>> =
-  Object.freeze({})
-let cachedRawCompletedDialogues: string | null = null
-let cachedParsedCompletedDialogues: Readonly<Record<string, boolean>> =
-  EMPTY_COMPLETED_DIALOGUES
-
-function subscribeCompletedDialogues(onStoreChange: () => void): () => void {
-  if (typeof window === 'undefined') {
-    return () => {}
-  }
-
-  const handleChange = () => onStoreChange()
-  window.addEventListener('storage', handleChange)
-  window.addEventListener(COMPLETED_DIALOGUES_CHANGE_EVENT, handleChange)
-
-  return () => {
-    window.removeEventListener('storage', handleChange)
-    window.removeEventListener(COMPLETED_DIALOGUES_CHANGE_EVENT, handleChange)
-  }
-}
-
-function getCompletedDialoguesSnapshot(): Record<string, boolean> {
-  if (typeof window === 'undefined') {
-    return EMPTY_COMPLETED_DIALOGUES
-  }
-
-  try {
-    const raw = localStorage.getItem(COMPLETED_DIALOGUES_STORAGE_KEY)
-    if (!raw) {
-      cachedRawCompletedDialogues = null
-      cachedParsedCompletedDialogues = EMPTY_COMPLETED_DIALOGUES
-      return EMPTY_COMPLETED_DIALOGUES
-    }
-
-    if (raw === cachedRawCompletedDialogues) {
-      return cachedParsedCompletedDialogues
-    }
-
-    const parsed = JSON.parse(raw) as unknown
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-      cachedRawCompletedDialogues = raw
-      cachedParsedCompletedDialogues = EMPTY_COMPLETED_DIALOGUES
-      return EMPTY_COMPLETED_DIALOGUES
-    }
-
-    cachedRawCompletedDialogues = raw
-    cachedParsedCompletedDialogues = parsed as Record<string, boolean>
-    return cachedParsedCompletedDialogues
-  } catch {
-    cachedRawCompletedDialogues = null
-    cachedParsedCompletedDialogues = EMPTY_COMPLETED_DIALOGUES
-    return EMPTY_COMPLETED_DIALOGUES
-  }
-}
-
-function getCompletedDialoguesServerSnapshot(): Record<string, boolean> {
-  return EMPTY_COMPLETED_DIALOGUES
+  isLoading: boolean
 }
 
 export function DialogueOptionsList({
-  dialogueOptions,
+  firstNodes,
   selectedStartId,
   onSelect,
-  isLoading = false,
-}: DialogueOptionsListProps) {
+  isLoading,
+}: Props) {
   const t = useTranslations('kim.chatroom')
+  const locale = useLocale()
   const [query, setQuery] = useState('')
-  const completedDialogues = useSyncExternalStore(
-    subscribeCompletedDialogues,
-    getCompletedDialoguesSnapshot,
-    getCompletedDialoguesServerSnapshot
-  )
+  const {
+    gameState: { completedDialogues },
+  } = useKIMChat()
+
+  const dialogueOptions: DialogueOption[] = useMemo(() => {
+    return firstNodes.map((firstContentNode, index) => {
+      const label = firstContentNode.dialogueNodes
+        .map((node) => node.LocTag)
+        .join('/')
+      return {
+        option: index + 1,
+        id: firstContentNode.id,
+        label,
+        codename: firstContentNode.convoName,
+      }
+    })
+  }, [firstNodes])
+
+  /**
+   * Creates a locale-aware search function.
+   */
+  const searchFilter = useMemo(() => {
+    const standardLocale = getStandardLocale(locale)
+    const collator = new Intl.Collator(standardLocale, {
+      sensitivity: 'base',
+      usage: 'search',
+      ignorePunctuation: true,
+    })
+
+    const segmenter = new Intl.Segmenter(standardLocale, {
+      granularity: 'grapheme',
+    })
+
+    const prepare = (str: string) => {
+      return str
+        .normalize('NFKC') // Universal compatibility normalization
+        .replace(/\u3000/g, ' ') // Specifically target the Japanese "Double-byte" space
+        .replace(/[\p{P}\p{S}]/gu, ' ') // Remove punctuation (globally)
+        .replace(/\s+/g, ' ') // Collapse all whitespace into single spaces
+        .trim()
+    }
+
+    const getSegments = (str: string) =>
+      Array.from(segmenter.segment(str)).map((s) => s.segment)
+
+    /**
+     * Checks if a single term (word) exists inside a target text
+     * using a locale-aware sliding window.
+     */
+    const includesInternal = (cleanTarget: string, cleanTerm: string) => {
+      const targetSegments = getSegments(cleanTarget)
+      const termSegments = getSegments(cleanTerm)
+
+      if (termSegments.length > targetSegments.length) return false
+
+      for (let i = 0; i <= targetSegments.length - termSegments.length; i++) {
+        const window = targetSegments.slice(i, i + termSegments.length).join('')
+        if (collator.compare(window, cleanTerm) === 0) return true
+      }
+      return false
+    }
+
+    return (data: DialogueOption[], rawQuery: string): DialogueOption[] => {
+      const preparedQuery = prepare(rawQuery)
+      if (!preparedQuery) return data
+
+      // Split query into individual terms (e.g., "void だけど" -> ["void", "だけど"])
+      const queryTerms = preparedQuery.split(' ')
+
+      return data.filter((item) => {
+        // We combine label and codename to search across both simultaneously
+        const targetSearchString = prepare(`${item.label} ${item.codename}`)
+
+        // EVERY term in the query must be found in the target (AND logic)
+        return queryTerms.every((term) =>
+          includesInternal(targetSearchString, term)
+        )
+      })
+    }
+  }, [locale])
 
   const filteredOptions = useMemo(() => {
-    const normalizedQuery = query.trim().toLowerCase()
+    const normalizedQuery = query.trim()
+
     if (!normalizedQuery) {
       return dialogueOptions
     }
 
-    return dialogueOptions.filter((item) => {
-      const haystack = `${item.label} ${item.codename}`.toLowerCase()
-      return haystack.includes(normalizedQuery)
-    })
-  }, [dialogueOptions, query])
+    return searchFilter(dialogueOptions, normalizedQuery)
+  }, [searchFilter, dialogueOptions, query])
+
+  if (isLoading) {
+    return <DialogueListSkeleton />
+  }
 
   return (
     <div className="h-full min-h-0 overflow-y-auto border border-[#8f5d1f] bg-black p-2">
@@ -123,7 +141,7 @@ export function DialogueOptionsList({
       <ul className="space-y-1 pr-1">
         {filteredOptions.map((item) => {
           const active = item.id === selectedStartId
-          const isCompleted = Boolean(completedDialogues[item.codename])
+          const isCompleted = !!completedDialogues[item.codename]
 
           return (
             <li key={item.id}>
@@ -160,6 +178,41 @@ export function DialogueOptionsList({
             </li>
           )
         })}
+      </ul>
+    </div>
+  )
+}
+
+const DialogueListSkeleton = () => {
+  return (
+    <div className="h-full min-h-0 overflow-y-auto border border-[#8f5d1f] bg-black p-2">
+      {/* Search Input Skeleton */}
+      <div className="mb-2 relative">
+        <div className="h-9 w-full border border-[#6b4820] bg-[#120e08] animate-pulse" />
+      </div>
+
+      {/* List Skeleton */}
+      <ul className="space-y-1 pr-1">
+        {[...Array(9)].map((_, i) => (
+          <li key={i}>
+            <div className="flex w-full items-start gap-2 border border-[#6b4820] bg-[#120e08] px-2 py-1.5 animate-pulse">
+              {/* Option Number Skeleton (e.g., 1.) */}
+              <div className="h-5 w-4 bg-[#6b4820] rounded" />
+
+              <div className="min-w-0 flex-1 space-y-2">
+                {/* Main Label Skeleton */}
+                <div className="h-4 w-3/4 bg-[#3e2b14] rounded" />
+
+                <div className="flex justify-between items-center">
+                  {/* Codename Skeleton */}
+                  <div className="h-3 w-1/3 bg-[#2a1d0d] rounded" />
+                  {/* Icon Placeholder */}
+                  <div className="h-3 w-3 bg-[#2a1d0d] rounded-full" />
+                </div>
+              </div>
+            </div>
+          </li>
+        ))}
       </ul>
     </div>
   )

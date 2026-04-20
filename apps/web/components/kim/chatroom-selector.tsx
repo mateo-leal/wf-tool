@@ -38,7 +38,7 @@ export function ChatroomSelector({
           className="p-0 border-4 border-primary/50 data-active:border-primary"
         >
           <Image
-            src="https://wiki.warframe.com/images/HexIcon.png"
+            src="https://wiki.warframe.com/images/HexIcon(xLight).png"
             alt="The Hex"
             width={60}
             height={60}
@@ -50,7 +50,7 @@ export function ChatroomSelector({
           className="p-0 border-4 border-primary/50 data-active:border-primary"
         >
           <Image
-            src="https://wiki.warframe.com/images/ScaldraIcon.png"
+            src="https://wiki.warframe.com/images/ScaldraGlyph.png"
             alt="La Cathédrale"
             width={60}
             height={60}

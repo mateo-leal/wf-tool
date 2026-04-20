@@ -1,114 +1,36 @@
 'use client'
 
-import {
-  BOOLEANS_STORAGE_KEY,
-  COMPLETED_DIALOGUES_CHANGE_EVENT,
-  COMPLETED_DIALOGUES_STORAGE_KEY,
-  COUNTERS_STORAGE_KEY,
-} from '@/lib/constants'
-import { GearSixIcon, PlusIcon, TrashIcon } from '@phosphor-icons/react'
-import { useMemo, useState } from 'react'
 import { createPortal } from 'react-dom'
-import { CloseButton } from '../close-button'
-import { cn } from '@/lib/utils'
-import { TextInput } from '../ui/text-input'
-import { WindowContent } from '../ui/window-content'
-import { Window } from '../ui/window'
-import { WindowTitlebar } from '../ui/window-titlebar'
-import { Button } from '../ui/button'
+import { useMemo, useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { GearSixIcon, PlusIcon, TrashIcon } from '@phosphor-icons/react'
+
+import { cn } from '@/lib/utils'
+
+import {
+  loadBooleansFromStorage,
+  loadCompletedDialoguesFromStorage,
+  loadCountersFromStorage,
+  saveBooleansToStorage,
+  saveCompletedDialoguesToStorage,
+  saveCountersToStorage,
+} from '../providers/kim-chat'
+import { Button } from '../ui/button'
+import { Window } from '../ui/window'
+import { TextInput } from '../ui/text-input'
+import { CloseButton } from '../close-button'
+import { WindowContent } from '../ui/window-content'
+import { WindowTitlebar } from '../ui/window-titlebar'
 
 type BooleanState = Record<string, boolean>
 type CounterState = Record<string, number>
-type CompletedDialoguesState = Record<string, boolean>
-
-function loadBooleanState(): BooleanState {
-  try {
-    const raw = localStorage.getItem(BOOLEANS_STORAGE_KEY)
-    if (!raw) return {}
-    const parsed = JSON.parse(raw) as unknown
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed))
-      return {}
-
-    return Object.fromEntries(
-      Object.entries(parsed as Record<string, unknown>)
-        .filter(([key]) => key.trim().length > 0)
-        .map(([key, value]) => [key, Boolean(value)])
-    )
-  } catch {
-    return {}
-  }
-}
-
-function saveBooleanState(state: BooleanState): void {
-  try {
-    localStorage.setItem(BOOLEANS_STORAGE_KEY, JSON.stringify(state))
-  } catch {
-    // ignore storage errors
-  }
-}
-
-function loadCounterState(): CounterState {
-  try {
-    const raw = localStorage.getItem(COUNTERS_STORAGE_KEY)
-    if (!raw) return {}
-    const parsed = JSON.parse(raw) as unknown
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-      return {}
-    }
-
-    return Object.fromEntries(
-      Object.entries(parsed as Record<string, unknown>)
-        .filter(([key]) => key.trim().length > 0)
-        .map(([key, value]) => [key, Number(value)])
-        .filter(([, value]) => Number.isFinite(value))
-    )
-  } catch {
-    return {}
-  }
-}
-
-function saveCounterState(state: CounterState): void {
-  try {
-    localStorage.setItem(COUNTERS_STORAGE_KEY, JSON.stringify(state))
-  } catch {
-    // ignore storage errors
-  }
-}
-
-function loadCompletedDialoguesState(): CompletedDialoguesState {
-  try {
-    const raw = localStorage.getItem(COMPLETED_DIALOGUES_STORAGE_KEY)
-    if (!raw) return {}
-    const parsed = JSON.parse(raw) as unknown
-    if (!parsed || typeof parsed !== 'object' || Array.isArray(parsed)) {
-      return {}
-    }
-
-    return Object.fromEntries(
-      Object.entries(parsed as Record<string, unknown>)
-        .filter(([key]) => key.trim().length > 0)
-        .map(([key, value]) => [key, Boolean(value)])
-    )
-  } catch {
-    return {}
-  }
-}
-
-function saveCompletedDialoguesState(state: CompletedDialoguesState): void {
-  try {
-    localStorage.setItem(COMPLETED_DIALOGUES_STORAGE_KEY, JSON.stringify(state))
-    window.dispatchEvent(new Event(COMPLETED_DIALOGUES_CHANGE_EVENT))
-  } catch {
-    // ignore storage errors
-  }
-}
+type CompletedDialoguesState = Record<string, boolean | number[]>
 
 export function KimBooleanSettings() {
   const t = useTranslations('kim')
   const [isOpen, setIsOpen] = useState(false)
   const [booleanState, setBooleanState] = useState<BooleanState>({})
-  const [counterState, setCounterState] = useState<CounterState>({})
+  const [counterState, setCounterState] = useState<Record<string, number>>({})
   const [completedDialoguesState, setCompletedDialoguesState] =
     useState<CompletedDialoguesState>({})
   const [newBooleanName, setNewBooleanName] = useState('')
@@ -142,25 +64,25 @@ export function KimBooleanSettings() {
   )
 
   function openSettings() {
-    setBooleanState(loadBooleanState())
-    setCounterState(loadCounterState())
-    setCompletedDialoguesState(loadCompletedDialoguesState())
+    setBooleanState(loadBooleansFromStorage())
+    setCounterState(loadCountersFromStorage())
+    setCompletedDialoguesState(loadCompletedDialoguesFromStorage())
     setIsOpen(true)
   }
 
   function updateBooleanState(next: BooleanState) {
     setBooleanState(next)
-    saveBooleanState(next)
+    saveBooleansToStorage(next)
   }
 
   function updateCounterState(next: CounterState) {
     setCounterState(next)
-    saveCounterState(next)
+    saveCountersToStorage(next)
   }
 
   function updateCompletedDialoguesState(next: CompletedDialoguesState) {
     setCompletedDialoguesState(next)
-    saveCompletedDialoguesState(next)
+    saveCompletedDialoguesToStorage(next)
   }
 
   function addBoolean() {

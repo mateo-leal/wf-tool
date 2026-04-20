@@ -1,4 +1,4 @@
-import { EMOJI_TOKEN_MAP, parseEmojiContent } from '../emoji-tokens'
+import { EMOJI_TOKEN_MAP, parseEmojiContent } from '../kim/emoji-tokens'
 
 describe('emoji tokens', () => {
   it('should replace known text token with text part', () => {

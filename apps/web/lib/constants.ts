@@ -7,5 +7,6 @@ export const COMPLETED_DIALOGUES_CHANGE_EVENT =
 export const LANGUAGE_STORAGE_KEY = 'wf-kim:language'
 export const SHOW_SPOILERS_STORAGE_KEY = 'wf-kim:show-spoilers'
 
+export const KIM_STORAGE_KEY = 'wf-kim:v1'
 export const CHECKLIST_STORAGE_KEY = 'wf-checklist:v1'
 export const MASTERY_CHECKLIST_STORAGE_KEY = 'wf-mastery-checklist:v1'

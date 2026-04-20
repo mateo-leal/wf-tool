@@ -113,7 +113,7 @@ export default async function RootLayout({
       >
         <div className="kim-background min-h-screen overflow-y-auto text-foreground md:h-screen md:overflow-hidden">
           <NextIntlClientProvider>
-            <main className="mx-auto flex min-h-screen w-full max-w-325 flex-col overflow-y-auto p-2 sm:p-4 md:h-screen md:overflow-hidden">
+            <main className="container mx-auto flex min-h-screen w-full flex-col overflow-y-auto p-2 sm:p-4 md:h-screen md:overflow-hidden">
               <GameDataProvider>{children}</GameDataProvider>
               <Taskbar />
             </main>

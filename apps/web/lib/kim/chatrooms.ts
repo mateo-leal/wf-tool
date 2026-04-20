@@ -1,22 +1,5 @@
-export const CHATROOM_SOURCE_BY_ID: Record<string, string> = {
-  // Hex
-  hex: 'https://kim.browse.wf/data/HexDialogue_rom.dialogue.json',
-  arthur: 'https://kim.browse.wf/data/ArthurDialogue_rom.dialogue.json',
-  eleanor: 'https://kim.browse.wf/data/EleanorDialogue_rom.dialogue.json',
-  lettie: 'https://kim.browse.wf/data/LettieDialogue_rom.dialogue.json',
-  amir: 'https://kim.browse.wf/data/JabirDialogue_rom.dialogue.json',
-  aoi: 'https://kim.browse.wf/data/AoiDialogue_rom.dialogue.json',
-  quincy: 'https://kim.browse.wf/data/QuincyDialogue_rom.dialogue.json',
-  flare: 'https://kim.browse.wf/data/FlareDialogue_rom.dialogue.json',
-  kaya: 'https://kim.browse.wf/data/KayaDialogue_rom.dialogue.json',
-  'minerva-velimir':
-    'https://kim.browse.wf/data/MinervaVelemirDialogue_rom.dialogue.json',
-  // Cathedrale
-  loid: 'https://kim.browse.wf/data/LoidDialogue_rom.dialogue.json',
-  lyon: 'https://kim.browse.wf/data/LyonDialogue_rom.dialogue.json',
-  marie: 'https://kim.browse.wf/data/MarieDialogue_rom.dialogue.json',
-  roathe: 'https://kim.browse.wf/data/RoatheDialogue_rom.dialogue.json',
-}
+export const DEFAULT_ICON =
+  'https://media.invisioncic.com/Mwarframe/pages_media/LotusSymbol.png'
 
 export const SPEAKERS = [
   {
@@ -81,7 +64,7 @@ export const HEX_CHATROOMS = [
   {
     id: 'hex',
     name: 'The Hex',
-    icon: 'https://wiki.warframe.com/images/HexIcon.png',
+    icon: 'https://wiki.warframe.com/images/HexIcon(xLight).png',
   },
   {
     id: 'arthur',

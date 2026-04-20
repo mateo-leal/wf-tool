@@ -1,5 +1,6 @@
 import type { MetadataRoute } from 'next'
-import { CHATROOM_SOURCE_BY_ID } from '@/lib/kim/chatrooms'
+import { CHATROOMS } from '@tenno-companion/kim/constants'
+
 import { getSiteUrl } from '@/lib/seo'
 import { routing } from '@/i18n/routing'
 
@@ -33,20 +34,20 @@ export default function sitemap(): MetadataRoute.Sitemap {
     },
   }))
 
-  const chatroomRoutes: MetadataRoute.Sitemap = Object.keys(
-    CHATROOM_SOURCE_BY_ID
-  ).map((chatroomId) => ({
-    url: `${siteUrl}/kim/${chatroomId}`,
+  const chatroomRoutes: MetadataRoute.Sitemap = CHATROOMS.filter(
+    (chatroom) => chatroom !== 'minerva' && chatroom !== 'velimir'
+  ).map((chatroom) => ({
+    url: `${siteUrl}/kim/${chatroom}`,
     changeFrequency: 'daily',
     priority: 0.8,
     alternates: {
       languages: localePrefixes.reduce(
         (acc, locale) => {
           if (locale === 'tc') {
-            acc['zh-TW'] = `${siteUrl}/${locale}/kim/${chatroomId}`
+            acc['zh-TW'] = `${siteUrl}/${locale}/kim/${chatroom}`
             return acc
           }
-          acc[locale] = `${siteUrl}/${locale}/kim/${chatroomId}`
+          acc[locale] = `${siteUrl}/${locale}/kim/${chatroom}`
           return acc
         },
         {} as Record<string, string>
