@@ -20,6 +20,9 @@
     }
   },
   "author": "Mateo Leal <me@mateoleal.com>",
+  "scripts": {
+    "test": "NODE_OPTIONS=\"$NODE_OPTIONS --experimental-vm-modules\" jest"
+  },
   "devDependencies": {
     "@types/jest": "^30.0.0",
     "@types/node": "^20.19.39",
