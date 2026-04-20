@@ -92,7 +92,7 @@ export function DialogueOptionsList({
       const queryTerms = preparedQuery.split(' ')
 
       return data.filter((item) => {
-        // We combine label and codename to search across both simultaneously
+        // Combine label and codename to search across both simultaneously
         const targetSearchString = prepare(`${item.label} ${item.codename}`)
 
         // EVERY term in the query must be found in the target (AND logic)

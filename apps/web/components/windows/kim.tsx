@@ -10,6 +10,7 @@ import { WindowTitlebar } from '../ui/window-titlebar'
 import { KimBooleanSettings } from './kim-boolean-settings'
 import { SpoilerChatroomSelector } from '../kim/spoiler-chatroom-selector'
 import { useTranslations } from 'next-intl'
+import { DEFAULT_ICON } from '@/lib/kim/chatrooms'
 
 export function KimWindow() {
   const pathname = usePathname()
@@ -33,7 +34,7 @@ export function KimWindow() {
       <WindowContent>
         <div className="flex gap-3 text-primary">
           <Image
-            src="https://wiki.warframe.com/images/LotusSymbolGlyph.png"
+            src={DEFAULT_ICON}
             alt="Lotus Symbol"
             width={70}
             height={70}

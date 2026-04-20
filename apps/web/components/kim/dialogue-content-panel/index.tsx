@@ -48,8 +48,7 @@ export function DialogueContentPanel({ option }: Props) {
 
     startTransition(async () => {
       try {
-        // Reset results when starting a new fetch so we don't show stale data
-        // Comment these out if you prefer showing old data with an overlay
+        // Reset results when starting a new fetch
         setChecks(null)
         setOptimizedResults(null)
 

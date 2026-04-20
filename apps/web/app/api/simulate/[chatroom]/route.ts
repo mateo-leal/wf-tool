@@ -10,8 +10,7 @@ import {
 import { NextRequest } from 'next/server'
 
 const chatCache = new Map<string, Chat>()
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-const simulationCache = new Map<string, any>()
+// const simulationCache = new Map<string, any>()
 
 export async function GET(
   request: NextRequest,
@@ -86,22 +85,22 @@ export async function GET(
     const checks = PathSelector.getChecks(paths)
     const optimizedResults = PathSelector.selectBestPaths(paths)
 
-    const sanitizedResults = Object.entries(optimizedResults).map(
-      ([key, paths]) => ({
-        [key]: paths.map(cleanResults),
-      })
-    )
+    // const sanitizedResults = Object.entries(optimizedResults).map(
+    //   ([key, paths]) => ({
+    //     [key]: paths.map(cleanResults),
+    //   })
+    // )
 
     const responseData = { checks, optimizedResults }
 
-    simulationCache.set(cacheKey, responseData)
+    // simulationCache.set(cacheKey, responseData)
 
-    if (simulationCache.size > 200) {
-      const firstKey = simulationCache.keys().next().value
-      if (firstKey) {
-        simulationCache.delete(firstKey)
-      }
-    }
+    // if (simulationCache.size > 200) {
+    //   const firstKey = simulationCache.keys().next().value
+    //   if (firstKey) {
+    //     simulationCache.delete(firstKey)
+    //   }
+    // }
 
     return Response.json(responseData, {
       headers: {
@@ -114,35 +113,35 @@ export async function GET(
   }
 }
 
-function cleanResults(path: DialoguePath) {
-  const { finalState, nodes, ...cleanPath } = path
-  const cleanNodes = path.nodes.map((node) => {
-    // Create a shallow copy of the node
-    const {
-      GraphPos, // Extract and ignore
-      // @ts-expect-error - property is not included in every node type
-      Incoming, // Extract and ignore
-      // @ts-expect-error - property is not included in every node type
-      Outgoing, // Extract and ignore
-      // @ts-expect-error - property is not included in every node type
-      TrueNodes,
-      // @ts-expect-error - property is not included in every node type
-      FalseNodes,
-      // @ts-expect-error - property is not included in every node type
-      Script,
-      // @ts-expect-error - property is not included in every node type
-      Outputs,
-      // @ts-expect-error - property is not included in every node type
-      Delay,
-      // @ts-expect-error - property is not included in every node type
-      Transmission,
-      ...cleanNode // Collect everything else
-    } = node
+// function cleanResults(path: DialoguePath) {
+//   const { finalState, nodes, ...cleanPath } = path
+//   const cleanNodes = path.nodes.map((node) => {
+//     // Create a shallow copy of the node
+//     const {
+//       GraphPos, // Extract and ignore
+//       // @ts-expect-error - property is not included in every node type
+//       Incoming, // Extract and ignore
+//       // @ts-expect-error - property is not included in every node type
+//       Outgoing, // Extract and ignore
+//       // @ts-expect-error - property is not included in every node type
+//       TrueNodes,
+//       // @ts-expect-error - property is not included in every node type
+//       FalseNodes,
+//       // @ts-expect-error - property is not included in every node type
+//       Script,
+//       // @ts-expect-error - property is not included in every node type
+//       Outputs,
+//       // @ts-expect-error - property is not included in every node type
+//       Delay,
+//       // @ts-expect-error - property is not included in every node type
+//       Transmission,
+//       ...cleanNode // Collect everything else
+//     } = node
 
-    return cleanNode
-  })
-  return {
-    ...cleanPath,
-    nodes: cleanNodes,
-  }
-}
+//     return cleanNode
+//   })
+//   return {
+//     ...cleanPath,
+//     nodes: cleanNodes,
+//   }
+// }

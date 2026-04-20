@@ -62,7 +62,7 @@ export class PathSelector {
         finalOptions.avoidableBooleans.includes(b)
       )
 
-      // 1. Update Fallbacks (Longest Path)
+      // Update Fallbacks (Longest Path)
       if (path.nodes.length >= (longestAnyPaths[0]?.nodes.length ?? 0)) {
         if (path.nodes.length > (longestAnyPaths[0]?.nodes.length ?? 0))
           longestAnyPaths = []
@@ -81,7 +81,7 @@ export class PathSelector {
 
       if (hasAvoidable) continue
 
-      // 2. Score Calculation
+      // Score Calculation
       const posRomCount = path.mutations.set.filter((b) =>
         finalOptions.positiveRomanceBooleans.includes(b)
       ).length
@@ -100,7 +100,7 @@ export class PathSelector {
       ).length
       const generalResetCount = path.mutations.reset.length
 
-      // 3. Logic for Romance / Counter / Chemistry buckets (Standard logic)
+      // Logic for Romance / Counter / Chemistry buckets (Standard logic)
       const updateSimpleBucket = (
         score: number,
         key: keyof OptimizedResults
@@ -146,7 +146,7 @@ export class PathSelector {
         }
       }
 
-      // 4. Custom Logic for BEST GENERAL (Multi-Tier Priority)
+      // Custom Logic for BEST GENERAL (Multi-Tier Priority)
       const updateBestGeneral = () => {
         if (generalSetCount <= 0) return
         if (results.bestGeneral.length === 0) {
@@ -209,7 +209,7 @@ export class PathSelector {
       updateSimpleBucket(chemistry, 'bestChemistry')
     }
 
-    // 5. Final Fallback
+    // Final Fallback
     if (results.bestGeneral.length === 0 && paths.length > 0) {
       results.bestGeneral =
         longestCleanPaths.length > 0 ? longestCleanPaths : longestAnyPaths

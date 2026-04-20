@@ -30,13 +30,13 @@ const OLD_KEYS = {
 }
 
 function migrateKimStorage(): KimStorageV1 {
-  // 1. Check if migration already happened
+  // Check if migration already happened
   const existingV1 = localStorage.getItem(KIM_STORAGE_KEY)
   if (existingV1) {
     return JSON.parse(existingV1)
   }
 
-  // 2. Helper to safely parse old JSON keys
+  // Helper to safely parse old JSON keys
   const getOld = (key: string) => {
     const data = localStorage.getItem(key)
     try {
@@ -46,7 +46,7 @@ function migrateKimStorage(): KimStorageV1 {
     }
   }
 
-  // 3. Collect old data
+  // Collect old data
   const migratedData: KimStorageV1 = {
     booleans: getOld(OLD_KEYS.booleans) || {},
     chemistry: getOld(OLD_KEYS.chemistry) || {},
@@ -55,10 +55,10 @@ function migrateKimStorage(): KimStorageV1 {
     showSpoilers: Boolean(Number(localStorage.getItem(OLD_KEYS.spoilers))),
   }
 
-  // 4. Persist to new single-key format
+  // Persist to new single-key format
   localStorage.setItem(KIM_STORAGE_KEY, JSON.stringify(migratedData))
 
-  // 5. Cleanup old keys
+  // Cleanup old keys
   Object.values(OLD_KEYS).forEach((key) => localStorage.removeItem(key))
 
   return migratedData
@@ -81,10 +81,6 @@ const storage = {
 export const loadBooleansFromStorage = () => storage.get().booleans
 export const saveBooleansToStorage = (val: Record<string, boolean>) =>
   storage.save({ booleans: val })
-
-const loadChemistryFromStorage = () => storage.get().chemistry
-const saveChemistryToStorage = (val: Record<string, number>) =>
-  storage.save({ chemistry: val })
 
 export const loadCompletedDialoguesFromStorage = () =>
   storage.get().completedDialogues

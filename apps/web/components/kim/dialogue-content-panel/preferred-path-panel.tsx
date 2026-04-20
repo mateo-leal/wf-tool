@@ -2,10 +2,10 @@ import { useTranslations } from 'next-intl'
 import { ArrowRightIcon } from '@phosphor-icons/react'
 
 import {
-  AVOIDABLE_BOOLEAN_NAMES,
-  NO_ROMANCE_BOOLEAN_NAMES,
   NodeType,
+  AVOIDABLE_BOOLEAN_NAMES,
   ROMANCE_BOOLEAN_NAMES,
+  NO_ROMANCE_BOOLEAN_NAMES,
 } from '@tenno-companion/kim/constants'
 import { DialoguePath, OptimizedResults } from '@tenno-companion/kim/types'
 
@@ -41,10 +41,8 @@ export function PreferredPathPanel({
   ]
 
   const amountOfValidPaths = sections.reduce((acc, section) => {
-    // 1. Ensure data exists and is an array
     if (!section.data || !Array.isArray(section.data)) return acc
 
-    // 2. Check if the section contains at least one path with a meaningful node
     const hasValidPath = section.data.some((path) =>
       path.nodes?.some(
         (node) =>
@@ -55,7 +53,6 @@ export function PreferredPathPanel({
     return acc + (hasValidPath ? 1 : 0)
   }, 0)
 
-  // 3. Early return if no paths are found
   if (amountOfValidPaths === 0) {
     return (
       <div className="space-y-3">
@@ -149,7 +146,7 @@ const PathItem = ({
 const MutationBadge = ({
   name,
   type,
-  value, // the new value for increments
+  value,
   oldValue,
 }: {
   name: string
@@ -194,6 +191,7 @@ const MutationBadge = ({
 
       <span>{name}</span>
 
+      {/* Chemistry */}
       {type === 'chemistry' && <span>+{value}</span>}
 
       {/* Counter specific display */}
