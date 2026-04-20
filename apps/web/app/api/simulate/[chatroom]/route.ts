@@ -1,13 +1,8 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
-import { Chat, PathSelector, Simulation } from '@tenno-companion/kim'
-import { CHATROOMS, NodeType } from '@tenno-companion/kim/constants'
-import {
-  Chatroom,
-  DialoguePath,
-  OptimizedResults,
-  SimulationState,
-} from '@tenno-companion/kim/types'
+import { Chatroom, SimulationState } from '@tenno-companion/kim/types'
 import { NextRequest } from 'next/server'
+import { Chat } from '@tenno-companion/kim/server'
+import { PathSelector, Simulation } from '@tenno-companion/kim'
+import { CHATROOMS, NodeType } from '@tenno-companion/kim/constants'
 
 const chatCache = new Map<string, Chat>()
 // const simulationCache = new Map<string, any>()
@@ -49,7 +44,7 @@ export async function GET(
 
   // Generate a unique Cache Key for this exact scenario
   // We use the stateText string directly to ensure exact match
-  const cacheKey = `${chatroom}:${locale}:${startNodeId}:${stateText}`
+  // const cacheKey = `${chatroom}:${locale}:${startNodeId}:${stateText}`
 
   // if (simulationCache.has(cacheKey)) {
   //   return Response.json(simulationCache.get(cacheKey), {

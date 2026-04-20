@@ -1,16 +1,18 @@
-import { KIM_STORAGE_KEY } from '@/lib/constants'
-import { Chat, Simulation } from '@tenno-companion/kim'
-import type { Chatroom } from '@tenno-companion/kim/types'
-import { useLocale } from 'next-intl'
+'use client'
+
 import {
   createContext,
   ReactNode,
   useContext,
   useEffect,
   useMemo,
-  useState,
-  useTransition,
+  useSyncExternalStore,
 } from 'react'
+
+import { Chat, Simulation } from '@tenno-companion/kim'
+import type { Chatroom, Node } from '@tenno-companion/kim/types'
+
+import { KIM_STORAGE_EVENT, KIM_STORAGE_KEY } from '@/lib/constants'
 
 interface KimStorageV1 {
   booleans: Record<string, boolean>
@@ -78,6 +80,84 @@ const storage = {
   },
 }
 
+const EMPTY_STORAGE: KimStorageV1 = {
+  booleans: {},
+  chemistry: {},
+  completedDialogues: {},
+  counters: {},
+  showSpoilers: false,
+}
+
+let snapshot = EMPTY_STORAGE
+
+const kimStore = {
+  // Subscribe to changes (both internal and from other tabs)
+  subscribe: (callback: () => void) => {
+    const handleUpdate = () => {
+      snapshot = storage.get() // Update the reference only when event happens
+      callback()
+    }
+    window.addEventListener(KIM_STORAGE_EVENT, handleUpdate)
+    window.addEventListener('storage', handleUpdate)
+
+    // Initialize snapshot on first subscribe (client side)
+    snapshot = storage.get()
+
+    return () => {
+      window.removeEventListener(KIM_STORAGE_EVENT, handleUpdate)
+      window.removeEventListener('storage', handleUpdate)
+    }
+  },
+
+  // The "Client" snapshot
+  getSnapshot: () => snapshot,
+
+  // The "Server" snapshot
+  getServerSnapshot: () => EMPTY_STORAGE,
+
+  // Updated save method to trigger the event
+  save: (data: Partial<KimStorageV1>) => {
+    storage.save(data)
+    // Notify all subscribers in this tab
+    window.dispatchEvent(new Event(KIM_STORAGE_EVENT))
+  },
+
+  updateBooleans: (booleans: Record<string, boolean>) => {
+    const current = kimStore.getSnapshot()
+    kimStore.save({
+      booleans: { ...current.booleans, ...booleans },
+    })
+  },
+
+  updateChemistry: (chatroom: string, increment: number) => {
+    const current = kimStore.getSnapshot()
+    kimStore.save({
+      chemistry: {
+        ...current.chemistry,
+        [chatroom]: (current.chemistry[chatroom] ?? 0) + increment,
+      },
+    })
+  },
+
+  updateCompletedDialogue: (key: string, value: number[]) => {
+    const current = kimStore.getSnapshot()
+    kimStore.save({
+      completedDialogues: { ...current.completedDialogues, [key]: value },
+    })
+  },
+
+  updateCounters: (counters: Record<string, number>) => {
+    const current = kimStore.getSnapshot()
+    kimStore.save({
+      counters: { ...current.counters, ...counters },
+    })
+  },
+
+  updateShowSpoilers: (value: boolean) => {
+    kimStore.save({ showSpoilers: value })
+  },
+}
+
 export const loadBooleansFromStorage = () => storage.get().booleans
 export const saveBooleansToStorage = (val: Record<string, boolean>) =>
   storage.save({ booleans: val })
@@ -97,110 +177,67 @@ export const saveShowSpoilersToStorage = (val: boolean) =>
   storage.save({ showSpoilers: val })
 
 interface ChatContextValue {
-  chat: Chat | null
+  chat: Chat
   chatroom: Chatroom
-  simulation: Simulation | null
+  simulation: Simulation
   gameState: KimStorageV1
   updateBooleans: (booleans: Record<string, boolean>) => void
   updateChemistry: (chatroom: string, increment: number) => void
   updateCompletedDialogue: (key: string, value: number[]) => void
   updateCounters: (counters: Record<string, number>) => void
   updateShowSpoilers: (value: boolean) => void
-  isPending: boolean
 }
 
 const KIMChatContext = createContext<ChatContextValue | undefined>(undefined)
 
 interface Props {
-  chatroom: Chatroom
   children: ReactNode
+  initialData: {
+    chatroom: Chatroom
+    nodes: Node[]
+  }
 }
 
-export function KIMChatProvider({ chatroom, children }: Props) {
-  const locale = useLocale()
-  const [chat, setChat] = useState<Chat | null>(null)
-  const [isPending, startTransition] = useTransition()
-
-  const [gameState, setGameState] = useState<KimStorageV1>(() => {
-    const data = storage.get()
-    return data
-  })
-
-  useEffect(() => {
-    let isMounted = true
-
-    startTransition(async () => {
-      const instance = await Chat.create(chatroom, { locale })
-      if (isMounted) {
-        setChat(instance)
-      }
-    })
-
-    return () => {
-      isMounted = false
-    }
-  }, [chatroom, locale])
+export function KIMChatProvider({ children, initialData }: Props) {
+  const gameState = useSyncExternalStore(
+    kimStore.subscribe,
+    kimStore.getSnapshot,
+    kimStore.getServerSnapshot
+  )
 
   useEffect(() => {
     storage.save(gameState)
   }, [gameState])
 
-  const updateBooleans = (booleans: Record<string, boolean>) => {
-    setGameState((prev) => ({
-      ...prev,
-      booleans: { ...prev.booleans, ...booleans },
-    }))
-  }
+  const actions = useMemo(
+    () => ({
+      updateBooleans: kimStore.updateBooleans,
+      updateChemistry: kimStore.updateChemistry,
+      updateCompletedDialogue: kimStore.updateCompletedDialogue,
+      updateCounters: kimStore.updateCounters,
+      updateShowSpoilers: kimStore.updateShowSpoilers,
+    }),
+    []
+  )
 
-  const updateChemistry = (chatroom: string, increment: number) => {
-    setGameState((prev) => ({
-      ...prev,
-      chemistry: {
-        ...prev.chemistry,
-        [chatroom]: (prev.chemistry[chatroom] ?? 0) + increment,
-      },
-    }))
-  }
+  const chat = useMemo(
+    () => new Chat(initialData.chatroom, initialData.nodes),
+    [initialData]
+  )
 
-  const updateCompletedDialogue = (key: string, value: number[]) => {
-    setGameState((prev) => ({
-      ...prev,
-      completedDialogues: { ...prev.completedDialogues, [key]: value },
-    }))
-  }
-
-  const updateCounters = (counters: Record<string, number>) => {
-    setGameState((prev) => ({
-      ...prev,
-      counters: { ...prev.counters, ...counters },
-    }))
-  }
-
-  const updateShowSpoilers = (value: boolean) => {
-    setGameState((prev) => ({
-      ...prev,
-      showSpoilers: value,
-    }))
-  }
-
-  const simulation = useMemo(() => {
-    if (!chat) return null
-    return new Simulation(chat, { initialState: gameState })
-  }, [chat, gameState])
+  const simulation = useMemo(
+    () => new Simulation(chat, { initialState: gameState }),
+    [chat, gameState]
+  )
 
   return (
     <KIMChatContext.Provider
       value={{
         chat,
-        chatroom,
+        chatroom: chat.chatroom,
         gameState,
-        isPending,
         simulation,
-        updateBooleans,
-        updateChemistry,
-        updateCompletedDialogue,
-        updateCounters,
-        updateShowSpoilers,
+        ...actions,
       }}
     >
       {children}

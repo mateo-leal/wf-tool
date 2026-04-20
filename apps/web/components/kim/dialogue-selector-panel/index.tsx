@@ -10,10 +10,10 @@ import { DialogueContentPanel } from '../dialogue-content-panel'
 
 export function DialogueSelectorPanel() {
   const [isPending, startTransition] = useTransition()
-  const { isPending: isLoading, simulation } = useKIMChat()
+  const { simulation } = useKIMChat()
 
   const firstNodesContent = useMemo(
-    () => simulation?.findAllFirstContentNodes() ?? [],
+    () => simulation.findAllFirstContentNodes() ?? [],
     [simulation]
   )
 
@@ -43,7 +43,6 @@ export function DialogueSelectorPanel() {
         firstNodes={firstNodesContent}
         selectedStartId={selectedStartId}
         onSelect={handleSelectStartId}
-        isLoading={isLoading}
       />
 
       {selectedOption && (

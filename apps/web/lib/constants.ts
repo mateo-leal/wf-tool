@@ -1,3 +1,4 @@
+export const KIM_STORAGE_EVENT = 'kim_storage_change'
 export const KIM_STORAGE_KEY = 'wf-kim:v1'
 export const CHECKLIST_STORAGE_KEY = 'wf-checklist:v1'
 export const MASTERY_CHECKLIST_STORAGE_KEY = 'wf-mastery-checklist:v1'

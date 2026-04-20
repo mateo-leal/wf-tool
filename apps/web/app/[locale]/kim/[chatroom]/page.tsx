@@ -4,6 +4,9 @@ import { routing } from '@/i18n/routing'
 import { ChatWindow } from '@/components/windows/chat'
 import { capitalizeFirstLetter } from '@/lib/utils'
 import { CHATROOMS } from '@tenno-companion/kim/constants'
+import { Chat } from '@tenno-companion/kim/server'
+import { notFound } from 'next/navigation'
+import { Chatroom } from '@tenno-companion/kim/types'
 
 export async function generateMetadata({
   params,
@@ -55,5 +58,11 @@ export default async function Page({
   // Enable static rendering
   setRequestLocale(locale)
 
-  return <ChatWindow chatroom={chatroom} />
+  if (!(CHATROOMS as readonly string[]).includes(chatroom)) {
+    notFound()
+  }
+
+  const chat = await Chat.create(chatroom as Chatroom, { locale })
+
+  return <ChatWindow chat={chat} />
 }

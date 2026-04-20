@@ -10,14 +10,12 @@ type Props = {
   firstNodes: FirstContentNode[]
   selectedStartId: number | null
   onSelect: (startId: number) => void
-  isLoading: boolean
 }
 
 export function DialogueOptionsList({
   firstNodes,
   selectedStartId,
   onSelect,
-  isLoading,
 }: Props) {
   const t = useTranslations('kim.chatroom')
   const locale = useLocale()
@@ -113,10 +111,6 @@ export function DialogueOptionsList({
     return searchFilter(dialogueOptions, normalizedQuery)
   }, [searchFilter, dialogueOptions, query])
 
-  if (isLoading) {
-    return <DialogueListSkeleton />
-  }
-
   return (
     <div className="h-full min-h-0 overflow-y-auto border border-[#8f5d1f] bg-black p-2">
       <div className="mb-2 relative">
@@ -127,11 +121,6 @@ export function DialogueOptionsList({
           placeholder={t('searchByDialogue')}
           className="w-full border border-[#6b4820] bg-[#120e08] px-2 py-1.5 text-sm text-[#ddd7c9] outline-none placeholder:text-[#8f7b5d] focus:border-[#cfad73]"
         />
-        {isLoading && (
-          <span className="absolute right-2 top-1/2 -translate-y-1/2 text-xs text-[#9f8a67] animate-pulse">
-            ...
-          </span>
-        )}
       </div>
 
       {filteredOptions.length === 0 ? (
@@ -178,41 +167,6 @@ export function DialogueOptionsList({
             </li>
           )
         })}
-      </ul>
-    </div>
-  )
-}
-
-const DialogueListSkeleton = () => {
-  return (
-    <div className="h-full min-h-0 overflow-y-auto border border-[#8f5d1f] bg-black p-2">
-      {/* Search Input Skeleton */}
-      <div className="mb-2 relative">
-        <div className="h-9 w-full border border-[#6b4820] bg-[#120e08] animate-pulse" />
-      </div>
-
-      {/* List Skeleton */}
-      <ul className="space-y-1 pr-1">
-        {[...Array(9)].map((_, i) => (
-          <li key={i}>
-            <div className="flex w-full items-start gap-2 border border-[#6b4820] bg-[#120e08] px-2 py-1.5 animate-pulse">
-              {/* Option Number Skeleton (e.g., 1.) */}
-              <div className="h-5 w-4 bg-[#6b4820] rounded" />
-
-              <div className="min-w-0 flex-1 space-y-2">
-                {/* Main Label Skeleton */}
-                <div className="h-4 w-3/4 bg-[#3e2b14] rounded" />
-
-                <div className="flex justify-between items-center">
-                  {/* Codename Skeleton */}
-                  <div className="h-3 w-1/3 bg-[#2a1d0d] rounded" />
-                  {/* Icon Placeholder */}
-                  <div className="h-3 w-3 bg-[#2a1d0d] rounded-full" />
-                </div>
-              </div>
-            </div>
-          </li>
-        ))}
       </ul>
     </div>
   )
