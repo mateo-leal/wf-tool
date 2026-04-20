@@ -22,7 +22,6 @@ export function ChatLine({ node }: { node: DialogueContentNode }) {
   }
 
   const chatroomIcon = useMemo(() => {
-    console.log(chatroom)
     if (node.type === NodeType.Dialogue) {
       return (
         SPEAKERS.find((speaker) =>
