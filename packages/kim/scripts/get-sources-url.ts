@@ -13,7 +13,7 @@ export const SOURCES: Record<Chatroom, string> = {
   lyon: 'LyonDialogue_rom.dialogue',
   marie: 'MarieDialogue_rom.dialogue',
   minerva: 'MinervaDialogue_rom.dialogue',
-  'minerva-velimir': 'MinervaDialogue_rom.dialogue',
+  'minerva-velimir': 'MinervaVelemirDialogue_rom.dialogue',
   quincy: 'QuincyDialogue_rom.dialogue',
   roathe: 'RoatheDialogue_rom.dialogue',
   velimir: 'VelimirDialogue_rom.dialogue',

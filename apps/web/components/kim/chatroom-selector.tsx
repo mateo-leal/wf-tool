@@ -1,21 +1,20 @@
 'use client'
 
 import Image from 'next/image'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
-import { cn } from '@/lib/utils'
-import { usePathname } from 'next/navigation'
-import { CATHEDRALE_CHATROOMS, HEX_CHATROOMS } from '@/lib/kim/chatrooms'
-import { Link } from '@/i18n/navigation'
 
-type ChatroomSelectorProps = {
+import { cn } from '@/lib/utils'
+import { Link, usePathname } from '@/i18n/navigation'
+import { CATHEDRALE_CHATROOMS, HEX_CHATROOMS } from '@/lib/kim/chatrooms'
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '../ui/tabs'
+
+type Props = {
   showSpoilers?: boolean
 }
 
 const SPOILER_CHATROOM_IDS = new Set(['flare', 'kaya', 'minerva-velimir'])
 
-export function ChatroomSelector({
-  showSpoilers = false,
-}: ChatroomSelectorProps) {
+export function ChatroomSelector({ showSpoilers = false }: Props) {
   const pathname = usePathname()
   const hexChatrooms = showSpoilers
     ? HEX_CHATROOMS
@@ -62,7 +61,7 @@ export function ChatroomSelector({
         value="hex"
         className="border-t-4 border-primary/50 -mt-1 flex min-h-0 flex-1 flex-col overflow-hidden"
       >
-        <ul className="-mt-1 min-h-0 flex-1 overflow-y-auto border-4 border-primary/50 py-1">
+        <ul className="-mt-1 min-h-0 md:max-h-[calc(66svh)] flex-1 overflow-y-auto border-4 border-primary/50 py-1">
           {hexChatrooms.map((chatroom) => (
             <li key={chatroom.id} className="mx-1">
               <Link

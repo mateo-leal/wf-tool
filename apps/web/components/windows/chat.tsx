@@ -8,10 +8,11 @@ import type { Chat } from '@tenno-companion/kim'
 import { KIMChatProvider } from '../providers/kim-chat'
 
 export function ChatWindow({ chat }: { chat: Chat }) {
+  const title = chat.chatroom.split('-').join(' & ')
   return (
     <Window className="relative z-10 mt-0 h-[calc(100svh-5.5rem)] min-h-75 max-w-none md:mt-16 md:mr-10 md:ml-auto md:h-[75svh] md:max-w-280">
       <WindowTitlebar>
-        <p className="window-title capitalize">{chat.chatroom}</p>
+        <p className="window-title capitalize">{title}</p>
         <CloseButton href="/kim" />
       </WindowTitlebar>
       <WindowContent className="sm:p-3">
