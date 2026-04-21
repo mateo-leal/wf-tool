@@ -2,9 +2,12 @@
   "name": "@tenno-companion/kim",
   "version": "0.1.1",
   "keywords": [
-    "warframe"
+    "warframe",
+    "kim",
+    "dialogue",
+    "chatroom"
   ],
-  "description": "",
+  "description": "Warframe KIM dialogue and chatroom data library for Tenno Companion",
   "repository": {
     "url": "github:mateo-leal/tenno-companion",
     "directory": "packages/kim"
@@ -37,7 +40,7 @@
     }
   },
   "author": "Mateo Leal <me@mateoleal.com>",
-  "license": "GPL-3.0-only",
+  "license": "MIT",
   "scripts": {
     "build": "tsup",
     "dev": "tsup --watch",

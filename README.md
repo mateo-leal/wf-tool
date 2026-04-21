@@ -82,7 +82,7 @@ This project adheres to the [Code of Conduct](./CODE_OF_CONDUCT.md). By particip
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 (GPL-3.0) — see [LICENSE](./LICENSE) for details.
+This project is licensed under the MIT License — see [LICENSE](./LICENSE) for details.
 
 ## Support
 

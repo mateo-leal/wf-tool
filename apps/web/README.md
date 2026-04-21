@@ -166,9 +166,10 @@ Guidelines:
 
 ## Acknowledgements
 
-- [browse.wf](https://browse.wf/) for KIM/world-state data sources and references.
-- [warframe-public-export-plus](https://github.com/calamity-inc/warframe-public-export-plus) dictionary data.
+- [browse.wf](https://browse.wf/) for world-state data sources and references.
+- [warframe-public-export-plus](https://github.com/calamity-inc/warframe-public-export-plus) items and dictionaries data.
+- [warframe-kim-dialogues](https://github.com/Sainan/warframe-kim-dialogues) KIM dialogues and dictionaries data.
 
 ## License
 
-This project is licensed under the GNU General Public License v3.0 (GPL-3.0).
+This package is licensed under MIT License. See [LICENSE](https://github.com/mateo-leal/tenno-companion/blob/main/LICENSE) for details.

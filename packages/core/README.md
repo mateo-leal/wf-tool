@@ -1,18 +1,23 @@
 # @tenno-companion/core
 
-Shared core library for Tenno Companion. This package provides Warframe-related data providers, locale utilities, and stable exported types.
+Core Warframe data library for Tenno Companion. This package provides Warframe-related data providers, locale utilities, and stable exported types for integration into your Warframe companion applications.
 
 ## Install
+
+```bash
+npm install @tenno-companion/core
+```
+
+Or with pnpm:
 
 ```bash
 pnpm add @tenno-companion/core
 ```
 
-If you are working inside this monorepo, install dependencies from the root and use the workspace package normally:
+Or with yarn:
 
 ```bash
-pnpm install
-pnpm build --filter @tenno-labs/core
+yarn add @tenno-companion/core
 ```
 
 ## Usage
@@ -133,11 +138,19 @@ import {
 From the repo root:
 
 ```bash
-pnpm --filter @tenno-labs/core build
-pnpm --filter @tenno-labs/core test
-pnpm --filter @tenno-labs/core dev
+pnpm --filter @tenno-companion/core build
+pnpm --filter @tenno-companion/core test
+pnpm --filter @tenno-companion/core dev
 ```
 
 ## License
 
-This package is licensed under GPL-3.0-only. See the root `LICENSE` for details.
+This package is licensed under MIT License. See [LICENSE](https://github.com/mateo-leal/tenno-companion/blob/main/LICENSE) for details.
+
+## Contributing
+
+Contributions are welcome! Please see [CONTRIBUTING.md](https://github.com/mateo-leal/tenno-companion/blob/main/CONTRIBUTING.md) for guidelines.
+
+## Related Packages
+
+- [@tenno-companion/kim](https://www.npmjs.com/package/@tenno-companion/kim) — KIM dialogue and chatroom data
