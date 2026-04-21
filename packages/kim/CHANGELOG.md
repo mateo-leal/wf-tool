@@ -1,5 +1,14 @@
 # @tenno-companion/core
 
+## 0.1.1
+
+### Patch Changes
+
+- Fix minerva-velimir file name
+  Fix chatroom selector scrollbar
+  Fix chatroom selector active link
+  Remove unused string from translation files
+
 ## 0.1.0
 
 ### Minor Changes
