@@ -2,6 +2,16 @@ packages:
   - "apps/*"
   - "packages/*"
 
+catalog:
+  "@types/jest": ^30.0.0
+  "@types/node": ^20
+  eslint: ^9.39.4
+  jest: ^30.3.0
+  ts-jest: ^29.4.9
+  tsup: ^8.5.1
+  tsx: ^4.21.0
+  typescript: ^5.9.3
+
 allowBuilds:
   "@parcel/watcher": false
   "@swc/core": false

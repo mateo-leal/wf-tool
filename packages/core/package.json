@@ -48,13 +48,13 @@
     "@tenno-companion/shared": "workspace:*"
   },
   "devDependencies": {
-    "@types/jest": "^30.0.0",
-    "@types/node": "^20.19.39",
-    "eslint": "^9.39.4",
-    "jest": "^30.3.0",
-    "ts-jest": "^29.4.9",
-    "tsup": "^8.5.1",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "@types/jest": "catalog:",
+    "@types/node": "catalog:",
+    "eslint": "catalog:",
+    "jest": "catalog:",
+    "ts-jest": "catalog:",
+    "tsup": "catalog:",
+    "tsx": "catalog:",
+    "typescript": "catalog:"
   }
 }

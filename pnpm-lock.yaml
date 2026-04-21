@@ -4,6 +4,33 @@ settings:
   autoInstallPeers: true
   excludeLinksFromLockfile: false
 
+catalogs:
+  default:
+    "@types/jest":
+      specifier: ^30.0.0
+      version: 30.0.0
+    "@types/node":
+      specifier: ^20
+      version: 20.19.39
+    eslint:
+      specifier: ^9.39.4
+      version: 9.39.4
+    jest:
+      specifier: ^30.3.0
+      version: 30.3.0
+    ts-jest:
+      specifier: ^29.4.9
+      version: 29.4.9
+    tsup:
+      specifier: ^8.5.1
+      version: 8.5.1
+    tsx:
+      specifier: ^4.21.0
+      version: 4.21.0
+    typescript:
+      specifier: ^5.9.3
+      version: 5.9.3
+
 importers:
 
   .:
@@ -20,10 +47,10 @@ importers:
     dependencies:
       "@base-ui/react":
         specifier: ^1.3.0
-        version: 1.4.0(@date-fns/tz@1.4.1)(@types/react@19.2.14)(date-fns@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 1.4.0(@date-fns/tz@1.4.1)(@types/react@19.2.14)(date-fns@4.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       "@phosphor-icons/react":
         specifier: ^2.1.10
-        version: 2.1.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 2.1.10(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       "@tenno-companion/core":
         specifier: workspace:*
         version: link:../../packages/core
@@ -32,10 +59,10 @@ importers:
         version: link:../../packages/kim
       "@vercel/analytics":
         specifier: ^2.0.1
-        version: 2.0.1(next@16.2.3(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
+        version: 2.0.1(next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)
       "@vercel/speed-insights":
         specifier: ^2.0.0
-        version: 2.0.0(next@16.2.3(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)
+        version: 2.0.0(next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -46,17 +73,17 @@ importers:
         specifier: ^1.1.3
         version: 1.1.3
       next:
-        specifier: 16.2.3
-        version: 16.2.3(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        specifier: 16.2.4
+        version: 16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       next-intl:
-        specifier: ^4.8.3
-        version: 4.9.1(next@16.2.3(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)(typescript@5.9.3)
+        specifier: ^4.9.1
+        version: 4.9.1(next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)(typescript@5.9.3)
       react:
-        specifier: 19.2.3
-        version: 19.2.3
+        specifier: 19.2.5
+        version: 19.2.5
       react-dom:
-        specifier: 19.2.3
-        version: 19.2.3(react@19.2.3)
+        specifier: 19.2.5
+        version: 19.2.5(react@19.2.5)
       shadcn:
         specifier: ^4.0.6
         version: 4.2.0(@types/node@20.19.39)(typescript@5.9.3)
@@ -78,15 +105,15 @@ importers:
         version: 6.9.1
       "@testing-library/react":
         specifier: ^16.3.2
-        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+        version: 16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       "@types/http-link-header":
         specifier: ^1.0.7
         version: 1.0.7
       "@types/jest":
-        specifier: ^30.0.0
+        specifier: "catalog:"
         version: 30.0.0
       "@types/node":
-        specifier: ^20
+        specifier: "catalog:"
         version: 20.19.39
       "@types/react":
         specifier: ^19
@@ -95,13 +122,13 @@ importers:
         specifier: ^19
         version: 19.2.3(@types/react@19.2.14)
       eslint:
-        specifier: ^9
+        specifier: "catalog:"
         version: 9.39.4(jiti@2.6.1)
       eslint-config-next:
-        specifier: 16.2.0
-        version: 16.2.0(@typescript-eslint/parser@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
+        specifier: 16.2.4
+        version: 16.2.4(@typescript-eslint/parser@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3)
       jest:
-        specifier: ^30.3.0
+        specifier: "catalog:"
         version: 30.3.0(@types/node@20.19.39)(ts-node@10.9.2(@swc/core@1.15.26)(@types/node@20.19.39)(typescript@5.9.3))
       jest-environment-jsdom:
         specifier: ^30.3.0
@@ -113,7 +140,7 @@ importers:
         specifier: ^10.9.2
         version: 10.9.2(@swc/core@1.15.26)(@types/node@20.19.39)(typescript@5.9.3)
       typescript:
-        specifier: ^5
+        specifier: "catalog:"
         version: 5.9.3
 
   packages/core:
@@ -123,28 +150,28 @@ importers:
         version: link:../shared
     devDependencies:
       "@types/jest":
-        specifier: ^30.0.0
+        specifier: "catalog:"
         version: 30.0.0
       "@types/node":
-        specifier: ^20.19.39
+        specifier: "catalog:"
         version: 20.19.39
       eslint:
-        specifier: ^9.39.4
+        specifier: "catalog:"
         version: 9.39.4(jiti@2.6.1)
       jest:
-        specifier: ^30.3.0
+        specifier: "catalog:"
         version: 30.3.0(@types/node@20.19.39)(ts-node@10.9.2(@swc/core@1.15.26)(@types/node@20.19.39)(typescript@5.9.3))
       ts-jest:
-        specifier: ^29.4.9
+        specifier: "catalog:"
         version: 29.4.9(@babel/core@7.29.0)(@jest/transform@30.3.0)(@jest/types@30.3.0)(babel-jest@30.3.0(@babel/core@7.29.0))(esbuild@0.27.7)(jest-util@30.3.0)(jest@30.3.0(@types/node@20.19.39))(typescript@5.9.3)
       tsup:
-        specifier: ^8.5.1
+        specifier: "catalog:"
         version: 8.5.1(@swc/core@1.15.26)(jiti@2.6.1)(postcss@8.5.9)(tsx@4.21.0)(typescript@5.9.3)
       tsx:
-        specifier: ^4.21.0
+        specifier: "catalog:"
         version: 4.21.0
       typescript:
-        specifier: ^5.9.3
+        specifier: "catalog:"
         version: 5.9.3
 
   packages/kim:
@@ -154,28 +181,28 @@ importers:
         version: link:../shared
     devDependencies:
       "@types/jest":
-        specifier: ^30.0.0
+        specifier: "catalog:"
         version: 30.0.0
       "@types/node":
-        specifier: ^20.19.39
+        specifier: "catalog:"
         version: 20.19.39
       eslint:
-        specifier: ^9.39.4
+        specifier: "catalog:"
         version: 9.39.4(jiti@2.6.1)
       jest:
-        specifier: ^30.3.0
+        specifier: "catalog:"
         version: 30.3.0(@types/node@20.19.39)(ts-node@10.9.2(@swc/core@1.15.26)(@types/node@20.19.39)(typescript@5.9.3))
       ts-jest:
-        specifier: ^29.4.9
+        specifier: "catalog:"
         version: 29.4.9(@babel/core@7.29.0)(@jest/transform@30.3.0)(@jest/types@30.3.0)(babel-jest@30.3.0(@babel/core@7.29.0))(esbuild@0.27.7)(jest-util@30.3.0)(jest@30.3.0(@types/node@20.19.39))(typescript@5.9.3)
       tsup:
-        specifier: ^8.5.1
+        specifier: "catalog:"
         version: 8.5.1(@swc/core@1.15.26)(jiti@2.6.1)(postcss@8.5.9)(tsx@4.21.0)(typescript@5.9.3)
       tsx:
-        specifier: ^4.21.0
+        specifier: "catalog:"
         version: 4.21.0
       typescript:
-        specifier: ^5.9.3
+        specifier: "catalog:"
         version: 5.9.3
 
   packages/shared:
@@ -1720,89 +1747,89 @@ packages:
         integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==,
       }
 
-  "@next/env@16.2.3":
+  "@next/env@16.2.4":
     resolution:
       {
-        integrity: sha512-ZWXyj4uNu4GCWQw9cjRxWlbD+33mcDszIo9iQxFnBX3Wmgq9ulaSJcl6VhuWx5pCWqqD+9W6Wfz7N0lM5lYPMA==,
+        integrity: sha512-dKkkOzOSwFYe5RX6y26fZgkSpVAlIOJKQHIiydQcrWH6y/97+RceSOAdjZ14Qa3zLduVUy0TXcn+EiM6t4rPgw==,
       }
 
-  "@next/eslint-plugin-next@16.2.0":
+  "@next/eslint-plugin-next@16.2.4":
     resolution:
       {
-        integrity: sha512-3D3pEMcGKfENC9Pzlkr67GOm+205+5hRdYPZvHuNIy5sr9k0ybSU8g+sxOO/R/RLEh/gWZ3UlY+5LmEyZ1xgXQ==,
+        integrity: sha512-tOX826JJ96gYK/go18sPUgMq9FK1tqxBFfUCEufJb5XIkWFFmpgU7mahJANKGkHs7F41ir3tReJ3Lv5La0RvhA==,
       }
 
-  "@next/swc-darwin-arm64@16.2.3":
+  "@next/swc-darwin-arm64@16.2.4":
     resolution:
       {
-        integrity: sha512-u37KDKTKQ+OQLvY+z7SNXixwo4Q2/IAJFDzU1fYe66IbCE51aDSAzkNDkWmLN0yjTUh4BKBd+hb69jYn6qqqSg==,
+        integrity: sha512-OXTFFox5EKN1Ym08vfrz+OXxmCcEjT4SFMbNRsWZE99dMqt2Kcusl5MqPXcW232RYkMLQTy0hqgAMEsfEd/l2A==,
       }
     engines: { node: ">= 10" }
     cpu: [ arm64 ]
     os: [ darwin ]
 
-  "@next/swc-darwin-x64@16.2.3":
+  "@next/swc-darwin-x64@16.2.4":
     resolution:
       {
-        integrity: sha512-gHjL/qy6Q6CG3176FWbAKyKh9IfntKZTB3RY/YOJdDFpHGsUDXVH38U4mMNpHVGXmeYW4wj22dMp1lTfmu/bTQ==,
+        integrity: sha512-XhpVnUfmYWvD3YrXu55XdcAkQtOnvaI6wtQa8fuF5fGoKoxIUZ0kWPtcOfqJEWngFF/lOS9l3+O9CcownhiQxQ==,
       }
     engines: { node: ">= 10" }
     cpu: [ x64 ]
     os: [ darwin ]
 
-  "@next/swc-linux-arm64-gnu@16.2.3":
+  "@next/swc-linux-arm64-gnu@16.2.4":
     resolution:
       {
-        integrity: sha512-U6vtblPtU/P14Y/b/n9ZY0GOxbbIhTFuaFR7F4/uMBidCi2nSdaOFhA0Go81L61Zd6527+yvuX44T4ksnf8T+Q==,
+        integrity: sha512-Mx/tjlNA3G8kg14QvuGAJ4xBwPk1tUHq56JxZ8CXnZwz1Etz714soCEzGQQzVMz4bEnGPowzkV6Xrp6wAkEWOQ==,
       }
     engines: { node: ">= 10" }
     cpu: [ arm64 ]
     os: [ linux ]
     libc: [ glibc ]
 
-  "@next/swc-linux-arm64-musl@16.2.3":
+  "@next/swc-linux-arm64-musl@16.2.4":
     resolution:
       {
-        integrity: sha512-/YV0LgjHUmfhQpn9bVoGc4x4nan64pkhWR5wyEV8yCOfwwrH630KpvRg86olQHTwHIn1z59uh6JwKvHq1h4QEw==,
+        integrity: sha512-iVMMp14514u7Nup2umQS03nT/bN9HurK8ufylC3FZNykrwjtx7V1A7+4kvhbDSCeonTVqV3Txnv0Lu+m2oDXNg==,
       }
     engines: { node: ">= 10" }
     cpu: [ arm64 ]
     os: [ linux ]
     libc: [ musl ]
 
-  "@next/swc-linux-x64-gnu@16.2.3":
+  "@next/swc-linux-x64-gnu@16.2.4":
     resolution:
       {
-        integrity: sha512-/HiWEcp+WMZ7VajuiMEFGZ6cg0+aYZPqCJD3YJEfpVWQsKYSjXQG06vJP6F1rdA03COD9Fef4aODs3YxKx+RDQ==,
+        integrity: sha512-EZOvm1aQWgnI/N/xcWOlnS3RQBk0VtVav5Zo7n4p0A7UKyTDx047k8opDbXgBpHl4CulRqRfbw3QrX2w5UOXMQ==,
       }
     engines: { node: ">= 10" }
     cpu: [ x64 ]
     os: [ linux ]
     libc: [ glibc ]
 
-  "@next/swc-linux-x64-musl@16.2.3":
+  "@next/swc-linux-x64-musl@16.2.4":
     resolution:
       {
-        integrity: sha512-Kt44hGJfZSefebhk/7nIdivoDr3Ugp5+oNz9VvF3GUtfxutucUIHfIO0ZYO8QlOPDQloUVQn4NVC/9JvHRk9hw==,
+        integrity: sha512-h9FxsngCm9cTBf71AR4fGznDEDx1hS7+kSEiIRjq5kO1oXWm07DxVGZjCvk0SGx7TSjlUqhI8oOyz7NfwAdPoA==,
       }
     engines: { node: ">= 10" }
     cpu: [ x64 ]
     os: [ linux ]
     libc: [ musl ]
 
-  "@next/swc-win32-arm64-msvc@16.2.3":
+  "@next/swc-win32-arm64-msvc@16.2.4":
     resolution:
       {
-        integrity: sha512-O2NZ9ie3Tq6xj5Z5CSwBT3+aWAMW2PIZ4egUi9MaWLkwaehgtB7YZjPm+UpcNpKOme0IQuqDcor7BsW6QBiQBw==,
+        integrity: sha512-3NdJV5OXMSOeJYijX+bjaLge3mJBlh4ybydbT4GFoB/2hAojWHtMhl3CYlYoMrjPuodp0nzFVi4Tj2+WaMg+Ow==,
       }
     engines: { node: ">= 10" }
     cpu: [ arm64 ]
     os: [ win32 ]
 
-  "@next/swc-win32-x64-msvc@16.2.3":
+  "@next/swc-win32-x64-msvc@16.2.4":
     resolution:
       {
-        integrity: sha512-Ibm29/GgB/ab5n7XKqlStkm54qqZE8v2FnijUPBgrd67FWrac45o/RsNlaOWjme/B5UqeWt/8KM4aWBwA1D2Kw==,
+        integrity: sha512-kMVGgsqhO5YTYODD9IPGGhA6iprWidQckK3LmPeW08PIFENRmgfb4MjXHO+p//d+ts2rpjvK5gXWzXSMrPl9cw==,
       }
     engines: { node: ">= 10" }
     cpu: [ x64 ]
@@ -4279,10 +4306,10 @@ packages:
       }
     engines: { node: ">=10" }
 
-  eslint-config-next@16.2.0:
+  eslint-config-next@16.2.4:
     resolution:
       {
-        integrity: sha512-LlVJrWnjIkgQRECjIOELyAtrWFqzn326ARS5ap7swc1YKL4wkry6/gszn6wi5ZDWKxKe7fanxArvhqMoAzbL7w==,
+        integrity: sha512-A6ekXYFj/YQxBPMl45g3e+U8zJo+X2+ZQwcz34pPKjpc/3S4roBA2Rd9xWB4FKuSxhofo1/95WjzmUY+wHrOhg==,
       }
     peerDependencies:
       eslint: ">=9.0.0"
@@ -6377,10 +6404,10 @@ packages:
       typescript:
         optional: true
 
-  next@16.2.3:
+  next@16.2.4:
     resolution:
       {
-        integrity: sha512-9V3zV4oZFza3PVev5/poB9g0dEafVcgNyQ8eTRop8GvxZjV2G15FC5ARuG1eFD42QgeYkzJBJzHghNP8Ad9xtA==,
+        integrity: sha512-kPvz56wF5frc+FxlHI5qnklCzbq53HTwORaWBGdT0vNoKh1Aya9XC8aPauH4NJxqtzbWsS5mAbctm4cr+EkQ2Q==,
       }
     engines: { node: ">=20.9.0" }
     hasBin: true
@@ -6983,13 +7010,13 @@ packages:
       }
     engines: { node: ">= 0.10" }
 
-  react-dom@19.2.3:
+  react-dom@19.2.5:
     resolution:
       {
-        integrity: sha512-yELu4WmLPw5Mr/lmeEpox5rw3RETacE++JgHqQzd2dg+YbJuat3jH4ingc+WPZhxaoFzdv9y33G+F7Nl5O0GBg==,
+        integrity: sha512-J5bAZz+DXMMwW/wV3xzKke59Af6CHY7G4uYLN1OvBcKEsWOs4pQExj86BBKamxl/Ik5bx9whOrvBlSDfWzgSag==,
       }
     peerDependencies:
-      react: ^19.2.3
+      react: ^19.2.5
 
   react-is@16.13.1:
     resolution:
@@ -7009,10 +7036,10 @@ packages:
         integrity: sha512-/LLMVyas0ljjAtoYiPqYiL8VWXzUUdThrmU5+n20DZv+a+ClRoevUzw5JxU+Ieh5/c87ytoTBV9G1FiKfNJdmg==,
       }
 
-  react@19.2.3:
+  react@19.2.5:
     resolution:
       {
-        integrity: sha512-Ku/hhYbVjOQnXDZFv2+RibmLFGwFdeeKHFcOTlrt7xplBnya5OGn/hIRDsqDiSUcfORsDC7MPxwork8jBwsIWA==,
+        integrity: sha512-llUJLzz1zTUBrskt2pwZgLq59AemifIftw4aB7JxOqf1HY2FDaGDxgwpAPVzHU1kdWabH7FauP4i1oEeer2WCA==,
       }
     engines: { node: ">=0.10.0" }
 
@@ -8653,28 +8680,28 @@ snapshots:
       "@babel/helper-string-parser": 7.27.1
       "@babel/helper-validator-identifier": 7.28.5
 
-  "@base-ui/react@1.4.0(@date-fns/tz@1.4.1)(@types/react@19.2.14)(date-fns@4.1.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)":
+  "@base-ui/react@1.4.0(@date-fns/tz@1.4.1)(@types/react@19.2.14)(date-fns@4.1.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)":
     dependencies:
       "@babel/runtime": 7.29.2
-      "@base-ui/utils": 0.2.7(@types/react@19.2.14)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      "@base-ui/utils": 0.2.7(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       "@date-fns/tz": 1.4.1
-      "@floating-ui/react-dom": 2.1.8(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      "@floating-ui/react-dom": 2.1.8(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       "@floating-ui/utils": 0.2.11
       date-fns: 4.1.0
-      react: 19.2.3
-      react-dom: 19.2.3(react@19.2.3)
-      use-sync-external-store: 1.6.0(react@19.2.3)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
+      use-sync-external-store: 1.6.0(react@19.2.5)
     optionalDependencies:
       "@types/react": 19.2.14
 
-  "@base-ui/utils@0.2.7(@types/react@19.2.14)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)":
+  "@base-ui/utils@0.2.7(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)":
     dependencies:
       "@babel/runtime": 7.29.2
       "@floating-ui/utils": 0.2.11
-      react: 19.2.3
-      react-dom: 19.2.3(react@19.2.3)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
       reselect: 5.1.1
-      use-sync-external-store: 1.6.0(react@19.2.3)
+      use-sync-external-store: 1.6.0(react@19.2.5)
     optionalDependencies:
       "@types/react": 19.2.14
 
@@ -9015,11 +9042,11 @@ snapshots:
       "@floating-ui/core": 1.7.5
       "@floating-ui/utils": 0.2.11
 
-  "@floating-ui/react-dom@2.1.8(react-dom@19.2.3(react@19.2.3))(react@19.2.3)":
+  "@floating-ui/react-dom@2.1.8(react-dom@19.2.5(react@19.2.5))(react@19.2.5)":
     dependencies:
       "@floating-ui/dom": 1.7.6
-      react: 19.2.3
-      react-dom: 19.2.3(react@19.2.3)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
 
   "@floating-ui/utils@0.2.11": {}
 
@@ -9467,34 +9494,34 @@ snapshots:
       "@tybys/wasm-util": 0.10.1
     optional: true
 
-  "@next/env@16.2.3": {}
+  "@next/env@16.2.4": {}
 
-  "@next/eslint-plugin-next@16.2.0":
+  "@next/eslint-plugin-next@16.2.4":
     dependencies:
       fast-glob: 3.3.1
 
-  "@next/swc-darwin-arm64@16.2.3":
+  "@next/swc-darwin-arm64@16.2.4":
     optional: true
 
-  "@next/swc-darwin-x64@16.2.3":
+  "@next/swc-darwin-x64@16.2.4":
     optional: true
 
-  "@next/swc-linux-arm64-gnu@16.2.3":
+  "@next/swc-linux-arm64-gnu@16.2.4":
     optional: true
 
-  "@next/swc-linux-arm64-musl@16.2.3":
+  "@next/swc-linux-arm64-musl@16.2.4":
     optional: true
 
-  "@next/swc-linux-x64-gnu@16.2.3":
+  "@next/swc-linux-x64-gnu@16.2.4":
     optional: true
 
-  "@next/swc-linux-x64-musl@16.2.3":
+  "@next/swc-linux-x64-musl@16.2.4":
     optional: true
 
-  "@next/swc-win32-arm64-msvc@16.2.3":
+  "@next/swc-win32-arm64-msvc@16.2.4":
     optional: true
 
-  "@next/swc-win32-x64-msvc@16.2.3":
+  "@next/swc-win32-x64-msvc@16.2.4":
     optional: true
 
   "@noble/ciphers@1.3.0": {}
@@ -9588,10 +9615,10 @@ snapshots:
       "@parcel/watcher-win32-ia32": 2.5.6
       "@parcel/watcher-win32-x64": 2.5.6
 
-  "@phosphor-icons/react@2.1.10(react-dom@19.2.3(react@19.2.3))(react@19.2.3)":
+  "@phosphor-icons/react@2.1.10(react-dom@19.2.5(react@19.2.5))(react@19.2.5)":
     dependencies:
-      react: 19.2.3
-      react-dom: 19.2.3(react@19.2.3)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
 
   "@pkgjs/parseargs@0.11.0":
     optional: true
@@ -9844,12 +9871,12 @@ snapshots:
       picocolors: 1.1.1
       redent: 3.0.0
 
-  "@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)":
+  "@testing-library/react@16.3.2(@testing-library/dom@10.4.1)(@types/react-dom@19.2.3(@types/react@19.2.14))(@types/react@19.2.14)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)":
     dependencies:
       "@babel/runtime": 7.29.2
       "@testing-library/dom": 10.4.1
-      react: 19.2.3
-      react-dom: 19.2.3(react@19.2.3)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
     optionalDependencies:
       "@types/react": 19.2.14
       "@types/react-dom": 19.2.3(@types/react@19.2.14)
@@ -10125,15 +10152,15 @@ snapshots:
   "@unrs/resolver-binding-win32-x64-msvc@1.11.1":
     optional: true
 
-  "@vercel/analytics@2.0.1(next@16.2.3(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)":
+  "@vercel/analytics@2.0.1(next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)":
     optionalDependencies:
-      next: 16.2.3(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react: 19.2.3
+      next: 16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      react: 19.2.5
 
-  "@vercel/speed-insights@2.0.0(next@16.2.3(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)":
+  "@vercel/speed-insights@2.0.0(next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)":
     optionalDependencies:
-      next: 16.2.3(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
-      react: 19.2.3
+      next: 16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
+      react: 19.2.5
 
   accepts@2.0.0:
     dependencies:
@@ -10832,9 +10859,9 @@ snapshots:
 
   escape-string-regexp@4.0.0: {}
 
-  eslint-config-next@16.2.0(@typescript-eslint/parser@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3):
+  eslint-config-next@16.2.4(@typescript-eslint/parser@8.58.2(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.4(jiti@2.6.1))(typescript@5.9.3):
     dependencies:
-      "@next/eslint-plugin-next": 16.2.0
+      "@next/eslint-plugin-next": 16.2.4
       eslint: 9.39.4(jiti@2.6.1)
       eslint-import-resolver-node: 0.3.10
       eslint-import-resolver-typescript: 3.10.1(eslint-plugin-import@2.32.0)(eslint@9.39.4(jiti@2.6.1))
@@ -12325,42 +12352,42 @@ snapshots:
 
   next-intl-swc-plugin-extractor@4.9.1: {}
 
-  next-intl@4.9.1(next@16.2.3(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3))(react@19.2.3)(typescript@5.9.3):
+  next-intl@4.9.1(next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5))(react@19.2.5)(typescript@5.9.3):
     dependencies:
       "@formatjs/intl-localematcher": 0.8.3
       "@parcel/watcher": 2.5.6
       "@swc/core": 1.15.26
       icu-minify: 4.9.1
       negotiator: 1.0.0
-      next: 16.2.3(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3)
+      next: 16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5)
       next-intl-swc-plugin-extractor: 4.9.1
       po-parser: 2.1.1
-      react: 19.2.3
-      use-intl: 4.9.1(react@19.2.3)
+      react: 19.2.5
+      use-intl: 4.9.1(react@19.2.5)
     optionalDependencies:
       typescript: 5.9.3
     transitivePeerDependencies:
       - "@swc/helpers"
 
-  next@16.2.3(@babel/core@7.29.0)(react-dom@19.2.3(react@19.2.3))(react@19.2.3):
+  next@16.2.4(@babel/core@7.29.0)(react-dom@19.2.5(react@19.2.5))(react@19.2.5):
     dependencies:
-      "@next/env": 16.2.3
+      "@next/env": 16.2.4
       "@swc/helpers": 0.5.15
       baseline-browser-mapping: 2.10.19
       caniuse-lite: 1.0.30001788
       postcss: 8.4.31
-      react: 19.2.3
-      react-dom: 19.2.3(react@19.2.3)
-      styled-jsx: 5.1.6(@babel/core@7.29.0)(react@19.2.3)
+      react: 19.2.5
+      react-dom: 19.2.5(react@19.2.5)
+      styled-jsx: 5.1.6(@babel/core@7.29.0)(react@19.2.5)
     optionalDependencies:
-      "@next/swc-darwin-arm64": 16.2.3
-      "@next/swc-darwin-x64": 16.2.3
-      "@next/swc-linux-arm64-gnu": 16.2.3
-      "@next/swc-linux-arm64-musl": 16.2.3
-      "@next/swc-linux-x64-gnu": 16.2.3
-      "@next/swc-linux-x64-musl": 16.2.3
-      "@next/swc-win32-arm64-msvc": 16.2.3
-      "@next/swc-win32-x64-msvc": 16.2.3
+      "@next/swc-darwin-arm64": 16.2.4
+      "@next/swc-darwin-x64": 16.2.4
+      "@next/swc-linux-arm64-gnu": 16.2.4
+      "@next/swc-linux-arm64-musl": 16.2.4
+      "@next/swc-linux-x64-gnu": 16.2.4
+      "@next/swc-linux-x64-musl": 16.2.4
+      "@next/swc-win32-arm64-msvc": 16.2.4
+      "@next/swc-win32-x64-msvc": 16.2.4
       sharp: 0.34.5
     transitivePeerDependencies:
       - "@babel/core"
@@ -12684,9 +12711,9 @@ snapshots:
       iconv-lite: 0.7.2
       unpipe: 1.0.0
 
-  react-dom@19.2.3(react@19.2.3):
+  react-dom@19.2.5(react@19.2.5):
     dependencies:
-      react: 19.2.3
+      react: 19.2.5
       scheduler: 0.27.0
 
   react-is@16.13.1: {}
@@ -12695,7 +12722,7 @@ snapshots:
 
   react-is@18.3.1: {}
 
-  react@19.2.3: {}
+  react@19.2.5: {}
 
   read-yaml-file@1.1.0:
     dependencies:
@@ -13155,10 +13182,10 @@ snapshots:
 
   strip-json-comments@3.1.1: {}
 
-  styled-jsx@5.1.6(@babel/core@7.29.0)(react@19.2.3):
+  styled-jsx@5.1.6(@babel/core@7.29.0)(react@19.2.5):
     dependencies:
       client-only: 0.0.1
-      react: 19.2.3
+      react: 19.2.5
     optionalDependencies:
       "@babel/core": 7.29.0
 
@@ -13493,17 +13520,17 @@ snapshots:
     dependencies:
       punycode: 2.3.1
 
-  use-intl@4.9.1(react@19.2.3):
+  use-intl@4.9.1(react@19.2.5):
     dependencies:
       "@formatjs/fast-memoize": 3.1.2
       "@schummar/icu-type-parser": 1.21.5
       icu-minify: 4.9.1
       intl-messageformat: 11.2.1
-      react: 19.2.3
+      react: 19.2.5
 
-  use-sync-external-store@1.6.0(react@19.2.3):
+  use-sync-external-store@1.6.0(react@19.2.5):
     dependencies:
-      react: 19.2.3
+      react: 19.2.5
 
   util-deprecate@1.0.2: {}
 
