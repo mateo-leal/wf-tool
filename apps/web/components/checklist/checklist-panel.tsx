@@ -332,7 +332,9 @@ export function ChecklistPanel() {
 
               return {
                 ...task,
-                dynamicInfo: `${toTitleCase(missionName)} (${factionName})`,
+                dynamicInfo: factionName
+                  ? `${toTitleCase(missionName)} (${factionName})`
+                  : toTitleCase(missionName),
                 location: `${regionName}, ${systemName}`,
               }
             }
