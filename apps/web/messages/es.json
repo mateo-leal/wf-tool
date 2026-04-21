@@ -216,10 +216,30 @@
       "bestCounterPath": "Mejor acumulación de contadores",
       "bestRomancePath": "Mejor ruta de romance",
       "bestBadRomancePath": "Peor ruta de romance",
+      "simulationFailed": "Error al cargar los resultados de la simulación.",
+      "uncertainPath": "Esta ruta incluye nodos que no podemos procesar; el resultado podría no ser el mismo que dentro del juego.",
+      "noPathsForCurrentState": "No hay caminos para sus valores booleanos y contadores.",
       "noDialogueTextAvailable": "No hay texto de diálogo disponible en esta ruta.",
       "updateBooleanValues": "Actualizar valores de banderas basados en esta conversación",
       "booleanUpdated": "Valores de banderas actualizados.",
-      "futureSimulationsNotice": "Esto afectará los diálogos disponibles en futuras simulaciones."
+      "futureSimulationsNotice": "Esto afectará los diálogos disponibles en futuras simulaciones.",
+      "systemChatLine": {
+        "chemistry": "Química",
+        "setBoolean": "Establecer booleano",
+        "resetBoolean": "Reiniciar booleano",
+        "updateCounter": "Contador actualizado",
+        "checkBoolean": "Comprobar booleano",
+        "checkMultiBoolean": "Comprobar multi-booleano",
+        "checkCounter": "Comprobar contador",
+        "end": "Fin",
+        "true": "verdadero",
+        "false": "falso"
+      },
+      "booleanNotes": {
+        "avoidable": "Este booleano debería ser evitado",
+        "romance": "Este booleano está relacionado con el romance",
+        "badRomance": "Este booleano está relacionado con evitar romance o ruptura"
+      }
     }
   },
   "masteryChecklist": {
