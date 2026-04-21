@@ -10,6 +10,7 @@
     "directory": "packages/kim"
   },
   "bugs": "https://github.com/mateo-leal/tenno-companion/issues",
+  "sideEffects": false,
   "main": "./dist/index.js",
   "module": "./dist/index.mjs",
   "types": "./dist/index.d.ts",
