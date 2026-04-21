@@ -28,30 +28,33 @@ interface BranchingNode extends Omit<BaseNode, 'Outgoing'> {
   FalseNodes: DialogueId[]
 }
 
-interface CheckBooleanDialogueNode extends BranchingNode {
+export interface CheckBooleanDialogueNode extends BranchingNode {
   type: NodeType.CheckBoolean
   Content: string
 }
 
-interface CheckBooleanScriptDialogueNode extends BranchingNode {
+export interface CheckBooleanScriptDialogueNode extends BranchingNode {
   type: NodeType.CheckBooleanScript
   Content?: string
   Script: Script
 }
 
-interface CheckCounterDialogueNode extends Omit<BaseNode, 'Outgoing'> {
+export interface CheckCounterDialogueNode extends Omit<BaseNode, 'Outgoing'> {
   type: NodeType.CheckCounter
   Content: string
   Outputs: Output[]
   CounterName: string
 }
 
-interface CheckMultiBooleanDialogueNode extends Omit<BaseNode, 'Outgoing'> {
+export interface CheckMultiBooleanDialogueNode extends Omit<
+  BaseNode,
+  'Outgoing'
+> {
   type: NodeType.CheckMultiBoolean
   Outputs: Output[]
 }
 
-interface ChemistryDialogueNode extends BaseNode {
+export interface ChemistryDialogueNode extends BaseNode {
   type: NodeType.Chemistry
   ChemistryDelta: number
 }
@@ -80,17 +83,17 @@ export interface PlayerChoiceDialogueNode extends BaseNode {
   LocTag: TranslationKey
 }
 
-interface ResetBooleanDialogueNode extends BaseNode {
+export interface ResetBooleanDialogueNode extends BaseNode {
   type: NodeType.ResetBoolean
   Content: string
 }
 
-interface SetBooleanDialogueNode extends BaseNode {
+export interface SetBooleanDialogueNode extends BaseNode {
   type: NodeType.SetBoolean
   Content: string
 }
 
-interface SpecialCompletionDialogueNode extends BaseNode {
+export interface SpecialCompletionDialogueNode extends BaseNode {
   type: NodeType.SpecialCompletion
   CompletionType: number
   Content?: string
@@ -104,7 +107,7 @@ export interface StartDialogueNode extends Omit<BaseNode, 'Incoming'> {
   Persist?: number
 }
 
-type Script = {
+export type Script = {
   Script: string
   Function: string
   _counter: number
@@ -126,7 +129,7 @@ export type Output = {
   LogicalOperators: number[]
 }
 
-type OtherDialogueInfo = {
+export type OtherDialogueInfo = {
   Dialogue: string
   Tag: string
   Value: number
