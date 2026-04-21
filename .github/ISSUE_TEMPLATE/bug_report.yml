@@ -1,6 +1,6 @@
 name: Bug report
 description: Create a report to help us improve
-labels: [bug]
+labels: [ bug ]
 body:
   - type: markdown
     attributes:
@@ -13,7 +13,8 @@ body:
     attributes:
       label: Describe the bug
       description: A clear and concise description of what is wrong.
-      placeholder: The KIM simulation returns an empty result for a dialogue that should have available paths.
+      placeholder: The KIM simulation returns an empty result for a dialogue that
+        should have available paths.
     validations:
       required: true
 
@@ -44,6 +45,8 @@ body:
       options:
         - Web (apps/web)
         - Core Library (packages/core)
+        - KIM Library (packages/kim)
+        - Shared Library (packages/shared)
         - Monorepo / Tooling
         - Not sure
     validations:

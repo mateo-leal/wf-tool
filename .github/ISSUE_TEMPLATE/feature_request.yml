@@ -1,6 +1,6 @@
 name: Feature request
 description: Suggest an idea for this project
-labels: [feature]
+labels: [ feature ]
 body:
   - type: markdown
     attributes:
@@ -22,7 +22,8 @@ body:
     attributes:
       label: Proposed solution
       description: Describe the feature you would like to see.
-      placeholder: Add a compare mode that pins two simulated paths and highlights differences in chemistry and booleans.
+      placeholder: Add a compare mode that pins two simulated paths and highlights
+        differences in chemistry and booleans.
     validations:
       required: true
 
@@ -40,6 +41,8 @@ body:
       options:
         - Web (apps/web)
         - Core Library (packages/core)
+        - KIM Library (packages/kim)
+        - Shared Library (packages/shared)
         - Monorepo / Tooling
         - Not sure
     validations:

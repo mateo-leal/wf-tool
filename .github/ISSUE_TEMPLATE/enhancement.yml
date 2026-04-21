@@ -1,6 +1,6 @@
 name: Enhancement
 description: Suggest an improvement to something that already exists.
-labels: [enhancement]
+labels: [ enhancement ]
 body:
   - type: markdown
     attributes:
@@ -12,7 +12,8 @@ body:
     attributes:
       label: What currently exists?
       description: Describe the existing behaviour or UI element you want to change.
-      placeholder: The world cycle widget shows countdowns but does not indicate the current state label clearly when the screen is narrow.
+      placeholder: The world cycle widget shows countdowns but does not indicate the
+        current state label clearly when the screen is narrow.
     validations:
       required: true
 
@@ -32,6 +33,8 @@ body:
       options:
         - Web (apps/web)
         - Core Library (packages/core)
+        - KIM Library (packages/kim)
+        - Shared Library (packages/shared)
         - Monorepo / Tooling
         - Not sure
     validations:
