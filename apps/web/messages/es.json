@@ -216,10 +216,30 @@
       "bestCounterPath": "Mejor acumulación de contadores",
       "bestRomancePath": "Mejor ruta de romance",
       "bestBadRomancePath": "Peor ruta de romance",
+      "simulationFailed": "Failed to load simulation results.",
+      "uncertainPath": "This path includes nodes that we cannot process; the result might not be the same as in-game.",
+      "noPathsForCurrentState": "There's no paths for your boolean and counter values.",
       "noDialogueTextAvailable": "No hay texto de diálogo disponible en esta ruta.",
       "updateBooleanValues": "Actualizar valores de banderas basados en esta conversación",
       "booleanUpdated": "Valores de banderas actualizados.",
-      "futureSimulationsNotice": "Esto afectará los diálogos disponibles en futuras simulaciones."
+      "futureSimulationsNotice": "Esto afectará los diálogos disponibles en futuras simulaciones.",
+      "systemChatLine": {
+        "chemistry": "Chemistry",
+        "setBoolean": "Set Boolean",
+        "resetBoolean": "Reset Boolean",
+        "updateCounter": "Counter Updated",
+        "checkBoolean": "Check Boolean",
+        "checkMultiBoolean": "Check Multi-Boolean",
+        "checkCounter": "Check Counter",
+        "end": "End",
+        "true": "true",
+        "false": "false"
+      },
+      "booleanNotes": {
+        "avoidable": "This boolean should be avoided",
+        "romance": "This boolean is related to romance",
+        "badRomance": "This boolean is related to avoiding romance or breakup"
+      }
     }
   },
   "masteryChecklist": {
