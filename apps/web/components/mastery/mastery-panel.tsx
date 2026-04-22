@@ -5,13 +5,13 @@ import { useTranslations } from 'next-intl'
 import { useEffect, useMemo, useState } from 'react'
 import { ListIcon, CaretDownIcon } from '@phosphor-icons/react'
 
-import type { MasteryCategory, MasteryData } from '@/lib/mastery/types'
 import {
   loadProgress,
   MasteryProgress,
   saveProgress,
 } from '@/lib/mastery/client'
 import { isDevelopment } from '@/lib/utils'
+import type { MasteryCategory, MasteryData } from '@/lib/mastery/types'
 
 const CATEGORY_ORDER: MasteryCategory[] = [
   'itemCompletion',
