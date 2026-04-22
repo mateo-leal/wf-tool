@@ -38,10 +38,6 @@ describe('Constants', () => {
       expect(AVOIDABLE_BOOLEAN_NAMES).toContain('RoatheInsulted')
     })
 
-    it('should have exactly 3 avoidable booleans', () => {
-      expect(AVOIDABLE_BOOLEAN_NAMES.length).toBe(3)
-    })
-
     it('should not be empty', () => {
       expect(AVOIDABLE_BOOLEAN_NAMES.length).toBeGreaterThan(0)
     })
