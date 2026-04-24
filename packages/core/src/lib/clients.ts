@@ -31,8 +31,33 @@ export class MissionTypes extends BaseClient<MissionType> {}
 export class RailjackIntrinsics extends BaseClient<Intrinsic> {}
 
 export class Regions extends BaseClient<Region> {
-  getStarChart() {
-    return this.filter((r) => r.masteryExp > 0)
+  getStarChart(options: FilterOptions = {}) {
+    let regions = this.getAll()
+    if (options.masterable) {
+      // Empyrean Proximas do not award any Mastery Points.
+      // Exclude relays and HUBs.
+      regions = regions.filter(
+        (r) =>
+          !['MT_RAILJACK', 'MT_PVP'].includes(r.missionType) &&
+          r.nodeType !== 3 &&
+          !r.hidden
+      )
+    }
+    return regions
+      .map((r) => ({
+        ...r,
+        masteryExp: r.missionType === 'MT_JUNCTION' ? 1000 : r.masteryExp,
+      }))
+      .reduce(
+        (data, region) => {
+          data[region.systemIndex] = {
+            systemName: region.systemName,
+            nodes: [...(data[region.systemIndex]?.nodes ?? []), region],
+          }
+          return data
+        },
+        {} as Record<number, { systemName: string; nodes: Region[] }>
+      )
   }
 }
 
