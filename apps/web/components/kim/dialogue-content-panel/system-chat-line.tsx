@@ -68,6 +68,8 @@ export function SystemChatLine({ node }: { node: Node }) {
           {node.Content ?? t('end')}
         </div>
       )
+    default:
+      return null
   }
 }
 

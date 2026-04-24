@@ -1,5 +1,11 @@
 # tenno-companion
 
+## 0.3.1
+
+### Patch Changes
+
+- fix undefined LocTag in dialogue content nodes
+
 ## 0.3.0
 
 ### Minor Changes

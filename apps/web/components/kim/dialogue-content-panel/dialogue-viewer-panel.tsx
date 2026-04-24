@@ -1,6 +1,10 @@
+import type {
+  DialogueContentNode,
+  DialoguePath,
+  Node,
+} from '@tenno-companion/kim/types'
 import { useTranslations } from 'next-intl'
 import { useState, useTransition } from 'react'
-import { DialoguePath, Node } from '@tenno-companion/kim/types'
 import { NodeType } from '@tenno-companion/kim/constants'
 
 import { Button } from '@/components/ui/button'
@@ -9,8 +13,11 @@ import { useKIMChat } from '@/components/providers/kim-chat'
 import { ChatLine } from './chat-line'
 import { SystemChatLine } from './system-chat-line'
 
-function isDialogueNode(node: Node) {
-  return node.type === NodeType.Dialogue || node.type === NodeType.PlayerChoice
+function isDialogueNode(node: Node): node is DialogueContentNode {
+  return (
+    (node.type === NodeType.Dialogue || node.type === NodeType.PlayerChoice) &&
+    node.LocTag !== undefined
+  )
 }
 
 type Props = {
