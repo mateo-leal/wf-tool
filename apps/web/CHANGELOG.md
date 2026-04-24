@@ -1,5 +1,15 @@
 # tenno-companion
 
+## 0.3.2
+
+### Patch Changes
+
+- Startchart for normal and steelpath included in mastery page
+- 984169c: Metrics added.
+  Reward labels for The Circuit.
+- Updated dependencies [1315a1e]
+  - @tenno-companion/core@0.2.1
+
 ## 0.3.1
 
 ### Patch Changes

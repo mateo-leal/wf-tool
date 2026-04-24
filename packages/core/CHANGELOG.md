@@ -1,5 +1,12 @@
 # @tenno-companion/core
 
+## 0.2.1
+
+### Patch Changes
+
+- 1315a1e: Filter function moved to abstract class.
+  Regions now provides getStarChart function
+
 ## 0.2.0
 
 ### Minor Changes
