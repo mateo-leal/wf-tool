@@ -1,11 +1,11 @@
 export const SOURCES = {
-  enemies: 'ExportEnemies',
+  // enemies: 'ExportEnemies',
   factions: 'ExportFactions',
   missionTypes: 'ExportMissionTypes',
   railjackIntrinsics: 'ExportIntrinsics',
   regions: 'ExportRegions',
   sentinels: 'ExportSentinels',
-  syndicates: 'ExportSyndicates',
+  // syndicates: 'ExportSyndicates',
   warframes: 'ExportWarframes',
   weapons: 'ExportWeapons',
 }
