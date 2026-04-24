@@ -3,6 +3,7 @@ export type MasteryCategory =
   | 'railjackIntrinsic'
   | 'drifterIntrinsic'
   | 'starchartCompletion'
+  | 'starchartCompletionSP'
 
 export type MasteryItem = {
   id: string
@@ -18,6 +19,7 @@ export type MasteryByCategory = {
   railjackIntrinsic: Record<string, MasteryItem[]>
   drifterIntrinsic: Record<string, MasteryItem[]>
   starchartCompletion: Record<string, MasteryItem[]>
+  starchartCompletionSP: Record<string, MasteryItem[]>
 }
 
 export type MasterySubcategoryLabels = Record<

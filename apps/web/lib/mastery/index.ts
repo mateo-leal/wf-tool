@@ -3,6 +3,7 @@ import {
   NecramechProvider,
   PetProvider,
   RailjackIntrinsicProvider,
+  RegionProvider,
   WarframeProvider,
   WeaponProvider,
 } from '@tenno-companion/core/server'
@@ -16,23 +17,26 @@ import {
 } from './types'
 
 export async function buildMasteryData(locale: string): Promise<MasteryData> {
-  const [items, railjackIntrinsics] = await Promise.all([
+  const [items, railjackIntrinsics, startChart] = await Promise.all([
     getItems(locale),
     getRailjackIntrinsics(locale),
+    getStarChart(locale),
   ])
 
   const data: MasteryByCategory = {
     itemCompletion: items,
     railjackIntrinsic: railjackIntrinsics.masteryItems,
     drifterIntrinsic: {},
-    starchartCompletion: {},
+    starchartCompletion: startChart.masteryItems,
+    starchartCompletionSP: startChart.masteryItemsSP,
   }
 
   const subcategoryLabels: MasterySubcategoryLabels = {
     itemCompletion: {},
     railjackIntrinsic: railjackIntrinsics.labels,
     drifterIntrinsic: {},
-    starchartCompletion: {},
+    starchartCompletion: startChart.labels,
+    starchartCompletionSP: startChart.labels,
   }
 
   return {
@@ -228,6 +232,33 @@ async function getRailjackIntrinsics(locale: string) {
     { labels: {}, masteryItems: {} } as {
       labels: Record<string, string>
       masteryItems: Record<string, MasteryItem[]>
+    }
+  )
+}
+
+async function getStarChart(locale: string) {
+  const regions = await RegionProvider.create({ locale })
+  return Object.entries(regions.getStarChart({ masterable: true })).reduce(
+    (data, [systemIndex, system]) => {
+      data.labels[systemIndex] = system.systemName
+      data.masteryItems[systemIndex] = system.nodes.map((node) => ({
+        id: `starchart:${node.uniqueName}`,
+        name: node.name,
+        masteryPoints: node.masteryExp,
+        masteryReq: node.masteryReq,
+      }))
+      data.masteryItemsSP[systemIndex] = system.nodes.map((node) => ({
+        id: `starchart-sp:${node.uniqueName}`,
+        name: node.name,
+        masteryPoints: node.masteryExp,
+        masteryReq: node.masteryReq,
+      }))
+      return data
+    },
+    { labels: {}, masteryItems: {}, masteryItemsSP: {} } as {
+      labels: Record<string, string>
+      masteryItems: Record<string, MasteryItem[]>
+      masteryItemsSP: Record<string, MasteryItem[]>
     }
   )
 }

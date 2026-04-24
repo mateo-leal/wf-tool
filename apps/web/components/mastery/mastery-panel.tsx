@@ -15,7 +15,7 @@ import {
   MasteryStorageV2,
   saveProgress,
 } from '@/lib/mastery/client'
-import { isDevelopment } from '@/lib/utils'
+import { cn, isDevelopment } from '@/lib/utils'
 import type { MasteryCategory, MasteryData } from '@/lib/mastery/types'
 
 import { Button } from '../ui/button'
@@ -24,7 +24,8 @@ const CATEGORY_ORDER: MasteryCategory[] = [
   'itemCompletion',
   'railjackIntrinsic',
   // 'drifterIntrinsic',
-  // 'starchartCompletion',
+  'starchartCompletion',
+  'starchartCompletionSP',
 ]
 
 export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
@@ -179,10 +180,10 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
   return (
     <div className="flex min-h-0 flex-1 gap-2">
       <aside
-        className={[
+        className={cn(
           'fixed top-0 left-0 z-40 flex w-48 max-h-[calc(100vh-5.5rem)] flex-col overflow-y-auto border border-muted-primary bg-background md:static md:max-h-none',
-          sidebarOpen ? 'block' : 'hidden md:flex',
-        ].join(' ')}
+          sidebarOpen ? 'block' : 'hidden md:flex'
+        )}
       >
         <div className="flex flex-col divide-y divide-muted-primary/40">
           {CATEGORY_ORDER.map((category) => {
