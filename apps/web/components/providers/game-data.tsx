@@ -10,7 +10,9 @@ import {
   useRef,
 } from 'react'
 import { useLocale } from 'next-intl'
+import { logger } from '@sentry/nextjs'
 
+import { FetchError } from '@/lib/errors'
 import { OracleWorldState } from '@/lib/world-state/types'
 import { ArbitrationCycle, BountyCycles } from '@/lib/types'
 import { fetchOracleWorldState } from '@/lib/world-state/fetch-world-state'
@@ -56,6 +58,14 @@ export function GameDataProvider({ children }: { children: ReactNode }) {
     try {
       const fetched = await fetchOracleWorldState()
       setWorldState(fetched)
+    } catch (error) {
+      if (error instanceof FetchError) {
+        logger.warn('Error fetching world state. Will try again in 5 minutes', {
+          ...error,
+        })
+      } else {
+        logger.error('Unexpected error fetching world state.')
+      }
     } finally {
       fetchingRefs.current.delete('world-state')
     }
