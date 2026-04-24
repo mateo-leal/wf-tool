@@ -12,7 +12,7 @@ import {
 import { Chat, Simulation } from '@tenno-companion/kim'
 import type { Chatroom, Node } from '@tenno-companion/kim/types'
 
-import { KIM_STORAGE_EVENT, KIM_STORAGE_KEY } from '@/lib/constants'
+import { KIM_STORAGE_EVENT, KIM_STORAGE_KEY } from '@/lib/storage-keys'
 
 interface KimStorageV1 {
   booleans: Record<string, boolean>

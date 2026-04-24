@@ -23,7 +23,7 @@ import {
   getBaroPeriodKey,
   isBaroKiteerAvailable,
 } from '@/lib/world-state/baro'
-import { CHECKLIST_STORAGE_KEY } from '@/lib/constants'
+import { CHECKLIST_STORAGE_KEY } from '@/lib/storage-keys'
 import { counterToString, toTitleCase } from '@/lib/utils'
 import { getSortieBossName } from '@/lib/utils/sortie-bosses'
 import { ChecklistState, ChecklistTask, LabelExternal } from '@/lib/types'

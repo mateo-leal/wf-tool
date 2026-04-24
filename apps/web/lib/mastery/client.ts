@@ -1,7 +1,7 @@
 import {
   MASTERY_CHECKLIST_STORAGE_KEY,
   MASTERY_CHECKLIST_STORAGE_KEY_V1,
-} from '../constants'
+} from '../storage-keys'
 
 export type MasteryProgress = Record<string, boolean>
 
