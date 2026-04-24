@@ -271,6 +271,9 @@
     "masteryPointsProgress": "{gained, number}/{total, number} MP",
     "masteryPoints": "{points, number} MP",
     "searchPlaceholder": "Search by name...",
+    "markAll": "Mark category as completed",
+    "hideCompleted": "Hide completed",
+    "showCompleted": "Show completed",
     "clearCategory": "Clear category",
     "activeCategoryCount": "{count} items in {category}",
     "rankPrefix": "Rank {rank}: {item}",
@@ -287,7 +290,8 @@
       "title": "About",
       "description": "Tenno Companion is a fan-made tool designed to help players track their progress and manage their in-game tasks.",
       "legalDisclaimer": "This site is not affiliated with Digital Extremes. Warframe and the Warframe logo are trademarks of Digital Extremes Ltd.",
-      "browseWfCredits": "Data and media resources are provided by <link>browse.wf</link>, a community-driven Warframe database and resource site."
+      "browseWfCredits": "Data and media resources are provided by <link>browse.wf</link>, a community-driven Warframe database and resource site.",
+      "version": "Version"
     }
   },
   "worldCycles": {
