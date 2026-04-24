@@ -9,40 +9,20 @@ import {
   useCallback,
   useRef,
 } from 'react'
-
-import { ArbitrationCycle, BountyCycles } from '@/lib/types'
-import { OracleWorldState } from '@/lib/world-state/types'
-import { Dictionary, DictionarySource, getDictionary } from '@/lib/language'
-import { fetchOracleWorldState } from '@/lib/world-state/fetch-world-state'
-import {
-  IndexNameType,
-  Intrinsic,
-  PublicExportMap,
-  PublicExportType,
-  Region,
-} from '@/lib/public-export/types'
 import { useLocale } from 'next-intl'
-import {
-  fetchPublicExportFactions,
-  fetchPublicExportIntrinsics,
-  fetchPublicExportMissionTypes,
-  fetchPublicExportRegions,
-} from '@/lib/public-export/fetch-public-export'
+
+import { OracleWorldState } from '@/lib/world-state/types'
+import { ArbitrationCycle, BountyCycles } from '@/lib/types'
+import { fetchOracleWorldState } from '@/lib/world-state/fetch-world-state'
+import { Dictionary, DictionarySource, getDictionary } from '@/lib/language'
 
 type GameDataContextValue = {
   worldState?: OracleWorldState
   dictionaries: Partial<Record<DictionarySource, Dictionary>>
   bountyCycle?: BountyCycles
   arbitrations?: ArbitrationCycle[]
-  exportData: Partial<{
-    missionTypes: PublicExportMap<IndexNameType>
-    regions: PublicExportMap<Region>
-    factions: PublicExportMap<IndexNameType>
-    railjackIntrinsics: PublicExportMap<Intrinsic>
-  }>
   isLoading: boolean
   fetchDictionary: (source: DictionarySource) => Promise<void>
-  fetchExportData: (type: PublicExportType) => Promise<void>
 }
 
 const GameDataContext = createContext<GameDataContextValue | undefined>(
@@ -60,9 +40,6 @@ export function GameDataProvider({ children }: { children: ReactNode }) {
   const [arbitrations, setArbitrations] = useState<ArbitrationCycle[]>()
   const [dictionaries, setDictionaries] = useState<
     Partial<Record<DictionarySource, Dictionary>>
-  >({})
-  const [exportData, setExportData] = useState<
-    GameDataContextValue['exportData']
   >({})
   const [isLoading, setIsLoading] = useState(true)
 
@@ -143,43 +120,6 @@ export function GameDataProvider({ children }: { children: ReactNode }) {
     [locale, dictionaries]
   )
 
-  const fetchExportData = useCallback(
-    async (type: PublicExportType) => {
-      if (exportData[type] || fetchingRefs.current.has(`export-${type}`)) return
-
-      fetchingRefs.current.add(`export-${type}`)
-      try {
-        switch (type) {
-          case 'factions': {
-            const factions = await fetchPublicExportFactions()
-            setExportData((prev) => ({ ...prev, factions }))
-            break
-          }
-          case 'missionTypes': {
-            const missionTypes = await fetchPublicExportMissionTypes()
-            setExportData((prev) => ({ ...prev, missionTypes }))
-            break
-          }
-          case 'railjackIntrinsics': {
-            const railjackIntrinsics = await fetchPublicExportIntrinsics()
-            setExportData((prev) => ({ ...prev, railjackIntrinsics }))
-            break
-          }
-          case 'regions': {
-            const regions = await fetchPublicExportRegions()
-            setExportData((prev) => ({ ...prev, regions }))
-            break
-          }
-        }
-      } catch (error) {
-        console.error(`Error fetching export data ${type}:`, error)
-      } finally {
-        fetchingRefs.current.delete(`export-${type}`)
-      }
-    },
-    [exportData]
-  )
-
   useEffect(() => {
     let isMounted = true
 
@@ -220,10 +160,8 @@ export function GameDataProvider({ children }: { children: ReactNode }) {
         dictionaries,
         bountyCycle,
         arbitrations,
-        exportData,
         isLoading,
         fetchDictionary,
-        fetchExportData,
       }}
     >
       {children}
