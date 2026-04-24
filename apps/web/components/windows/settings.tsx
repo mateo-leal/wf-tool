@@ -1,13 +1,16 @@
 'use client'
 
-import { CloseButton } from '@/components/close-button'
-import { LANGUAGE_OPTIONS } from '@/lib/language'
+import { metrics } from '@sentry/nextjs'
 import { createPortal } from 'react-dom'
+import { useLocale, useTranslations } from 'next-intl'
+
+import { LANGUAGE_OPTIONS } from '@/lib/language'
+import { CloseButton } from '@/components/close-button'
+import { Link, usePathname, useRouter } from '@/i18n/navigation'
+
 import { Window } from '../ui/window'
 import { WindowContent } from '../ui/window-content'
 import { WindowTitlebar } from '../ui/window-titlebar'
-import { Link, usePathname, useRouter } from '@/i18n/navigation'
-import { useLocale, useTranslations } from 'next-intl'
 
 type SettingsPortalProps = {
   isOpen: boolean
@@ -63,6 +66,13 @@ export function SettingsPortal({ isOpen, onCloseAction }: SettingsPortalProps) {
                 target="_blank"
                 rel="noopener noreferrer"
                 className="underline underline-offset-2 hover:text-foreground"
+                onClick={() => {
+                  metrics.count('link.crowdin', 1, {
+                    attributes: {
+                      locale,
+                    },
+                  })
+                }}
               >
                 Crowdin
               </a>
