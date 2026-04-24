@@ -1,6 +1,6 @@
 {
   "name": "@tenno-companion/core",
-  "version": "0.1.5",
+  "version": "0.2.0",
   "keywords": [
     "warframe"
   ],
@@ -25,6 +25,11 @@
     "./constants": {
       "types": "./dist/lib/constants.d.ts",
       "import": "./dist/lib/constants.js"
+    },
+    "./server": {
+      "types": "./dist/server.d.ts",
+      "import": "./dist/server.mjs",
+      "require": "./dist/server.js"
     },
     "./locales": {
       "types": "./dist/lib/locales.d.ts",

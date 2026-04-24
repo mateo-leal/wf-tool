@@ -6,6 +6,7 @@ import type {
   OptimizedResults,
   SimulationState,
 } from '@tenno-companion/kim/types'
+import { logger } from '@sentry/nextjs'
 import { useLocale, useTranslations } from 'next-intl'
 import { CaretLeftIcon } from '@phosphor-icons/react'
 import { useEffect, useState, useTransition } from 'react'
@@ -74,7 +75,7 @@ export function DialogueContentPanel({ option }: Props) {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
       } catch (err: any) {
         if (err.name !== 'AbortError') {
-          console.error('Simulation fetch error:', err)
+          logger.error('Simulation fetch error:', err)
         }
       }
     })

@@ -1,7 +1,9 @@
 'use client'
 
 import { useTranslations } from 'next-intl'
+import { MissionType, Region } from '@tenno-companion/core/types'
 import { useCallback, useEffect, useRef, useState, useMemo } from 'react'
+
 import {
   CHECKLIST_TASKS,
   clearExpiredOtherCompletions,
@@ -16,17 +18,18 @@ import {
   getWeeklyResetKey,
   normalizeChecklistState,
 } from '@/lib/checklist'
-import { CHECKLIST_STORAGE_KEY } from '@/lib/constants'
-import { ChecklistState, ChecklistTask, LabelExternal } from '@/lib/types'
-import { ChecklistSectionCard } from './checklist-section-card'
-import { counterToString, toTitleCase } from '@/lib/utils'
-import { useGameData } from '../providers/game-data'
 import {
   getBaro,
   getBaroPeriodKey,
   isBaroKiteerAvailable,
 } from '@/lib/world-state/baro'
+import { CHECKLIST_STORAGE_KEY } from '@/lib/constants'
+import { counterToString, toTitleCase } from '@/lib/utils'
 import { getSortieBossName } from '@/lib/utils/sortie-bosses'
+import { ChecklistState, ChecklistTask, LabelExternal } from '@/lib/types'
+
+import { useGameData } from '../providers/game-data'
+import { ChecklistSectionCard } from './checklist-section-card'
 
 type ChecklistSection = 'daily' | 'weekly' | 'other'
 
@@ -41,15 +44,19 @@ function loadChecklistState(now: Date): ChecklistState {
   }
 }
 
-export function ChecklistPanel() {
+type Props = {
+  missionTypes: MissionType[]
+  regions: Region[]
+}
+
+export function ChecklistPanel({ missionTypes, regions }: Props) {
   const t = useTranslations()
   const {
     worldState,
+    // exportData,
     arbitrations,
     dictionaries,
-    exportData,
     fetchDictionary,
-    fetchExportData,
   } = useGameData()
 
   const [state, setState] = useState<ChecklistState>(() =>
@@ -61,9 +68,7 @@ export function ChecklistPanel() {
   useEffect(() => {
     void fetchDictionary('default')
     void fetchDictionary('oracle')
-    void fetchExportData('missionTypes')
-    void fetchExportData('regions')
-  }, [fetchDictionary, fetchExportData])
+  }, [fetchDictionary])
 
   useEffect(() => {
     setState(loadChecklistState(new Date()))
@@ -193,30 +198,31 @@ export function ChecklistPanel() {
 
   const archonRewardLabel = useMemo(() => {
     const sortie = worldState?.LiteSorties?.[0]
-    const mTypes = exportData.missionTypes
-    const dict = dictionaries['default']
-    if (!sortie || !mTypes || !dict) return null
+    if (!sortie) return null
 
     const boss = toTitleCase(sortie.Boss.replace('SORTIE_BOSS_', ''))
     const missions = sortie.Missions.map((m) => {
-      const key = mTypes[m.missionType]?.name
-      return key && dict[key] ? toTitleCase(dict[key]) : m.missionType
+      const missionTypeName = missionTypes.find(
+        (mt) => mt.uniqueName === m.missionType
+      )?.name
+      return missionTypeName ? toTitleCase(missionTypeName) : m.missionType
     }).join(', ')
 
     return `${boss} (${missions})`
-  }, [worldState, exportData.missionTypes, dictionaries])
+  }, [worldState?.LiteSorties, missionTypes])
 
   const sortieRewardLabel = useMemo(() => {
     const sortie = worldState?.Sorties?.[0]
-    const mTypes = exportData.missionTypes
     const dict = dictionaries.default
-    if (!sortie || !mTypes || !dict) return null
+    if (!sortie || !dict) return null
 
+    // TODO: Migrate this to core
     const boss = getSortieBossName(sortie.Boss, dict)
     const missions = sortie.Variants.map((variant) => {
-      const key = mTypes[variant.missionType]?.name
-      const missionName =
-        key && dict[key] ? toTitleCase(dict[key]) : variant.missionType
+      let missionName = missionTypes.find(
+        (mt) => mt.uniqueName === variant.missionType
+      )?.name
+      missionName = missionName ? toTitleCase(missionName) : variant.missionType
       const modifier = variant.modifierType
         ? `${t(`sortieModifiers.${variant.modifierType}`)}`
         : ''
@@ -233,7 +239,7 @@ export function ChecklistPanel() {
         <ul className="list-disc list-inside">{missions}</ul>
       </>
     )
-  }, [worldState?.Sorties, exportData.missionTypes, dictionaries, t])
+  }, [worldState?.Sorties, dictionaries.default, missionTypes, t])
 
   const teshinRewardLabel = useMemo(() => {
     const EPOCH = 1736121600 * 1000
@@ -287,15 +293,14 @@ export function ChecklistPanel() {
         CHECKLIST_TASKS.other.map((task) => {
           if (task.id === 'other-baro') {
             let baroLocation = t('checklist.other.relayLocationPending')
-            const region = baro?.Node ? exportData.regions?.[baro.Node] : null
-            const dict = dictionaries.default
+            const region = baro?.Node
+              ? regions.find((r) => r.uniqueName === baro.Node)
+              : undefined
 
-            if (region && dict) {
-              const regionName = dict[region.name]
-              const systemName = dict[region.systemName]
+            if (region) {
               baroLocation =
-                regionName && systemName
-                  ? `${regionName}, ${systemName}`
+                region.name && region.systemName
+                  ? `${region.name}, ${region.systemName}`
                   : baro!.Node
             } else if (baro?.Node) {
               baroLocation = baro.Node
@@ -308,34 +313,24 @@ export function ChecklistPanel() {
           }
 
           if (task.id === 'other-arbitration') {
-            if (
-              arbitrations &&
-              exportData.regions &&
-              exportData.missionTypes &&
-              dictionaries.default
-            ) {
+            if (arbitrations) {
               const currentHour = Math.trunc(now.getTime() / 3600000) * 3600
               const epochHour = arbitrations[0].timestamp
               const currentHourIndex = (currentHour - epochHour) / 3600
               const currentArbitration = arbitrations[currentHourIndex]
 
-              const region = exportData.regions[currentArbitration.node]
-              const mission = exportData.missionTypes[region.missionType]
+              const region = regions.find(
+                (r) => r.uniqueName === currentArbitration.node
+              )
 
-              const dict = dictionaries.default
-              const regionName = dict[region.name] || currentArbitration.node
-              const systemName = dict[region.systemName] || region.systemName
-              const factionName = dict[region.factionName] || region.factionName
-              const missionName = mission.name
-                ? dict[mission.name] || region.missionType
-                : region.missionType
-
-              return {
-                ...task,
-                dynamicInfo: factionName
-                  ? `${toTitleCase(missionName)} (${factionName})`
-                  : toTitleCase(missionName),
-                location: `${regionName}, ${systemName}`,
+              if (region) {
+                return {
+                  ...task,
+                  dynamicInfo: region.factionName
+                    ? `${toTitleCase(region.missionName)} (${region.factionName})`
+                    : toTitleCase(region.missionName),
+                  location: `${region.name}, ${region.systemName}`,
+                }
               }
             }
           }
@@ -350,11 +345,9 @@ export function ChecklistPanel() {
       applyDictionaryTitles,
       arbitrations,
       baro,
-      dictionaries.default,
-      exportData.missionTypes,
-      exportData.regions,
       isBaroAvailable,
       now,
+      regions,
       sortieRewardLabel,
       t,
     ]

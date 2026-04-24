@@ -32,7 +32,7 @@ import {
   RailjackIntrinsicProvider,
   WarframeProvider,
   WeaponProvider,
-} from '@tenno-companion/core'
+} from '@tenno-companion/core/server'
 import { sortByName } from '@tenno-companion/core/locales'
 
 async function buildMasteryData(locale = 'en') {

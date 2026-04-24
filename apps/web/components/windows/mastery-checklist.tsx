@@ -15,7 +15,7 @@ export async function MasteryChecklistWindow() {
   return (
     <Window className="relative mt-0 h-[calc(100svh-5.5rem)] min-h-75 max-w-none md:mt-10 md:h-[85svh]">
       <WindowTitlebar>
-        <p>{t('title')}</p>
+        <h1>{t('title')}</h1>
         <CloseButton href="/" />
       </WindowTitlebar>
       <WindowContent className="min-h-0 p-2">

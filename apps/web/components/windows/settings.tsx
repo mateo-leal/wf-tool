@@ -32,7 +32,7 @@ export function SettingsPortal({ isOpen, onCloseAction }: SettingsPortalProps) {
     <section className="pointer-events-none fixed inset-0 z-50 flex items-center justify-center p-3">
       <Window className="pointer-events-auto w-full max-w-sm">
         <WindowTitlebar>
-          <p>{t('title')}</p>
+          <h1>{t('title')}</h1>
           <CloseButton onClick={onCloseAction} />
         </WindowTitlebar>
         <WindowContent>
@@ -55,8 +55,8 @@ export function SettingsPortal({ isOpen, onCloseAction }: SettingsPortalProps) {
             ))}
           </select>
 
-          {locale !== 'en' && locale !== 'es' ? (
-            <p className="mt-2 text-sm text-muted-foreground">
+          {locale !== 'es' ? (
+            <p className="mt-2 text-xs text-muted-foreground">
               Help us translate the app to your language. Volunteer on{' '}
               <a
                 href="https://crowdin.com/project/tenno-companion"
@@ -74,12 +74,12 @@ export function SettingsPortal({ isOpen, onCloseAction }: SettingsPortalProps) {
             href="https://github.com/mateo-leal/tenno-companion"
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-3 inline-flex w-full items-center justify-center border border-muted-primary bg-background px-2 py-1.5 text-sm transition hover:bg-muted-primary/10"
+            className="mt-2 inline-flex w-full items-center justify-center border border-muted-primary bg-background px-2 py-1.5 text-sm transition hover:bg-muted-primary/10"
           >
             {t('githubRepository')}
           </Link>
 
-          <section className="mt-4 border border-muted-primary/70 bg-background/50 p-2 text-xs leading-relaxed text-muted-foreground">
+          <section className="mt-2 border border-muted-primary/70 p-2 text-xs text-muted-foreground">
             <p className="mb-1 text-[11px] font-semibold uppercase tracking-wide text-foreground">
               {t('about.title')}
             </p>
@@ -99,6 +99,12 @@ export function SettingsPortal({ isOpen, onCloseAction }: SettingsPortalProps) {
                 ),
               })}
             </p>
+          </section>
+          <section className="mt-2 border border-muted-primary/70 p-2 text-xs text-muted-foreground flex gap-2">
+            <p className="font-semibold uppercase tracking-wide text-foreground">
+              {t('about.version')}
+            </p>
+            <p>{process.env.version}</p>
           </section>
         </WindowContent>
       </Window>

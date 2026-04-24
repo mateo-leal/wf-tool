@@ -308,6 +308,7 @@ export const DRIFTER_MELEE_COMPATIBILITY_TAGS = [
   'SWORDS_AND_SHIELD_STANCE',
 ] as const
 
+// MARK: Non masterable part types
 export const NON_MASTERABLE_PART_TYPES = [
   // Amp parts
   'LWPT_AMP_BRACE',

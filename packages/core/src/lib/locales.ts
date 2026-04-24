@@ -5,7 +5,10 @@ import {
 } from '@tenno-companion/shared/locales'
 import { Data } from '../types/internal'
 
-export { getStandardLocale } from '@tenno-companion/shared/locales'
+export {
+  getStandardLocale,
+  SUPPORTED_LANGUAGES,
+} from '@tenno-companion/shared/locales'
 
 /**
  * Fetches the appropriate dictionary for the given locale. If the locale is not supported, it falls back to English.

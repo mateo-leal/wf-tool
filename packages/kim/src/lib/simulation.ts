@@ -9,8 +9,9 @@ import {
   type Node,
   type StartDialogueNode,
 } from '../types'
-import type { SimulationTracking, TraversalOptions } from '../types/internal'
 import { NodeType } from './constants'
+import type { SimulationTracking, TraversalOptions } from '../types/internal'
+import { NodeInvalidType, NodeNotFound, UnsupportedOperation } from './errors'
 
 /**
  * Simulation class to traverse dialogue paths in a Chat instance,
@@ -295,7 +296,7 @@ export class Simulation {
   private getCounter(node: IncCounterDialogueNode) {
     const [counterName, value] = node.Content.split(' ')
     if (!counterName || isNaN(Number(value))) {
-      throw new Error(
+      throw new UnsupportedOperation(
         `Invalid counter content format for node ${node.Id}: ${node.Content}`
       )
     }
@@ -337,7 +338,7 @@ export class Simulation {
         case 4:
           return counter >= targetValue
         default:
-          throw new Error(
+          throw new UnsupportedOperation(
             `Unknown comparison operator ${op} in output ${output.Expression}`
           )
       }
@@ -352,7 +353,7 @@ export class Simulation {
       if (logicalOp === 0)
         match = match && nextResult // AND
       else
-        throw new Error(
+        throw new UnsupportedOperation(
           `Unknown logical operator ${logicalOp} in output ${output.Expression}`
         )
     }
@@ -418,11 +419,13 @@ export class Simulation {
     if (typeof startNode === 'number') {
       const foundNode = this.chat.getById(startNode)
       if (foundNode?.type !== NodeType.Start) {
-        throw new Error(`Node with id ${startNode} is not a start node.`)
+        throw new NodeInvalidType(
+          `Node with id ${startNode} is not a start node.`
+        )
       }
       return foundNode
     } else if (!this.chat.getById(startNode.Id)) {
-      throw new Error(`Node with id ${startNode.Id} not found.`)
+      throw new NodeNotFound(`Node with id ${startNode.Id} not found.`)
     } else {
       return startNode
     }

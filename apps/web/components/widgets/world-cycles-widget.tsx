@@ -1,9 +1,12 @@
 'use client'
 
-import { useEffect, useMemo, useState } from 'react'
 import { useTranslations } from 'next-intl'
+import { useEffect, useMemo, useState } from 'react'
+import { Faction, Region } from '@tenno-companion/core/types'
+
 import { cn, counterToString } from '@/lib/utils'
 import { Counter, WorldCycle } from '@/lib/types'
+
 import { useGameData } from '../providers/game-data'
 
 const CYCLE_ACCENT_CLASSES: Record<string, string> = {
@@ -14,14 +17,14 @@ const CYCLE_ACCENT_CLASSES: Record<string, string> = {
   zariman: 'border-[#6b9da4]/70 bg-[#102028]/70',
 }
 
-type Props = {
+type CycleCardProps = {
   title: string
   stateLabel?: string
   expiry?: number
   now: number
   isUnavailable?: boolean
   accentClass: string
-  isLoading: boolean
+  isLoading?: boolean
   mounted: boolean
 }
 
@@ -32,9 +35,9 @@ function CycleCard({
   now,
   isUnavailable,
   accentClass,
-  isLoading,
+  isLoading = false,
   mounted,
-}: Props) {
+}: CycleCardProps) {
   const t = useTranslations()
 
   const formatCountdown = (expiryTime: number): string => {
@@ -53,9 +56,9 @@ function CycleCard({
   return (
     <div className={cn('border p-2 transition-colors', accentClass)}>
       <div className="flex items-center justify-between gap-2">
-        <h2 className="font-title text-lg leading-none text-foreground">
+        <p className="font-title text-lg leading-none text-foreground">
           {title}
-        </h2>
+        </p>
         <div className="flex items-center gap-2">
           {mounted && stateLabel ? (
             <span className="border border-foreground/20 bg-background/40 px-1.5 py-0.5 text-xs uppercase tracking-[0.15em] text-primary">
@@ -85,16 +88,15 @@ function CycleCard({
   )
 }
 
-export function WorldCyclesWidget() {
+type Props = {
+  factions: Faction[]
+  regions: Region[]
+}
+
+export function WorldCyclesWidget({ factions, regions }: Props) {
   const t = useTranslations('worldCycles')
-  const {
-    bountyCycle,
-    dictionaries,
-    exportData,
-    fetchDictionary,
-    fetchExportData,
-    isLoading,
-  } = useGameData()
+  const { bountyCycle, dictionaries, fetchDictionary, isLoading } =
+    useGameData()
 
   const [mounted, setMounted] = useState(false)
   const [now, setNow] = useState(0)
@@ -104,19 +106,16 @@ export function WorldCyclesWidget() {
     setMounted(true)
     setNow(Date.now())
 
-    void fetchDictionary('default')
     void fetchDictionary('oracle')
-    void fetchExportData('factions')
 
     const interval = setInterval(() => setNow(Date.now()), 1000)
     return () => clearInterval(interval)
-  }, [fetchDictionary, fetchExportData])
+  }, [fetchDictionary])
 
   const cycleStates = useMemo(() => {
     const results: Record<string, Partial<WorldCycle>> = {}
     if (!mounted) return results
 
-    const dictDefault = dictionaries.default || {}
     const dictOracle = dictionaries.oracle || {}
 
     // API Driven Cycles
@@ -131,12 +130,12 @@ export function WorldCyclesWidget() {
         expiry: results.cetus.expiry,
         state: isCetusNight ? 'vome' : 'fass',
       }
-      const zarimanFaction = exportData.factions?.[bountyCycle.zarimanFaction]
+      const zarimanFactionName = factions.find(
+        (f) => f.uniqueName === bountyCycle.zarimanFaction
+      )?.name
       results.zariman = {
         expiry: bountyCycle.expiry,
-        state: zarimanFaction
-          ? dictDefault[zarimanFaction.name!]
-          : bountyCycle.zarimanFaction,
+        state: zarimanFactionName ?? bountyCycle.zarimanFaction,
       }
     }
 
@@ -166,21 +165,12 @@ export function WorldCyclesWidget() {
     }
 
     return results
-  }, [
-    mounted,
-    dictionaries.default,
-    dictionaries.oracle,
-    bountyCycle,
-    now,
-    exportData.factions,
-  ])
-
-  const dictDefault = dictionaries.default || {}
+  }, [mounted, dictionaries.oracle, bountyCycle, now, factions])
 
   return (
     <div className="flex flex-col gap-2">
       <CycleCard
-        title={dictDefault['/Lotus/Language/Locations/EidolonPlains']}
+        title={regions.find((r) => r.uniqueName === 'SolNode228')!.name}
         stateLabel={
           cycleStates.cetus?.state
             ? t(`states.${cycleStates.cetus.state}`)
@@ -194,7 +184,7 @@ export function WorldCyclesWidget() {
       />
 
       <CycleCard
-        title={dictDefault['/Lotus/Language/Locations/VenusLandscape']}
+        title={regions.find((r) => r.uniqueName === 'SolNode129')!.name}
         stateLabel={
           cycleStates.vallis?.state
             ? t(`states.${cycleStates.vallis.state}`)
@@ -203,16 +193,11 @@ export function WorldCyclesWidget() {
         expiry={cycleStates.vallis?.expiry}
         now={now}
         accentClass={CYCLE_ACCENT_CLASSES.vallis}
-        isLoading={false}
         mounted={mounted}
       />
 
       <CycleCard
-        title={
-          dictDefault[
-            '/Lotus/Language/InfestedMicroplanet/SolarMapDeimosLandscapeName'
-          ]
-        }
+        title={regions.find((r) => r.uniqueName === 'SolNode229')!.name}
         stateLabel={
           cycleStates.cambion?.state
             ? t(`states.${cycleStates.cambion.state}`)
@@ -226,17 +211,16 @@ export function WorldCyclesWidget() {
       />
 
       <CycleCard
-        title={dictDefault['/Lotus/Language/Locations/Duviri']}
+        title={regions.find((r) => r.uniqueName === 'SolNode236')!.systemName}
         stateLabel={cycleStates.duviri?.state}
         expiry={cycleStates.duviri?.expiry}
         now={now}
         accentClass={CYCLE_ACCENT_CLASSES.duviri}
-        isLoading={false}
         mounted={mounted}
       />
 
       <CycleCard
-        title={dictDefault['/Lotus/Language/Zariman/ZarimanRegionName']}
+        title={regions.find((r) => r.uniqueName === 'SolNode230')!.systemName}
         stateLabel={cycleStates.zariman?.state}
         expiry={cycleStates.zariman?.expiry}
         now={now}

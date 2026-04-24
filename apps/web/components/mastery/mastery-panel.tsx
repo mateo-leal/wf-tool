@@ -1,17 +1,24 @@
 'use client'
 
+import {
+  ListIcon,
+  CaretDownIcon,
+  EyeSlashIcon,
+  EyeIcon,
+} from '@phosphor-icons/react'
 import Image from 'next/image'
 import { useTranslations } from 'next-intl'
 import { useEffect, useMemo, useState } from 'react'
-import { ListIcon, CaretDownIcon } from '@phosphor-icons/react'
 
-import type { MasteryCategory, MasteryData } from '@/lib/mastery/types'
 import {
   loadProgress,
-  MasteryProgress,
+  MasteryStorageV2,
   saveProgress,
 } from '@/lib/mastery/client'
 import { isDevelopment } from '@/lib/utils'
+import type { MasteryCategory, MasteryData } from '@/lib/mastery/types'
+
+import { Button } from '../ui/button'
 
 const CATEGORY_ORDER: MasteryCategory[] = [
   'itemCompletion',
@@ -30,7 +37,10 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
     Set<MasteryCategory>
   >(new Set(['itemCompletion']))
   const [query, setQuery] = useState('')
-  const [progress, setProgress] = useState<MasteryProgress>({})
+  const [progress, setProgress] = useState<MasteryStorageV2>({
+    hideCompleted: false,
+    items: {},
+  })
   const [sidebarOpen, setSidebarOpen] = useState(false)
 
   useEffect(() => {
@@ -39,7 +49,7 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
   }, [])
 
   const resolveSubcategoryLabel = (cat: MasteryCategory, sub: string) => {
-    const serverLabel = masteryData?.subcategoryLabels?.[cat]?.[sub]
+    const serverLabel = masteryData.subcategoryLabels?.[cat]?.[sub]
     if (serverLabel) return serverLabel
     const key = `subcategories.${sub}`
     return t.has(key) ? t(key) : sub
@@ -70,11 +80,17 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
 
   const filteredItems = useMemo(() => {
     if (!resolvedActiveSubcategory) return []
-    const items =
-      masteryData?.[activeCategory]?.[resolvedActiveSubcategory] ?? []
+    const items = masteryData[activeCategory]?.[resolvedActiveSubcategory] ?? []
     const q = query.trim().toLowerCase()
-    return q ? items.filter((i) => i.name.toLowerCase().includes(q)) : items
-  }, [activeCategory, masteryData, query, resolvedActiveSubcategory])
+    return q
+      ? items.filter((i) => i.name.toLowerCase().includes(q))
+      : items.filter((i) => {
+          if (progress.hideCompleted) {
+            return !!!progress.items[i.id]
+          }
+          return true
+        })
+  }, [activeCategory, masteryData, progress, query, resolvedActiveSubcategory])
 
   const categoryStats = useMemo(() => {
     return Object.fromEntries(
@@ -85,7 +101,7 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
             `${cat}:${sub}`,
             items.reduce(
               (acc, item) => {
-                const isDone = !!progress[item.id]
+                const isDone = !!progress.items[item.id]
                 acc.done += isDone ? 1 : 0
                 acc.masteryPointsGained += isDone
                   ? (item.masteryPoints ?? 0)
@@ -108,7 +124,10 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
 
   function toggleItem(itemId: string) {
     setProgress((prev) => {
-      const next = { ...prev, [itemId]: !prev[itemId] }
+      const next = {
+        ...prev,
+        items: { ...prev.items, [itemId]: !prev.items[itemId] },
+      }
       saveProgress(next)
       return next
     })
@@ -120,8 +139,28 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
       masteryData[activeCategory]?.[resolvedActiveSubcategory] ?? []
     ).map((i) => i.id)
     setProgress((prev) => {
-      const next = { ...prev }
+      const next = { ...prev.items }
       ids.forEach((id) => delete next[id])
+      saveProgress({ ...prev, items: next })
+      return { ...prev, items: next }
+    })
+  }
+
+  function toggleHidden() {
+    setProgress((prev) => {
+      saveProgress({ ...prev, hideCompleted: !prev.hideCompleted })
+      return { ...prev, hideCompleted: !prev.hideCompleted }
+    })
+  }
+
+  function markAllCompleted() {
+    if (!resolvedActiveSubcategory) return
+    const ids = (
+      masteryData[activeCategory]?.[resolvedActiveSubcategory] ?? []
+    ).map((i) => i.id)
+    setProgress((prev) => {
+      const next = { ...prev }
+      ids.forEach((id) => (next.items[id] = true))
       saveProgress(next)
       return next
     })
@@ -235,7 +274,7 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
       )}
 
       <div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-        <div className="flex items-center gap-2">
+        <div className="flex flex-wrap items-center gap-2">
           <button
             type="button"
             onClick={() => setSidebarOpen(!sidebarOpen)}
@@ -250,15 +289,31 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
             placeholder={t('searchPlaceholder')}
             className="min-w-0 flex-1 border border-muted-primary bg-background px-2 py-1 text-sm text-foreground outline-none placeholder:text-muted-foreground focus:border-primary"
           />
-          {isDevelopment() && (
-            <button
+          <div className="flex items-center gap-2 w-full md:w-fit justify-between">
+            <Button type="button" variant="outline" onClick={markAllCompleted}>
+              {t('markAll')}
+            </Button>
+            <Button
               type="button"
-              onClick={clearCategory}
-              className="shrink-0 border border-muted-primary bg-background px-2 py-1 text-sm text-foreground transition hover:bg-muted-primary/15"
+              variant="outline"
+              onClick={toggleHidden}
+              className="size-7.5 p-0"
+              title={
+                progress.hideCompleted ? t('showCompleted') : t('hideCompleted')
+              }
             >
-              {t('clearCategory')}
-            </button>
-          )}
+              {progress.hideCompleted ? (
+                <EyeSlashIcon className="size-4" />
+              ) : (
+                <EyeIcon className="size-4" />
+              )}
+            </Button>
+            {isDevelopment() && (
+              <Button type="button" variant="outline" onClick={clearCategory}>
+                {t('clearCategory')}
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="border border-muted-primary bg-background/40 px-2 py-1 text-xs text-muted-foreground">
@@ -279,7 +334,7 @@ export function MasteryPanel({ masteryData }: { masteryData: MasteryData }) {
           ) : (
             <div className="space-y-1.5">
               {filteredItems.map((item, index) => {
-                const checked = Boolean(progress[item.id])
+                const checked = Boolean(progress.items[item.id])
                 return (
                   <button
                     key={item.id}

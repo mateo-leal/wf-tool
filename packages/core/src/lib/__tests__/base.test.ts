@@ -1,5 +1,6 @@
-import { BaseProvider, Data } from '../base'
+import { BaseClient } from '../base'
 import { BaseItem } from '../../types'
+import { Data } from '../../types/internal'
 
 // Mock BaseItem implementation for testing
 interface MockItem extends BaseItem {
@@ -8,7 +9,7 @@ interface MockItem extends BaseItem {
 }
 
 // Concrete implementation of abstract BaseProvider for testing
-class TestProvider extends BaseProvider<MockItem> {
+class TestProvider extends BaseClient<MockItem> {
   constructor(items: Data<MockItem>, locale: string = 'en') {
     super(items, locale)
   }
@@ -119,15 +120,13 @@ describe('BaseProvider', () => {
 
   describe('find', () => {
     it('should find items matching a predicate', () => {
-      const results = provider.find((item): item is MockItem =>
-        item.name.includes('Two')
-      )
+      const results = provider.filter((item) => item.name.includes('Two'))
       expect(results).toHaveLength(1)
       expect(results[0]).toEqual(mockItems['/Lotus/Items/Item2'])
     })
 
     it('should return empty array if no items match', () => {
-      const results = provider.find((item): item is MockItem =>
+      const results = provider.filter((item) =>
         item.name.includes('NonExistent')
       )
       expect(results).toEqual([])
@@ -138,7 +137,7 @@ describe('BaseProvider', () => {
         description: string
       }
 
-      const results = provider.find(
+      const results = provider.filter(
         (item): item is ItemWithDescription => 'description' in item
       )
       expect(results).toHaveLength(1)
@@ -147,18 +146,18 @@ describe('BaseProvider', () => {
     })
 
     it('should find all items when predicate is always true', () => {
-      const results = provider.find((item): item is MockItem => true)
+      const results = provider.filter((item) => true)
       expect(results).toHaveLength(3)
     })
 
     it('should find no items when predicate is always false', () => {
-      const results = provider.find((item): item is MockItem => false)
+      const results = provider.filter((item) => false)
       expect(results).toEqual([])
     })
 
     it('should handle complex predicates', () => {
-      const results = provider.find(
-        (item): item is MockItem =>
+      const results = provider.filter(
+        (item) =>
           item.uniqueName.includes('Item1') || item.uniqueName.includes('Item3')
       )
       expect(results).toHaveLength(2)
@@ -167,7 +166,7 @@ describe('BaseProvider', () => {
     })
 
     it('should preserve order when finding items', () => {
-      const results = provider.find((item): item is MockItem => true)
+      const results = provider.filter((item) => true)
       const uniqueNames = results.map((item) => item.uniqueName)
       expect(uniqueNames).toEqual([
         '/Lotus/Items/Item1',

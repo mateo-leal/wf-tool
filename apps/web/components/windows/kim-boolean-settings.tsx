@@ -168,7 +168,7 @@ export function KimBooleanSettings() {
             <section className="fixed inset-0 z-50 flex items-center justify-center p-3">
               <Window className="h-[min(88svh,900px)] max-w-[min(96vw,1400px)] md:h-[min(72svh,720px)] md:max-w-[min(80vw,1000px)]">
                 <WindowTitlebar>
-                  <p>{t('settings.title')}</p>
+                  <h1>{t('settings.title')}</h1>
                   <CloseButton
                     onClick={() => setIsOpen(false)}
                     label={t('settings.close')}

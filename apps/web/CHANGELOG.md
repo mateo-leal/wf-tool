@@ -1,5 +1,20 @@
 # tenno-companion
 
+## 0.3.0
+
+### Minor Changes
+
+- 887287b: Better error handling for kim
+  Data fetching and final class separated to reduce client size bundle
+  update core usage in web
+- Add mastery page buttons to hide completed and mark all category
+
+### Patch Changes
+
+- Updated dependencies [887287b]
+  - @tenno-companion/core@0.2.0
+  - @tenno-companion/kim@0.1.2
+
 ## 0.2.2
 
 ### Patch Changes

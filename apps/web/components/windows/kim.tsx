@@ -47,7 +47,7 @@ export function KimWindow() {
       )}
     >
       <WindowTitlebar>
-        <p>{t('windowTitle')}</p>
+        <h1>{t('windowTitle')}</h1>
         <div className="flex gap-1">
           <KimBooleanSettings />
           <CloseButton href="/" disabled={!isKimHome} />

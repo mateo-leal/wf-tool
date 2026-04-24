@@ -1,6 +1,7 @@
 import { SentryBuildOptions, withSentryConfig } from '@sentry/nextjs'
 import type { NextConfig } from 'next'
 import createNextIntlPlugin from 'next-intl/plugin'
+import { version } from './package.json'
 
 const nextConfig: NextConfig = {
   images: {
@@ -14,7 +15,10 @@ const nextConfig: NextConfig = {
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
     unoptimized: true,
   },
-  serverExternalPackages: ['@tenno-companion/kim'],
+  serverExternalPackages: ['@tenno-companion/core', '@tenno-companion/kim'],
+  env: {
+    version,
+  },
 }
 
 const sentryBuildOptions: SentryBuildOptions = {
