@@ -62,7 +62,7 @@
     "SORTIE_MODIFIER_IMPACT": "Mejora Física Enemiga (Impacto)",
     "SORTIE_MODIFIER_SLASH": "Mejora Física Enemiga (Cortante)",
     "SORTIE_MODIFIER_PUNCTURE": "Mejora Física Enemiga (Perforación)",
-    "SORTIE_MODIFIER_EXIMUS": "Eximus Stronghold",
+    "SORTIE_MODIFIER_EXIMUS": "Fortaleza Eximus",
     "SORTIE_MODIFIER_MAGNETIC": "Mejora Elemental Enemiga (Magnético)",
     "SORTIE_MODIFIER_CORROSIVE": "Mejora Elemental Enemiga (Corrosivo)",
     "SORTIE_MODIFIER_VIRAL": "Mejora Elemental Enemiga (Viral)",
@@ -77,7 +77,7 @@
     "SORTIE_MODIFIER_HAZARD_RADIATION": "Peligro de Radiación",
     "SORTIE_MODIFIER_HAZARD_MAGNETIC": "Electromagnetic Anomalies",
     "SORTIE_MODIFIER_HAZARD_FOG": "Dense Fog",
-    "SORTIE_MODIFIER_HAZARD_FIRE": "Fire Hazard",
+    "SORTIE_MODIFIER_HAZARD_FIRE": "Fuego",
     "SORTIE_MODIFIER_HAZARD_ICE": "Cryogenic Leakage",
     "SORTIE_MODIFIER_HAZARD_COLD": "Extreme Cold",
     "SORTIE_MODIFIER_ARMOR": "Armadura Enemiga Aumentada",
@@ -271,6 +271,9 @@
     "masteryPointsProgress": "{gained, number}/{total, number} PM",
     "masteryPoints": "{points, number} PM",
     "searchPlaceholder": "Buscar por nombre...",
+    "markAll": "Marcar categoría como completada",
+    "hideCompleted": "Ocultar completados",
+    "showCompleted": "Mostrar completados",
     "clearCategory": "Borrar categoría",
     "activeCategoryCount": "{count} elementos en {category}",
     "rankPrefix": "Rango {rank}: {item}",
@@ -287,7 +290,8 @@
       "title": "Acerca de",
       "description": "Tenno Companion es una herramienta creada por fans diseñada para ayudar a los jugadores a seguir su progreso y gestionar sus tareas dentro del juego.",
       "legalDisclaimer": "Este sitio no está afiliado con Digital Extremes. Warframe y el logo de Warframe son marcas registradas de Digital Extremes Ltd.",
-      "browseWfCredits": "Los datos y recursos multimedia son proporcionados por <link>browse.wf</link>, una base de datos y sitio de recursos de Warframe gestionado por la comunidad."
+      "browseWfCredits": "Los datos y recursos multimedia son proporcionados por <link>browse.wf</link>, una base de datos y sitio de recursos de Warframe gestionado por la comunidad.",
+      "version": "Versión"
     }
   },
   "worldCycles": {
