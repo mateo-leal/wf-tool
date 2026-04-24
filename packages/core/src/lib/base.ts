@@ -1,5 +1,6 @@
 import { BaseItem } from '../types'
-import { Data } from '../types/internal'
+import { Data, FilterOptions } from '../types/internal'
+import { isMasterable } from './filters'
 
 export abstract class BaseClient<T extends BaseItem> {
   protected locale: string
@@ -9,6 +10,25 @@ export abstract class BaseClient<T extends BaseItem> {
     locale: string
   ) {
     this.locale = locale
+  }
+
+  /**
+   * Generic filter runner that applies the masterable logic if requested
+   */
+  protected getFiltered<E extends T>(
+    options: FilterOptions,
+    predicate: (w: T) => w is E
+  ): E[] {
+    return this.filter((w): w is E => {
+      const isCorrectType = predicate(w)
+      if (!isCorrectType) return false
+
+      if (options.masterable) {
+        return isMasterable(w)
+      }
+
+      return true
+    })
   }
 
   getAll(): T[] {

@@ -22,10 +22,7 @@ import { isMasterable } from './filters'
 import { Archwing, Necramech, Warframe } from '../types/warframes'
 import { KubrowPet, Sentinel, SpecialItem } from '../types/sentinels'
 import { Faction, Intrinsic, MissionType, Region } from '../types/world'
-
-type FilterOptions = {
-  masterable?: boolean
-}
+import { FilterOptions } from '../types/internal'
 
 export class Factions extends BaseClient<Faction> {}
 
@@ -33,7 +30,11 @@ export class MissionTypes extends BaseClient<MissionType> {}
 
 export class RailjackIntrinsics extends BaseClient<Intrinsic> {}
 
-export class Regions extends BaseClient<Region> {}
+export class Regions extends BaseClient<Region> {
+  getStarChart() {
+    return this.filter((r) => r.masteryExp > 0)
+  }
+}
 
 export class Sentinels extends BaseClient<Sentinel> {}
 
@@ -48,25 +49,6 @@ export class Archwings extends BaseClient<Archwing> {}
 export class Necramechs extends BaseClient<Necramech> {}
 
 export class Weapons extends BaseClient<Weapon> {
-  /**
-   * Generic filter runner that applies the masterable logic if requested
-   */
-  private getFiltered<T extends Weapon>(
-    options: FilterOptions,
-    predicate: (w: Weapon) => w is T
-  ): T[] {
-    return this.filter((w): w is T => {
-      const isCorrectType = predicate(w)
-      if (!isCorrectType) return false
-
-      if (options.masterable) {
-        return isMasterable(w)
-      }
-
-      return true
-    })
-  }
-
   getPrimaries(options: FilterOptions = {}) {
     return this.getFiltered(options, (w) => w.productCategory === 'LongGuns')
   }
@@ -138,25 +120,6 @@ export class Weapons extends BaseClient<Weapon> {
 }
 
 export class Pets extends BaseClient<Sentinel | Weapon> {
-  /**
-   * Generic filter runner that applies the masterable logic if requested
-   */
-  private getFiltered<T extends Sentinel | Weapon>(
-    options: FilterOptions,
-    predicate: (w: Sentinel | Weapon) => w is T
-  ): T[] {
-    return this.filter((w): w is T => {
-      const isCorrectType = predicate(w)
-      if (!isCorrectType) return false
-
-      if (options.masterable) {
-        return isMasterable(w)
-      }
-
-      return true
-    })
-  }
-
   /**
    * Returns Sentinels (Dethcube, Taxon, etc.)
    */
