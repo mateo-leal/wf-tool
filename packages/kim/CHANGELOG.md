@@ -1,5 +1,13 @@
 # @tenno-companion/core
 
+## 0.1.2
+
+### Patch Changes
+
+- 887287b: Better error handling for kim
+  Data fetching and final class separated to reduce client size bundle
+  update core usage in web
+
 ## 0.1.1
 
 ### Patch Changes
