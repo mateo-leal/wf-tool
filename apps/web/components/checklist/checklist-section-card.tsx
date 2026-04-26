@@ -8,7 +8,7 @@ import { useMemo, useState } from 'react'
 import { useTranslations } from 'next-intl'
 
 import { cn } from '@/lib/utils'
-import { ChecklistTask } from '@/lib/types'
+import { ChecklistTask } from '@/lib/checklist/types'
 
 import { TaskRow } from './task-row'
 import { Button } from '../ui/button'

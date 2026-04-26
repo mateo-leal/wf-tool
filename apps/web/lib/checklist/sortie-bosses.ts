@@ -1,8 +1,9 @@
-import { toTitleCase } from '.'
+import { toTitleCase } from '../utils'
 import { Dictionary } from '../language'
 
 const SORTIE_BOSS_DICT_KEY = {
   SORTIE_BOSS_CORRUPTED_VOR: '/Lotus/Language/Game/VorTwo',
+  SORTIE_BOSS_KRIL: '/Lotus/Language/Game/LieutenantLechKril',
 }
 
 export function getSortieBossName(boss: string, dictionary: Dictionary) {

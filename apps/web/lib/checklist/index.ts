@@ -1,17 +1,17 @@
-import { DAILY_TASKS, OTHER_TASKS, WEEKLY_TASKS } from './tasks'
-import type {
+import {
   ChecklistCategory,
   ChecklistCounter,
   ChecklistState,
   ChecklistTask,
-  Counter,
-} from '../types'
+} from './types'
 import {
   getBaroPeriodKey,
   getTimeUntilNextBaroChange,
   isBaroKiteerAvailable,
 } from '../world-state/baro'
+import type { Counter } from '../types'
 import { OracleWorldState } from '../world-state/types'
+import { DAILY_TASKS, OTHER_TASKS, WEEKLY_TASKS } from './tasks'
 
 const EIGHT_HOURS_ANCHOR_UTC = Date.UTC(1970, 0, 1, 8, 0, 0)
 const EIGHT_HOURS_PERIOD_MS = 8 * 60 * 60 * 1000

@@ -1,4 +1,4 @@
-import { ChecklistTask } from '../types'
+import { ChecklistTask } from './types'
 
 export const DAILY_TASKS: ChecklistTask[] = [
   {

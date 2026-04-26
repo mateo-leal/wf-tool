@@ -120,7 +120,13 @@ export function SettingsPortal({ isOpen, onCloseAction }: SettingsPortalProps) {
             <p className="font-semibold uppercase tracking-wide text-foreground">
               {t('about.version')}
             </p>
-            <p>{process.env.version}</p>
+            <Link
+              href="https://github.com/mateo-leal/tenno-companion/blob/main/apps/web/CHANGELOG.md"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              {process.env.version}
+            </Link>
           </section>
         </WindowContent>
       </Window>

@@ -1,7 +1,3 @@
-import { ChecklistCounter, ChecklistTask } from '@/lib/types'
-import { Button } from '../ui/button'
-import { getChecklistTaskCounter } from '@/lib/checklist'
-import { useEffect, useState } from 'react'
 import {
   AppWindowIcon,
   CheckCircleIcon,
@@ -14,7 +10,13 @@ import {
   XIcon,
 } from '@phosphor-icons/react'
 import { useTranslations } from 'next-intl'
+import { useEffect, useState } from 'react'
+
 import { cn, counterToString } from '@/lib/utils'
+import { getChecklistTaskCounter } from '@/lib/checklist'
+import { ChecklistCounter, ChecklistTask } from '@/lib/checklist/types'
+
+import { Button } from '../ui/button'
 import { useGameData } from '../providers/game-data'
 
 interface TaskRowProps {

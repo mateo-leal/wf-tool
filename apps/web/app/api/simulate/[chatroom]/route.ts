@@ -12,10 +12,9 @@ export async function GET(
   ctx: RouteContext<'/api/simulate/[chatroom]'>
 ) {
   const start = Date.now()
+  const { chatroom } = await ctx.params
 
   try {
-    const { chatroom } = await ctx.params
-
     if (!(CHATROOMS as readonly string[]).includes(chatroom)) {
       return Response.json(
         { message: 'Must be a valid chatroom' },
@@ -75,7 +74,7 @@ export async function GET(
     const responseData = { checks, optimizedResults }
 
     metrics.count('chats_simulated', 1, {
-      attributes: { status: 'success' },
+      attributes: { status: 'success', chatroom },
     })
 
     return Response.json(responseData, {
@@ -85,7 +84,7 @@ export async function GET(
     })
   } catch (error) {
     metrics.count('chats_simulated', 1, {
-      attributes: { status: 'failed' },
+      attributes: { status: 'failed', chatroom },
     })
     return Response.json(
       { message: error instanceof Error ? error.message : undefined },

@@ -19,20 +19,23 @@ import {
   normalizeChecklistState,
 } from '@/lib/checklist'
 import {
+  ChecklistCategory,
+  ChecklistState,
+  ChecklistTask,
+  LabelExternal,
+} from '@/lib/checklist/types'
+import {
   getBaro,
   getBaroPeriodKey,
   isBaroKiteerAvailable,
 } from '@/lib/world-state/baro'
 import { CHECKLIST_STORAGE_KEY } from '@/lib/storage-keys'
 import { counterToString, toTitleCase } from '@/lib/utils'
-import { getSortieBossName } from '@/lib/utils/sortie-bosses'
-import { ChecklistState, ChecklistTask, LabelExternal } from '@/lib/types'
+import { getSortieBossName } from '@/lib/checklist/sortie-bosses'
 
 import { useGameData } from '../providers/game-data'
 import { ChecklistSectionCard } from './checklist-section-card'
 import { DUVIRI_FRAMES, DUVIRI_WEAPONS } from './duviri-choices'
-
-type ChecklistSection = 'daily' | 'weekly' | 'other'
 
 function loadChecklistState(now: Date): ChecklistState {
   try {
@@ -242,7 +245,7 @@ export function ChecklistPanel({ factions, missionTypes, regions }: Props) {
 
   const arbitrationLabels = useMemo(() => {
     if (arbitrations) {
-      const currentHour = Math.trunc(now.getTime() / 3600000) * 3600
+      const currentHour = Math.trunc(now.getTime() / 3_600_000) * 3600
       const epochHour = arbitrations[0].timestamp
       const currentHourIndex = (currentHour - epochHour) / 3600
       const currentArbitration = arbitrations[currentHourIndex]
@@ -404,7 +407,7 @@ export function ChecklistPanel({ factions, missionTypes, regions }: Props) {
     ]
   )
 
-  const toggleTask = (section: ChecklistSection, id: string) => {
+  const toggleTask = (section: ChecklistCategory, id: string) => {
     setState((current) => ({
       ...current,
       [section]: {
@@ -416,7 +419,7 @@ export function ChecklistPanel({ factions, missionTypes, regions }: Props) {
       },
     }))
   }
-  const toggleHidden = (s: ChecklistSection, id: string) => {
+  const toggleHidden = (s: ChecklistCategory, id: string) => {
     setState((p) => ({
       ...p,
       [s]: { ...p[s], hidden: { ...p[s].hidden, [id]: !p[s].hidden[id] } },
