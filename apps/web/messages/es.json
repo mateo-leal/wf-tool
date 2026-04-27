@@ -205,6 +205,7 @@
     "chatroom": {
       "searchByDialogue": "Buscar por diálogo o nombre en clave",
       "noDialoguesMatch": "Ningún diálogo coincide con tu búsqueda.",
+      "selectDialogue": "Select a dialogue to start the simulation",
       "booleanChecks": "Verificaciones de banderas",
       "noBooleanChecksRequired": "Este diálogo no requiere verificaciones de banderas.",
       "counterValues": "Valores de contadores",
