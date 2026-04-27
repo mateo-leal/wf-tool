@@ -205,6 +205,7 @@
     "chatroom": {
       "searchByDialogue": "Search by dialogue or codename",
       "noDialoguesMatch": "There are no dialogues that match your search.",
+      "selectDialogue": "Select a dialogue to start the simulation",
       "booleanChecks": "Boolean checks",
       "noBooleanChecksRequired": "This dialogue does not require boolean checks.",
       "counterValues": "Counter values",
