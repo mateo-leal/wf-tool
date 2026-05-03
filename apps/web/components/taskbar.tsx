@@ -6,11 +6,13 @@ import {
   ListChecksIcon,
   MedalMilitaryIcon,
 } from '@phosphor-icons/react'
-import { SettingsPortal } from './windows/settings'
 import { useEffect, useState } from 'react'
-import { Link, usePathname } from '@/i18n/navigation'
-import { cn } from '@/lib/utils'
 import { useLocale, useTranslations } from 'next-intl'
+
+import { cn } from '@/lib/utils'
+import { Link, usePathname } from '@/i18n/navigation'
+
+import { SettingsPortal } from './windows/settings'
 
 function Clock() {
   const locale = useLocale()
@@ -61,17 +63,21 @@ export function Taskbar() {
   const pathname = usePathname()
   const t = useTranslations()
   const [isSettingsOpen, setIsSettingsOpen] = useState(false)
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false)
 
   useEffect(() => {
-    if (!isSettingsOpen) return
+    if (!isSettingsOpen || !isFeedbackOpen) return
 
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setIsSettingsOpen(false)
+      if (event.key === 'Escape') {
+        setIsFeedbackOpen(false)
+        setIsSettingsOpen(false)
+      }
     }
 
     window.addEventListener('keydown', handleEscape)
     return () => window.removeEventListener('keydown', handleEscape)
-  }, [isSettingsOpen])
+  }, [isFeedbackOpen, isSettingsOpen])
 
   const kimIsActive = pathname.startsWith('/kim')
 
@@ -82,6 +88,7 @@ export function Taskbar() {
           <Link
             href="/checklist"
             aria-label={t('checklist.title')}
+            title={t('checklist.title')}
             className="group relative flex size-11 items-center justify-center rounded-2xl transition hover:bg-black/10"
           >
             <ListChecksIcon
@@ -102,6 +109,7 @@ export function Taskbar() {
           <Link
             href="/kim"
             aria-label={t('kim.title')}
+            title={t('kim.title')}
             className="group relative flex size-11 items-center justify-center rounded-2xl transition hover:bg-black/10"
           >
             <ChatCircleTextIcon
@@ -120,6 +128,7 @@ export function Taskbar() {
           <Link
             href="/mastery"
             aria-label={t('masteryChecklist.title')}
+            title={t('masteryChecklist.title')}
             className="group relative flex size-11 items-center justify-center rounded-2xl transition hover:bg-black/10"
           >
             <MedalMilitaryIcon
@@ -141,6 +150,7 @@ export function Taskbar() {
             type="button"
             onClick={() => setIsSettingsOpen(true)}
             aria-label={t('settings.title')}
+            title={t('settings.title')}
             className="group relative flex size-11 items-center justify-center rounded-2xl transition hover:bg-black/10"
           >
             <GearSixIcon

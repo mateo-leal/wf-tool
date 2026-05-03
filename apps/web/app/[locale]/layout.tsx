@@ -1,15 +1,17 @@
 import type { Metadata } from 'next'
+import { notFound } from 'next/navigation'
 import { Analytics } from '@vercel/analytics/next'
 import { SpeedInsights } from '@vercel/speed-insights/next'
+import { hasLocale, NextIntlClientProvider } from 'next-intl'
 import { Cormorant_Garamond, Oxanium } from 'next/font/google'
+import { getTranslations, setRequestLocale } from 'next-intl/server'
+
+import { routing } from '@/i18n/routing'
 import { Taskbar } from '@/components/taskbar'
 import { getSiteOrigin, APP_TITLE } from '@/lib/seo'
-import './globals.css'
-import { hasLocale, NextIntlClientProvider } from 'next-intl'
-import { routing } from '@/i18n/routing'
-import { notFound } from 'next/navigation'
-import { getTranslations, setRequestLocale } from 'next-intl/server'
 import { GameDataProvider } from '@/components/providers/game-data'
+
+import './globals.css'
 
 const oxanium = Oxanium({
   variable: '--font-ui-sans',
