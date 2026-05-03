@@ -28,7 +28,7 @@
   "terminal": {
     "title": "Terminal",
     "foundry": "Foundry",
-    "syndicates": "Syndicates",
+    "syndicates": "Синдикаты",
     "navigation": "Navigation",
     "pom2pc": "POM-2-PC",
     "helminth": "Helminth"
@@ -279,7 +279,7 @@
     "clearCategory": "Clear category",
     "activeCategoryCount": "{count} items in {category}",
     "rankPrefix": "Rank {rank}: {item}",
-    "masteryRequirement": "Mastery Rank",
+    "masteryRequirement": "Ранг мастерства",
     "loading": "Loading items...",
     "loadFailed": "Could not load mastery data right now.",
     "emptyState": "No items match your current filter."

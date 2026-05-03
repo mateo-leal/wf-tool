@@ -279,7 +279,7 @@
     "clearCategory": "Clear category",
     "activeCategoryCount": "{count} items in {category}",
     "rankPrefix": "Rank {rank}: {item}",
-    "masteryRequirement": "Mastery Rank",
+    "masteryRequirement": "Rang de maîtrise",
     "loading": "Loading items...",
     "loadFailed": "Could not load mastery data right now.",
     "emptyState": "No items match your current filter."
