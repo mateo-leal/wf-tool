@@ -1,5 +1,13 @@
 # @tenno-companion/core
 
+## 0.2.5
+
+### Patch Changes
+
+- fix check updates scripts to check two times for github api and not throw but return the error
+- Updated dependencies
+  - @tenno-companion/shared@0.1.1
+
 ## 0.2.4
 
 ### Patch Changes

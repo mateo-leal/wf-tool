@@ -1,5 +1,14 @@
 # tenno-companion
 
+## 0.3.9
+
+### Patch Changes
+
+- Entries for sortie bosses Jackal and Alad V
+- Updated dependencies
+  - @tenno-companion/core@0.2.5
+  - @tenno-companion/kim@0.1.3
+
 ## 0.3.8
 
 ### Patch Changes
