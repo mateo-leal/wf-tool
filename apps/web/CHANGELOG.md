@@ -1,5 +1,11 @@
 # tenno-companion
 
+## 0.3.11
+
+### Patch Changes
+
+- fix: add fallback for Intl.Segmenter in getSegments function
+
 ## 0.3.10
 
 ### Patch Changes

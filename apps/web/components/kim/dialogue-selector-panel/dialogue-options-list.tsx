@@ -59,9 +59,10 @@ export function DialogueOptionsList({
       ignorePunctuation: true,
     })
 
-    const segmenter = new Intl.Segmenter(standardLocale, {
-      granularity: 'grapheme',
-    })
+    const segmenter =
+      typeof Intl !== 'undefined' && 'Segmenter' in Intl
+        ? new Intl.Segmenter(standardLocale, { granularity: 'grapheme' })
+        : null
 
     const prepare = (str: string) => {
       return str
@@ -72,8 +73,19 @@ export function DialogueOptionsList({
         .trim()
     }
 
-    const getSegments = (str: string) =>
-      Array.from(segmenter.segment(str)).map((s) => s.segment)
+    const getSegments = (str: string) => {
+      if (segmenter) {
+        return Array.from(segmenter.segment(str)).map((s) => s.segment)
+      }
+      /**
+       * Fallback for grapheme segmentation when Intl.Segmenter is missing.
+       * Array.from(str) correctly handles most emoji/surrogate pairs,
+       * though it's less precise for complex script clusters than Segmenter.
+       * Note: This only happened once from a user with Firefox 134.
+       * Probably related to privacy or fingerprinting settings
+       */
+      return Array.from(str)
+    }
 
     /**
      * Checks if a single term (word) exists inside a target text
